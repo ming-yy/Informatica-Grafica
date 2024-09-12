@@ -18,4 +18,12 @@ public:
     PuntoDireccion(float _coord[3]);
 
     friend std::ostream& operator<<(std::ostream& os, const PuntoDireccion& pd);
+
+    /*
+    operator +
+    operator -
+    operator *
+    operator /
+    
+    */
 };
