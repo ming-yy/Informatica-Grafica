@@ -16,52 +16,130 @@
 #include "punto.h"
 #include "direccion.h"
 
-//#include "punto.h"
-//#include "direccion.h"
-
 
 int main() {
+    bool debug[2] = {false, true};
+    
+    if (debug[0]) {
+        float arrCoord[3] = {4.44,5.55,6.66};
+        
+        // PRUEBA 1 - COORDENADAS
+        std::shared_ptr<Coordenadas> coord1 = std::make_shared<Coordenadas> ();
+        std::shared_ptr<Coordenadas> coord2 = std::make_shared<Coordenadas> (1.11,2.22,3.33);
+        float arr1[3] = {4.44,5.55,6.66};
+        std::shared_ptr<Coordenadas> coord3 = std::make_shared<Coordenadas> (arr1);
+        std::cout << std::endl << "1 - COORDENADAS" << std::endl;
+        std::cout << *coord1 << std::endl;
+        std::cout << *coord2 << std::endl;
+        std::cout << *coord3 << std::endl;
+        
+        // PRUEBA 2 - PUNTODIRECCION
+        std::shared_ptr<PuntoDireccion> pd1 = std::make_shared<PuntoDireccion> ();
+        std::shared_ptr<PuntoDireccion> pd2 = std::make_shared<PuntoDireccion> (1.11,2.22,3.33);
+        std::shared_ptr<PuntoDireccion> pd3 = std::make_shared<PuntoDireccion> (arrCoord);
+        std::cout << std::endl << "2 - PUNTODIRECCION" << std::endl;
+        std::cout << *pd1 << std::endl;
+        std::cout << *pd2 << std::endl;
+        std::cout << *pd3 << std::endl;
+        
+        // PRUEBA 3 - PUNTO
+        std::shared_ptr<Punto> punto1 = std::make_shared<Punto> ();
+        std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1.111,2.222,3.333);
+        std::shared_ptr<Punto> punto3 = std::make_shared<Punto> (arrCoord);
+        std::cout << std::endl << "3 - PUNTO" << std::endl;
+        std::cout << *punto1 << std::endl;
+        std::cout << *punto2 << std::endl;
+        std::cout << *punto3 << std::endl;
+        
+        // PRUEBA 4 - DIRECCION
+        std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> ();
+        std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (1.111,2.222,3.333);
+        std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> (arrCoord);
+        
+        std::cout << std::endl << "4 - DIRECCION" << std::endl;
+        std::cout << *dir1 << std::endl;
+        std::cout << *dir2 << std::endl;
+        std::cout << *dir3 << std::endl;
+    }
+    
+    if (debug[1]) {
+        float aux[3] = {0.111, 1.222, 2.333};
+        
+        // PRUEBA 1 - DIRECCIONES
+        std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> (1.111,2.222,3.333);
+        std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (aux);
+        std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> ();
+        std::shared_ptr<Direccion> dirMod = std::make_shared<Direccion> (0.111, 0.222, 0.333);
+        std::shared_ptr<Direccion> dirNor = std::make_shared<Direccion> (0, 0, 0);
+        std::shared_ptr<Direccion> dirEsc = std::make_shared<Direccion> (1, 1, 1);
+        std::shared_ptr<Direccion> dir90a = std::make_shared<Direccion> (1, 0, 0);
+        std::shared_ptr<Direccion> dir90b = std::make_shared<Direccion> (0, 1, 0);
+        
+        std::cout << std::endl << "1 - DIRECCION OPERANDOS" << std::endl;
+        std::cout << "Suma: " << *dir1 + *dir3 << std::endl;
+        std::cout << "Resta: " << *dir1 - *dir2 << std::endl;
 
-    float arrCoord[3] = {4.44,5.55,6.66};
+        // Multiplicación y división de direcciones por escalares
+        float escalar = 2.0f;
+        try {
+            std::cout << "Multiplicación por " << escalar << ": " << *dir1 * escalar
+                    << std::endl;
+            std::cout << "División por " << escalar << ": " << *dir1 / escalar
+                    << std::endl;
+            std::cout << "División por 0 (debe lanzar excepción): " << *dir1 / 0
+                    << std::endl;
+        } catch (const std::invalid_argument& e) {
+            std::cerr << e.what() << std::endl;
+        }
+        
+        // Módulo
+        std::cout << "Módulo: " << modulo(*dir1) << std::endl;
+        std::cout << "Módulo tras resta: " << modulo(*dir1 - *dirMod) << std::endl;
+        
+        // Normalización
+        try {
+            std::cout << "Normalización de " << *dir1 << ":" << normalizar(*dir1) << std::endl;
+            std::cout << "Normalización de " << *dirMod << ":" << normalizar(*dirMod) << std::endl;
+            std::cout << "Normalización de " << *dir2 << ":" << normalizar(*dir2) << std::endl;
+            std::cout << "Normalización de " << *dirNor << ":" << normalizar(*dirNor) << std::endl;
+        } catch (const std::invalid_argument& e) {
+            std::cerr << e.what() << std::endl;
+        }
+        
+        // Producto escalar y vectorial
+        std::cout << "Producto escalar: " << dot(*dir1, *dir2) << std::endl;
+        std::cout << "Producto escalar (0º): " << dot(*dir1, *dir1) << std::endl;
+        std::cout << "Producto escalar (90º): " << dot(*dirNor, *dirEsc) << std::endl;
+        std::cout << "Producto vectorial: " << cross(*dir1, *dir2) << std::endl;
+        std::cout << "Producto vectorial (0º): " << cross(*dirEsc, *dirEsc) << std::endl;
+        std::cout << "Producto vectorial (90º): " << cross(*dir90a, *dir90b) << std::endl;
+        
+        
+        // PRUEBA 2 - PUNTOS
+        std::shared_ptr<Punto> punto1 = std::make_shared<Punto>();
+        std::shared_ptr<Punto> punto2 = std::make_shared<Punto>(aux);
+        std::shared_ptr<Punto> punto3 = std::make_shared<Punto>(1.111, 2.222, 3.333);
 
+        std::shared_ptr<Direccion> dir4 = std::make_shared<Direccion>(1.111, 2.222, 3.333);
+        std::shared_ptr<Direccion> dir5 = std::make_shared<Direccion>(aux);
 
-    // PRUEBA 1 - COORDENADAS
-    std::shared_ptr<Coordenadas> coord1 = std::make_shared<Coordenadas> ();
-    std::shared_ptr<Coordenadas> coord2 = std::make_shared<Coordenadas> (1.11,2.22,3.33);
-    float arr1[3] = {4.44,5.55,6.66};
-    std::shared_ptr<Coordenadas> coord3 = std::make_shared<Coordenadas> (arr1);
-    std::cout << std::endl << "1 - COORDENADAS" << std::endl;
-    std::cout << *coord1 << std::endl;
-    std::cout << *coord2 << std::endl;
-    std::cout << *coord3 << std::endl;
+        std::cout << std::endl << "2 - PUNTO OPERANDOS" << std::endl;
+        std::cout << "Suma con dirección: " << *punto1 + *dir4 << std::endl;
+        std::cout << "Suma con dirección: " << *punto2 + *dir5 << std::endl;
+        std::cout << "Resta con dirección: " << *punto3 - *dir4 << std::endl;
 
-    // PRUEBA 2 - PUNTODIRECCION
-    std::shared_ptr<PuntoDireccion> pd1 = std::make_shared<PuntoDireccion> ();
-    std::shared_ptr<PuntoDireccion> pd2 = std::make_shared<PuntoDireccion> (1.11,2.22,3.33);
-    std::shared_ptr<PuntoDireccion> pd3 = std::make_shared<PuntoDireccion> (arrCoord);
-    std::cout << std::endl << "2 - PUNTODIRECCION" << std::endl;
-    std::cout << *pd1 << std::endl;
-    std::cout << *pd2 << std::endl;
-    std::cout << *pd3 << std::endl;
-
-
-    // PRUEBA 3 - PUNTO
-    std::shared_ptr<Punto> punto1 = std::make_shared<Punto> ();
-    std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1.111,2.222,3.333);
-    std::shared_ptr<Punto> punto3 = std::make_shared<Punto> (arrCoord);
-    std::cout << std::endl << "3 - PUNTO" << std::endl;
-    std::cout << *punto1 << std::endl;
-    std::cout << *punto2 << std::endl;
-    std::cout << *punto3 << std::endl;
-
-    // PRUEBA 4 - DIRECCION
-    std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> ();
-    std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (1.111,2.222,3.333);
-    std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> (arrCoord);
-
-    std::cout << std::endl << "4 - DIRECCION" << std::endl;
-    std::cout << *dir1 << std::endl;
-    std::cout << *dir2 << std::endl;
-    std::cout << *dir3 << std::endl;
+        // Multiplicación y división de puntos por escalares
+        try {
+            std::cout << "Multiplicación de punto por " << escalar << ": "
+                        << (*punto1 * escalar) << std::endl;
+            std::cout << "División de punto por " << escalar << ": "
+                        << (*punto3 / escalar) << std::endl;
+            std::cout << "División de punto por 0 (debe lanzar excepción): "
+                        << (*punto3 / 0) << std::endl;
+        } catch (const std::invalid_argument& e) {
+            std::cerr << e.what() << std::endl;
+        }
+    }
+    
     return 0;
 }
