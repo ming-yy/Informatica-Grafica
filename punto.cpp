@@ -13,3 +13,10 @@ Punto::Punto() : PuntoDireccion() {}
 Punto::Punto(float x, float y, float z) : PuntoDireccion(x, y, z) {}
 
 Punto::Punto(float _coord[3]) : PuntoDireccion(_coord) {}
+
+std::ostream& operator<<(std::ostream& os,const Punto& r)
+{
+	os << *r.coord; //<< " (o=" << *r.o << ")";
+
+	return os;
+}

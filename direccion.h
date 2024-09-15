@@ -6,8 +6,8 @@
 //*****************************************************************
 
 #pragma once
+#include "coordenadas.h"
 #include "puntoDireccion.h"
-
 
 class Direccion : public PuntoDireccion {
 public:

@@ -11,9 +11,11 @@
 
 class Punto : public PuntoDireccion {
 public:
-    //float o[] = {0.0f, 0.0f, 0.0f};     
-    
+    std::shared_ptr<Coordenadas> o = std::make_shared<Coordenadas> ();
+
     Punto();
     Punto(float x, float y, float z);
     Punto(float _coord[3]);
+
+    friend std::ostream& operator<<(std::ostream& os,const Punto& r);
 };

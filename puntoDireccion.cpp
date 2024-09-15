@@ -6,27 +6,23 @@
 //*****************************************************************
 
 #include "puntoDireccion.h"
+#include "punto.h"
 
 PuntoDireccion::PuntoDireccion() {
-    coord[0] = 0.0f;
-    coord[1] = 0.0f;
-    coord[2] = 0.0f;
+    coord = std::make_shared<Coordenadas> ();
 }
 
 PuntoDireccion::PuntoDireccion(float x, float y, float z) {
-    coord[0] = x;
-    coord[1] = y;
-    coord[2] = z;
+    coord = std::make_shared<Coordenadas> (x,y,z);
 }
 
 PuntoDireccion::PuntoDireccion(float _coord[3]) {
-    for (int i = 0; i < 3; ++i) {
-        coord[i] = _coord[i];
-    }
+    coord = std::make_shared<Coordenadas> (_coord);
 }
 
 std::ostream& operator<<(std::ostream& os,const PuntoDireccion& r)
 {
-	os << "[" << r.coord[0] << ", " << r.coord[1] << ", " << r.coord[2] << "]";
+	os << *r.coord;
+
 	return os;
 }
