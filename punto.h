@@ -8,6 +8,7 @@
 #pragma once
 #include "puntoDireccion.h"
 #include "direccion.h"
+#include <array>
 
 
 class Punto : public PuntoDireccion {
@@ -30,6 +31,6 @@ public:
     // Operación de división entre un escalar y el punto
     Punto operator/(const float escalar) const;
 
-    float* aMatriz();
+    std::array<float, 4> aMatriz();
 
 };

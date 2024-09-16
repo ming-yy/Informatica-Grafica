@@ -34,7 +34,7 @@ Punto Punto::operator/(const float escalar) const {
     return Punto(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
 }
 
-float* Punto::aMatriz() {
-    float p[4] = {coord[0], coord[1], coord[2], 1.0f};
+std::array<float, 4> Punto::aMatriz() {
+    std::array<float, 4> p = {coord[0], coord[1], coord[2], 1.0f};
     return p;
 }

@@ -12,15 +12,17 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
 #include "coordenadas.h"
 #include "punto.h"
 #include "direccion.h"
 
 
-int main() {
-    bool debug[2] = {false, true};
+int main(int argc, char* argv[]) {
     
-    if (debug[0]) {
+    if(argc == 1){
+        printf("ERROR: Elige un numero de prueba.\n");
+    } else if (argv[1] == std::string("1")) {
         float arrCoord[3] = {4.44,5.55,6.66};
         
         // PRUEBA 1 - COORDENADAS
@@ -60,9 +62,8 @@ int main() {
         std::cout << *dir1 << std::endl;
         std::cout << *dir2 << std::endl;
         std::cout << *dir3 << std::endl;
-    }
     
-    if (debug[1]) {
+    } else if (argv[1] == std::string("2")) {
         float aux[3] = {0.111, 1.222, 2.333};
         
         // PRUEBA 1 - DIRECCIONES
@@ -139,7 +140,13 @@ int main() {
         } catch (const std::invalid_argument& e) {
             std::cerr << e.what() << std::endl;
         }
+
+    } else if (argv[1] == std::string("3")) {
+
+    } else {
+        printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }
+
     
     return 0;
 }
