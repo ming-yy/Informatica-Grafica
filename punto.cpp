@@ -28,8 +28,13 @@ Punto Punto::operator*(const float escalar) const {
 
 Punto Punto::operator/(const float escalar) const {
     if (escalar == 0) {
-        throw std::invalid_argument("Error: División por cero no permitida.");
+        throw std::invalid_argument("Error: Division por cero no permitida.");
     }
     
     return Punto(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
+}
+
+float* Punto::aMatriz() {
+    float p[4] = {coord[0], coord[1], coord[2], 1.0f};
+    return p;
 }

@@ -29,4 +29,7 @@ public:
     
     // Operación de división entre un escalar y el punto
     Punto operator/(const float escalar) const;
+
+    float* aMatriz();
+
 };

@@ -28,7 +28,7 @@ Direccion Direccion::operator*(const float escalar) const {
 
 Direccion Direccion::operator/(const float escalar) const {
     if (escalar == 0) {
-        throw std::invalid_argument("Error: División por cero no permitida.");
+        throw std::invalid_argument("Error: Division por cero no permitida.");
     }
     
     return Direccion(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
@@ -46,7 +46,7 @@ Direccion Direccion::normalizar() const {
     float longitud = modulo();
     if (longitud == 0) {
         throw std::invalid_argument(
-            "Error: La dirección tiene módulo cero y no se puede calcular el módulo.");
+            "Error: La direccion tiene modulo cero y no se puede calcular el modulo.");
     }
     return *this / longitud;
 }

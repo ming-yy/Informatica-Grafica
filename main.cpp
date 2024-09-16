@@ -6,7 +6,7 @@
 //*****************************************************************
 
 
-// Definir base de datos punto y otra dirección
+// Definir base de datos punto y otra direccion
 // Cada una con sus operadores
 // Mostrar por pantalla
 
@@ -79,40 +79,40 @@ int main() {
         std::cout << "Suma: " << *dir1 + *dir3 << std::endl;
         std::cout << "Resta: " << *dir1 - *dir2 << std::endl;
 
-        // Multiplicación y división de direcciones por escalares
+        // Multiplicacion y division de direcciones por escalares
         float escalar = 2.0f;
         try {
-            std::cout << "Multiplicación por " << escalar << ": " << *dir1 * escalar
+            std::cout << "Multiplicacion por " << escalar << ": " << *dir1 * escalar
                     << std::endl;
-            std::cout << "División por " << escalar << ": " << *dir1 / escalar
+            std::cout << "Division por " << escalar << ": " << *dir1 / escalar
                     << std::endl;
-            std::cout << "División por 0 (debe lanzar excepción): " << *dir1 / 0
+            std::cout << "Division por 0 (debe lanzar excepcion): " << *dir1 / 0
                     << std::endl;
         } catch (const std::invalid_argument& e) {
             std::cerr << e.what() << std::endl;
         }
         
-        // Módulo
-        std::cout << "Módulo: " << modulo(*dir1) << std::endl;
-        std::cout << "Módulo tras resta: " << modulo(*dir1 - *dirMod) << std::endl;
+        // Modulo
+        std::cout << "Modulo: " << modulo(*dir1) << std::endl;
+        std::cout << "Modulo tras resta: " << modulo(*dir1 - *dirMod) << std::endl;
         
-        // Normalización
+        // Normalizacion
         try {
-            std::cout << "Normalización de " << *dir1 << ":" << normalizar(*dir1) << std::endl;
-            std::cout << "Normalización de " << *dirMod << ":" << normalizar(*dirMod) << std::endl;
-            std::cout << "Normalización de " << *dir2 << ":" << normalizar(*dir2) << std::endl;
-            std::cout << "Normalización de " << *dirNor << ":" << normalizar(*dirNor) << std::endl;
+            std::cout << "Normalizacion de " << *dir1 << ":" << normalizar(*dir1) << std::endl;
+            std::cout << "Normalizacion de " << *dirMod << ":" << normalizar(*dirMod) << std::endl;
+            std::cout << "Normalizacion de " << *dir2 << ":" << normalizar(*dir2) << std::endl;
+            std::cout << "Normalizacion de " << *dirNor << ":" << normalizar(*dirNor) << std::endl;
         } catch (const std::invalid_argument& e) {
             std::cerr << e.what() << std::endl;
         }
         
         // Producto escalar y vectorial
         std::cout << "Producto escalar: " << dot(*dir1, *dir2) << std::endl;
-        std::cout << "Producto escalar (0º): " << dot(*dir1, *dir1) << std::endl;
-        std::cout << "Producto escalar (90º): " << dot(*dirNor, *dirEsc) << std::endl;
+        std::cout << "Producto escalar (0 grados): " << dot(*dir1, *dir1) << std::endl;
+        std::cout << "Producto escalar (90 grados): " << dot(*dirNor, *dirEsc) << std::endl;
         std::cout << "Producto vectorial: " << cross(*dir1, *dir2) << std::endl;
-        std::cout << "Producto vectorial (0º): " << cross(*dirEsc, *dirEsc) << std::endl;
-        std::cout << "Producto vectorial (90º): " << cross(*dir90a, *dir90b) << std::endl;
+        std::cout << "Producto vectorial (0 grados): " << cross(*dirEsc, *dirEsc) << std::endl;
+        std::cout << "Producto vectorial (90 grados): " << cross(*dir90a, *dir90b) << std::endl;
         
         
         // PRUEBA 2 - PUNTOS
@@ -124,17 +124,17 @@ int main() {
         std::shared_ptr<Direccion> dir5 = std::make_shared<Direccion>(aux);
 
         std::cout << std::endl << "2 - PUNTO OPERANDOS" << std::endl;
-        std::cout << "Suma con dirección: " << *punto1 + *dir4 << std::endl;
-        std::cout << "Suma con dirección: " << *punto2 + *dir5 << std::endl;
-        std::cout << "Resta con dirección: " << *punto3 - *dir4 << std::endl;
+        std::cout << "Suma con direccion: " << *punto1 + *dir4 << std::endl;
+        std::cout << "Suma con direccion: " << *punto2 + *dir5 << std::endl;
+        std::cout << "Resta con direccion: " << *punto3 - *dir4 << std::endl;
 
-        // Multiplicación y división de puntos por escalares
+        // Multiplicacion y division de puntos por escalares
         try {
-            std::cout << "Multiplicación de punto por " << escalar << ": "
+            std::cout << "Multiplicacion de punto por " << escalar << ": "
                         << (*punto1 * escalar) << std::endl;
-            std::cout << "División de punto por " << escalar << ": "
+            std::cout << "Division de punto por " << escalar << ": "
                         << (*punto3 / escalar) << std::endl;
-            std::cout << "División de punto por 0 (debe lanzar excepción): "
+            std::cout << "Division de punto por 0 (debe lanzar excepcion): "
                         << (*punto3 / 0) << std::endl;
         } catch (const std::invalid_argument& e) {
             std::cerr << e.what() << std::endl;
