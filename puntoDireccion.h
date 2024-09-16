@@ -15,6 +15,7 @@ public:
     PuntoDireccion();
     PuntoDireccion(float x, float y, float z);
     PuntoDireccion(float _coord[3]);
-
+    
+    // Método para mostrar por pantalla el contenido del punto o dirección
     friend std::ostream& operator<<(std::ostream& os, const PuntoDireccion& pd);
 };

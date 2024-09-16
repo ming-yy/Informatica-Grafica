@@ -6,23 +6,23 @@
 //*****************************************************************
 
 
-// Definir base de datos punto y otra direccion
-// Cada una con sus operadores
-// Mostrar por pantalla
-
 #include <iostream>
 #include <memory>
 #include <string>
 #include "coordenadas.h"
 #include "punto.h"
 #include "direccion.h"
+#include "matriz.h"
 
 
 int main(int argc, char* argv[]) {
+    // SORRY NO ME VA DE OTRA FORMA
+    std::string test[2] = {"foo", "3"};
     
-    if(argc == 1){
+    //if(argc == 1){
+    if (false) {
         printf("ERROR: Elige un numero de prueba.\n");
-    } else if (argv[1] == std::string("1")) {
+    } else if (test[1] == std::string("1")) {
         float arrCoord[3] = {4.44,5.55,6.66};
         
         // PRUEBA 1 - COORDENADAS
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
         std::cout << *dir2 << std::endl;
         std::cout << *dir3 << std::endl;
     
-    } else if (argv[1] == std::string("2")) {
+    } else if (test[1] == std::string("2")) {
         float aux[3] = {0.111, 1.222, 2.333};
         
         // PRUEBA 1 - DIRECCIONES
@@ -141,8 +141,47 @@ int main(int argc, char* argv[]) {
             std::cerr << e.what() << std::endl;
         }
 
-    } else if (argv[1] == std::string("3")) {
+    } else if (test[1] == std::string("3")) {
+        
+        std::shared_ptr<Matriz<3, 3>> matriz1 = std::make_shared<Matriz<3, 3>> ();
+        
+        std::shared_ptr<Matriz<4, 4>> matriz4x4 = std::make_shared<Matriz<4, 4>>(
+            std::initializer_list<std::initializer_list<float>>{
+                {1.0f, 2.0f, 3.0f, 4.0f},
+                {5.0f, 6.0f, 7.0f, 8.0f},
+                {9.0f, 10.0f, 11.0f, 12.0f},
+                {13.0f, 14.0f, 15.0f, 16.0f}
+            }
+        );
+        
+        std::shared_ptr<Matriz<3, 3>> matriz3x3 = std::make_shared<Matriz<3, 3>>(
+            std::initializer_list<std::initializer_list<float>>{
+                {1.0f, 0.0f, 0.0f},
+                {0.0f, 1.0f, 0.0f},
+                {0.0f, 0.0f, 1.0f},
+            }
+        );
+        
+        std::shared_ptr<Matriz<4, 3>> matriz4x3 = std::make_shared<Matriz<4, 3>>(
+            std::initializer_list<std::initializer_list<float>>{
+                {1.0f, 0.0f, 0.0f},
+                {0.0f, 1.0f, 0.0f},
+                {0.0f, 0.0f, 1.0f},
+            }
+        );
 
+        
+        std::cout << "Matriz 3x3:" << std::endl;
+        std::cout << *matriz1 << std::endl;
+        
+        std::cout << "Matriz 4x4:" << std::endl;
+        std::cout << *matriz4x4 << std::endl;
+        
+        std::cout << "Matriz 3x3:" << std::endl;
+        std::cout << *matriz3x3 << std::endl;
+        
+        std::cout << "Matriz 4x3 (MIRAR Código):" << std::endl;
+        std::cout << *matriz4x3 << std::endl;
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }
