@@ -16,6 +16,9 @@ public:
     Direccion();
     Direccion(float x, float y, float z);
     Direccion(std::array<float,3> _coord);
+
+    std::array<float, 4> aMatriz();
+
     
     // Operación de suma de dos direcciones
     Direccion operator+(const Direccion& d) const;

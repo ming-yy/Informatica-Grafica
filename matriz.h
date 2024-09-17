@@ -65,22 +65,31 @@ Matriz<Filas, Columnas>::Matriz() {
 
 template <std::size_t Filas, std::size_t Columnas>
 Matriz<Filas, Columnas>::Matriz(std::initializer_list<std::initializer_list<float>> valores) {
-    std::size_t i = 0;
-
-    // Para rellenar primero todo de ceros,
-    // por si luego no hay valores para toda la matriz
-    for (auto& fila : matriz) {
-        fila.fill(0.0f);
-    }
-
-    for (const auto& fila : valores) {
-        std::size_t j = 0;
-        for (const auto& valor : fila) {
-            matriz[i][j] = valor;
-            j++;
+    try{
+        if(Filas != valores.size() || Columnas != valores.begin()->size()){
+            for (auto& fila : matriz) {
+                fila.fill(0.0f);
+            }
+            throw std::invalid_argument("Error: Matriz e initializer_list no tienen las mismas filas/columnas.");
         }
-        i++;
-    }    
+
+        std::size_t i = 0;
+
+        for (const auto& fila : valores) {
+            std::size_t j = 0;
+            for (const auto& valor : fila) {
+                matriz[i][j] = valor;
+                j++;
+            }
+            i++;
+        }  
+
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
+    
+    
+      
     
 }
 

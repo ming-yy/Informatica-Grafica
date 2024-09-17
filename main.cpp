@@ -16,7 +16,7 @@
 
 
 int main() {
-    int test = 2;
+    int test = 3;
     
     if (test == 1) {
         std::array<float, 3> arrCoord = {4.44,5.55,6.66};
