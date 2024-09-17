@@ -12,7 +12,7 @@ Punto::Punto() : PuntoDireccion(), o{0.0f, 0.0f, 0.0f} {}
 
 Punto::Punto(float x, float y, float z) : PuntoDireccion(x, y, z), o{0.0f, 0.0f, 0.0f}{}
 
-Punto::Punto(float _coord[3]) : PuntoDireccion(_coord), o{0.0f, 0.0f, 0.0f}{}
+Punto::Punto(std::array<float, 3> _coord) : PuntoDireccion(_coord), o{0.0f, 0.0f, 0.0f}{}
 
 Punto Punto::operator+(const Direccion& d) const {
     return Punto(coord[0] + d.coord[0], coord[1] + d.coord[1], coord[2] + d.coord[2]);

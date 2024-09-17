@@ -7,12 +7,11 @@
 
 #include "direccion.h"
 
-
 Direccion::Direccion() : PuntoDireccion() {}
 
 Direccion::Direccion(float x, float y, float z) : PuntoDireccion(x, y, z) {}
 
-Direccion::Direccion(float _coord[3]) : PuntoDireccion(_coord) {}
+Direccion::Direccion(std::array<float,3> _coord) : PuntoDireccion(_coord) {}
 
 Direccion Direccion::operator+(const Direccion& d) const {
     return Direccion(coord[0] + d.coord[0], coord[1] + d.coord[1], coord[2] + d.coord[2]);

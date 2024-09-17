@@ -15,7 +15,7 @@ public:
     
     Coordenadas();
     Coordenadas(float x, float y, float z);
-    Coordenadas(float _coord[3]);
+    Coordenadas(std::array<float, 3> _coord);
 
     friend std::ostream& operator<<(std::ostream& os, const Coordenadas& pd);
 

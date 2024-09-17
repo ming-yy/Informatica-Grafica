@@ -15,7 +15,7 @@ class Direccion : public PuntoDireccion {
 public:
     Direccion();
     Direccion(float x, float y, float z);
-    Direccion(float _coord[3]);
+    Direccion(std::array<float,3> _coord);
     
     // Operación de suma de dos direcciones
     Direccion operator+(const Direccion& d) const;

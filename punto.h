@@ -8,16 +8,15 @@
 #pragma once
 #include "puntoDireccion.h"
 #include "direccion.h"
-#include <array>
 
 
 class Punto : public PuntoDireccion {
 public:
-    float o[3];
+    std::array<float, 3> o;
 
     Punto();
     Punto(float x, float y, float z);
-    Punto(float _coord[3]);
+    Punto(std::array<float, 3> _coord);
     
     // Operación de suma de un punto con una dirección
     Punto operator+(const Direccion& d) const;

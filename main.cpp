@@ -16,16 +16,15 @@
 
 
 int main() {
-    int test = 3;
+    int test = 2;
     
     if (test == 1) {
-        float arrCoord[3] = {4.44,5.55,6.66};
+        std::array<float, 3> arrCoord = {4.44,5.55,6.66};
         
         // PRUEBA 1 - COORDENADAS
         std::shared_ptr<Coordenadas> coord1 = std::make_shared<Coordenadas> ();
         std::shared_ptr<Coordenadas> coord2 = std::make_shared<Coordenadas> (1.11,2.22,3.33);
-        float arr1[3] = {4.44,5.55,6.66};
-        std::shared_ptr<Coordenadas> coord3 = std::make_shared<Coordenadas> (arr1);
+        std::shared_ptr<Coordenadas> coord3 = std::make_shared<Coordenadas> (arrCoord);
         std::cout << std::endl << "1 - COORDENADAS" << std::endl;
         std::cout << *coord1 << std::endl;
         std::cout << *coord2 << std::endl;
@@ -60,11 +59,12 @@ int main() {
         std::cout << *dir3 << std::endl;
     
     } else if (test == 2) {
-        float aux[3] = {0.111, 1.222, 2.333};
+        std::array<float, 3> arrAux2 = {0.111, 1.222, 2.333};
+
         
         // PRUEBA 1 - DIRECCIONES
         std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> (1.111,2.222,3.333);
-        std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (aux);
+        std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (arrAux2);
         std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> ();
         std::shared_ptr<Direccion> dirMod = std::make_shared<Direccion> (0.111, 0.222, 0.333);
         std::shared_ptr<Direccion> dirNor = std::make_shared<Direccion> (0, 0, 0);
@@ -114,11 +114,11 @@ int main() {
         
         // PRUEBA 2 - PUNTOS
         std::shared_ptr<Punto> punto1 = std::make_shared<Punto>();
-        std::shared_ptr<Punto> punto2 = std::make_shared<Punto>(aux);
+        std::shared_ptr<Punto> punto2 = std::make_shared<Punto>(arrAux2);
         std::shared_ptr<Punto> punto3 = std::make_shared<Punto>(1.111, 2.222, 3.333);
 
         std::shared_ptr<Direccion> dir4 = std::make_shared<Direccion>(1.111, 2.222, 3.333);
-        std::shared_ptr<Direccion> dir5 = std::make_shared<Direccion>(aux);
+        std::shared_ptr<Direccion> dir5 = std::make_shared<Direccion>(arrAux2);
 
         std::cout << std::endl << "2 - PUNTO OPERANDOS" << std::endl;
         std::cout << "Suma con direccion: " << *punto1 + *dir4 << std::endl;
@@ -166,11 +166,6 @@ int main() {
             }
         );
 
-        float arr[3][3] = {{1.0f,2.0f,3.0f}, {4.0f,5.0f,6.0f}, {7.0f,8.0f,9.0f}};
-        std::shared_ptr<Matriz<3, 3>> matrizArray = std::make_shared<Matriz<3, 3>>(arr);
-        
-
-
         std::cout << "Matriz 3x3 vacia:" << std::endl;
         std::cout << *matriz1 << std::endl;
         
@@ -183,11 +178,8 @@ int main() {
         std::cout << "Matriz 4x3:" << std::endl;
         std::cout << *matriz4x3 << std::endl;
 
-        std::cout << "Matriz 3x3 array:" << std::endl;
-        std::cout << *matrizArray << std::endl;
-
-        float arrMult1[2][3] = {{1.0f,2.0f,3.0f}, {4.0f,5.0f,6.0f}};
-        float arrMult2[3][2] = {{10.0f,11.0f}, {20.0f,21.0f}, {30.0f,31.0f}};
+        std::array<std::array<float, 3>, 2> arrMult1 = {{{1.0f,2.0f,3.0f}, {4.0f,5.0f,6.0f}}};
+        std::array<std::array<float, 2>, 3> arrMult2 = {{{10.0f,11.0f}, {20.0f,21.0f}, {30.0f,31.0f}}};
 
         std::shared_ptr<Matriz<2, 3>> matrizMult1 = std::make_shared<Matriz<2, 3>>(arrMult1);
         std::shared_ptr<Matriz<3, 2>> matrizMult2 = std::make_shared<Matriz<3, 2>>(arrMult2);

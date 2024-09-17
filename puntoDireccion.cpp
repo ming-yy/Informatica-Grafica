@@ -19,7 +19,7 @@ PuntoDireccion::PuntoDireccion(float x, float y, float z) {
     coord[2] = z;
 }
 
-PuntoDireccion::PuntoDireccion(float _coord[3]) {
+PuntoDireccion::PuntoDireccion(std::array<float,3> _coord) {
     for (int i = 0; i < 3; ++i) {
         coord[i] = _coord[i];
     }

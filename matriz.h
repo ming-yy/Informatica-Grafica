@@ -22,7 +22,7 @@ public:
 
     Matriz(); // Constructor por defecto
     Matriz(std::initializer_list<std::initializer_list<float>> valores);
-    Matriz(float valores[Filas][Columnas]);
+    Matriz(std::array<std::array<float, Columnas>, Filas> valores);
 
 
     std::size_t getFilas() const { return Filas; }
@@ -84,10 +84,18 @@ Matriz<Filas, Columnas>::Matriz(std::initializer_list<std::initializer_list<floa
     
 }
 
+/*
 template <std::size_t Filas, std::size_t Columnas>
 Matriz<Filas, Columnas>::Matriz(float valores[Filas][Columnas]) {
     for (std::size_t i = 0; i < Filas; ++i) {
         std::copy(std::begin(valores[i]), std::end(valores[i]), matriz[i].begin());
+    }
+}
+*/
+template <std::size_t Filas, std::size_t Columnas>
+Matriz<Filas, Columnas>::Matriz(std::array<std::array<float, Columnas>, Filas> valores) {
+    for (std::size_t i = 0; i < Filas; ++i) {
+        std::copy(valores[i].begin(), valores[i].end(), matriz[i].begin());
     }
 }
 

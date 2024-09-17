@@ -6,6 +6,7 @@
 //*****************************************************************
 
 #include "coordenadas.h"
+#include <array>
 
 Coordenadas::Coordenadas() {
     coord[0] = 0.0f;
@@ -19,7 +20,7 @@ Coordenadas::Coordenadas(float x, float y, float z) {
     coord[2] = z;
 }
 
-Coordenadas::Coordenadas(float _coord[3]) {
+Coordenadas::Coordenadas(std::array<float, 3> _coord) {
     for (int i = 0; i < 3; ++i) {
         coord[i] = _coord[i];
     }

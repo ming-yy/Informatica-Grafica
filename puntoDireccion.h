@@ -7,14 +7,15 @@
 
 #pragma once
 #include <iostream>
+#include <array>
 
 class PuntoDireccion {
 public:
-    float coord[3];
+    std::array<float, 3> coord;
     
     PuntoDireccion();
     PuntoDireccion(float x, float y, float z);
-    PuntoDireccion(float _coord[3]);
+    PuntoDireccion(std::array<float, 3> _coord);
     
     // Método para mostrar por pantalla el contenido del punto o dirección
     friend std::ostream& operator<<(std::ostream& os, const PuntoDireccion& pd);
