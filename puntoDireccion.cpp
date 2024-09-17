@@ -7,23 +7,11 @@
 
 #include "puntoDireccion.h"
 
-PuntoDireccion::PuntoDireccion() {
-    coord[0] = 0.0f;
-    coord[1] = 0.0f;
-    coord[2] = 0.0f;
-}
+PuntoDireccion::PuntoDireccion(): coord({0.0f, 0.0f, 0.0f}) {}
 
-PuntoDireccion::PuntoDireccion(float x, float y, float z) {
-    coord[0] = x;
-    coord[1] = y;
-    coord[2] = z;
-}
+PuntoDireccion::PuntoDireccion(float x, float y, float z) : coord({x, y, z}) {}
 
-PuntoDireccion::PuntoDireccion(std::array<float,3> _coord) {
-    for (int i = 0; i < 3; ++i) {
-        coord[i] = _coord[i];
-    }
-}
+PuntoDireccion::PuntoDireccion(std::array<float,3> _coord) : coord(_coord) {}
 
 std::ostream& operator<<(std::ostream& os, const PuntoDireccion& r)
 {

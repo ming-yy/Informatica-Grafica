@@ -13,10 +13,11 @@
 #include "punto.h"
 #include "direccion.h"
 #include "matriz.h"
+#include "transformaciones.h"
 
 
 int main() {
-    int test = 3;
+    int test = 4;
     
     if (test == 1) {
         std::array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -30,30 +31,33 @@ int main() {
         std::cout << *coord2 << std::endl;
         std::cout << *coord3 << std::endl;
         
-        // PRUEBA 2 - PUNTODIRECCION
+        /*
+        // PRUEBA 1.5 - PUNTODIRECCION
+        // quitada porque ahora es abstracta y no se puede instanciar
         std::shared_ptr<PuntoDireccion> pd1 = std::make_shared<PuntoDireccion> ();
         std::shared_ptr<PuntoDireccion> pd2 = std::make_shared<PuntoDireccion> (1.11,2.22,3.33);
         std::shared_ptr<PuntoDireccion> pd3 = std::make_shared<PuntoDireccion> (arrCoord);
-        std::cout << std::endl << "2 - PUNTODIRECCION" << std::endl;
+        std::cout << std::endl << "1.5 - PUNTODIRECCION" << std::endl;
         std::cout << *pd1 << std::endl;
         std::cout << *pd2 << std::endl;
         std::cout << *pd3 << std::endl;
-        
-        // PRUEBA 3 - PUNTO
+        */
+
+        // PRUEBA 2 - PUNTO
         std::shared_ptr<Punto> punto1 = std::make_shared<Punto> ();
         std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1.111,2.222,3.333);
         std::shared_ptr<Punto> punto3 = std::make_shared<Punto> (arrCoord);
-        std::cout << std::endl << "3 - PUNTO" << std::endl;
+        std::cout << std::endl << "2 - PUNTO" << std::endl;
         std::cout << *punto1 << std::endl;
         std::cout << *punto2 << std::endl;
         std::cout << *punto3 << std::endl;
         
-        // PRUEBA 4 - DIRECCION
+        // PRUEBA 3 - DIRECCION
         std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> ();
         std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (1.111,2.222,3.333);
         std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> (arrCoord);
         
-        std::cout << std::endl << "4 - DIRECCION" << std::endl;
+        std::cout << std::endl << "3 - DIRECCION" << std::endl;
         std::cout << *dir1 << std::endl;
         std::cout << *dir2 << std::endl;
         std::cout << *dir3 << std::endl;
@@ -190,6 +194,27 @@ int main() {
         std::cout << "y m2:" << std::endl << *matrizMult2 << std::endl;
         std::cout << "RESULTADO:" << std::endl << *resultado << std::endl;
 
+
+    } else if (test == 4) {
+        std::shared_ptr<Punto> punto1 = std::make_shared<Punto> (1.111,2.222,3.333);
+        float x1=3, y1=2, z1=1, d=90;
+
+        std::cout << "VAMOS A MOVER el punto1:" << std::endl << *punto1 << std::endl << std::endl;
+
+        std::cout << "TRASLACION con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
+        std::cout << "RESULTADO:" << std::endl << translate(punto1, x1, y1, z1) << std::endl;
+
+        std::cout << "ESCALADO con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
+        std::cout << "RESULTADO:" << std::endl << scale(punto1, x1, y1, z1) << std::endl;
+
+        std::cout << "ROTACION en X con d = " << d << std::endl;
+        std::cout << "RESULTADO:" << std::endl << rotateX(punto1, d) << std::endl;
+
+        std::cout << "ROTACION en Y con d = " << d << std::endl;
+        std::cout << "RESULTADO:" << std::endl << rotateY(punto1, d) << std::endl;
+
+        std::cout << "ROTACION en Z con d = " << d << std::endl;
+        std::cout << "RESULTADO:" << std::endl << rotateZ(punto1, d) << std::endl;
 
 
     } else {

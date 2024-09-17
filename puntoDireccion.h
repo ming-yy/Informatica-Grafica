@@ -8,6 +8,7 @@
 #pragma once
 #include <iostream>
 #include <array>
+#include "matriz.h"
 
 class PuntoDireccion {
 public:
@@ -16,7 +17,8 @@ public:
     PuntoDireccion();
     PuntoDireccion(float x, float y, float z);
     PuntoDireccion(std::array<float, 3> _coord);
-    
+    virtual Matriz<4,1> aMatriz4x1() = 0;
+
     // Método para mostrar por pantalla el contenido del punto o dirección
     friend std::ostream& operator<<(std::ostream& os, const PuntoDireccion& pd);
 };

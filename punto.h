@@ -8,7 +8,7 @@
 #pragma once
 #include "puntoDireccion.h"
 #include "direccion.h"
-
+#include "matriz.h"
 
 class Punto : public PuntoDireccion {
 public:
@@ -17,6 +17,7 @@ public:
     Punto();
     Punto(float x, float y, float z);
     Punto(std::array<float, 3> _coord);
+    Matriz<4,1> aMatriz4x1() override;
     
     // Operación de suma de un punto con una dirección
     Punto operator+(const Direccion& d) const;
@@ -29,7 +30,4 @@ public:
     
     // Operación de división entre un escalar y el punto
     Punto operator/(const float escalar) const;
-
-    std::array<float, 4> aMatriz();
-
 };

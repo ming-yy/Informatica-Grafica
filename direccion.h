@@ -9,6 +9,7 @@
 #include "puntoDireccion.h"
 #include <cmath>
 #include <stdexcept>  // Para manejar excepciones
+#include "matriz.h"
 
 
 class Direccion : public PuntoDireccion {
@@ -16,8 +17,7 @@ public:
     Direccion();
     Direccion(float x, float y, float z);
     Direccion(std::array<float,3> _coord);
-
-    std::array<float, 4> aMatriz();
+    Matriz<4,1> aMatriz4x1() override;
 
     
     // Operación de suma de dos direcciones

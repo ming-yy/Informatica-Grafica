@@ -13,9 +13,10 @@ Direccion::Direccion(float x, float y, float z) : PuntoDireccion(x, y, z) {}
 
 Direccion::Direccion(std::array<float,3> _coord) : PuntoDireccion(_coord) {}
 
-std::array<float, 4> Direccion::aMatriz() {
-    std::array<float, 4> p = {coord[0], coord[1], coord[2], 0.0f};
-    return p;
+Matriz<4,1> Direccion::aMatriz4x1() {
+    std::array<std::array<float, 1>, 4> d = {coord[0], coord[1], coord[2], 0.0f};
+
+    return d;
 }
 
 Direccion Direccion::operator+(const Direccion& d) const {

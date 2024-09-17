@@ -7,7 +7,6 @@
 
 #include "punto.h"
 
-
 Punto::Punto() : PuntoDireccion(), o{0.0f, 0.0f, 0.0f} {}
 
 Punto::Punto(float x, float y, float z) : PuntoDireccion(x, y, z), o{0.0f, 0.0f, 0.0f}{}
@@ -34,7 +33,8 @@ Punto Punto::operator/(const float escalar) const {
     return Punto(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
 }
 
-std::array<float, 4> Punto::aMatriz() {
-    std::array<float, 4> p = {coord[0], coord[1], coord[2], 1.0f};
+Matriz<4,1> Punto::aMatriz4x1() {
+    std::array<std::array<float, 1>, 4> p = {coord[0], coord[1], coord[2], 1.0f};
+
     return p;
 }
