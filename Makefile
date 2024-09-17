@@ -19,9 +19,13 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
 
 # Regla para compilar cada archivo .cpp a .o
-%.o: %.cpp
+%.o: %.cpp matriz.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Regla para compilar cada archivo .cpp a .o
+main.o: main.cpp matriz.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	
 # Regla para limpiar los archivos generados
 clean:
 	del /Q *.o $(TARGET)

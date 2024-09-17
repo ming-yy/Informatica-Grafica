@@ -15,14 +15,10 @@
 #include "matriz.h"
 
 
-int main(int argc, char* argv[]) {
-    // SORRY NO ME VA DE OTRA FORMA
-    std::string test[2] = {"foo", "3"};
+int main() {
+    int test = 3;
     
-    //if(argc == 1){
-    if (false) {
-        printf("ERROR: Elige un numero de prueba.\n");
-    } else if (test[1] == std::string("1")) {
+    if (test == 1) {
         float arrCoord[3] = {4.44,5.55,6.66};
         
         // PRUEBA 1 - COORDENADAS
@@ -63,7 +59,7 @@ int main(int argc, char* argv[]) {
         std::cout << *dir2 << std::endl;
         std::cout << *dir3 << std::endl;
     
-    } else if (test[1] == std::string("2")) {
+    } else if (test == 2) {
         float aux[3] = {0.111, 1.222, 2.333};
         
         // PRUEBA 1 - DIRECCIONES
@@ -141,7 +137,7 @@ int main(int argc, char* argv[]) {
             std::cerr << e.what() << std::endl;
         }
 
-    } else if (test[1] == std::string("3")) {
+    } else if (test == 3) {
         
         std::shared_ptr<Matriz<3, 3>> matriz1 = std::make_shared<Matriz<3, 3>> ();
         
@@ -180,7 +176,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Matriz 3x3:" << std::endl;
         std::cout << *matriz3x3 << std::endl;
         
-        std::cout << "Matriz 4x3 (MIRAR Código):" << std::endl;
+        std::cout << "Matriz 4x3 (MIRAR Codigo):" << std::endl;
         std::cout << *matriz4x3 << std::endl;
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
