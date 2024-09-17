@@ -28,4 +28,4 @@ main.o: main.cpp matriz.h
 	
 # Regla para limpiar los archivos generados
 clean:
-	del /Q *.o $(TARGET)
+	del /Q *.o $(TARGET).exe

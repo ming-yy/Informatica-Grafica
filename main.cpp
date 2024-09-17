@@ -166,8 +166,12 @@ int main() {
             }
         );
 
+        float arr[3][3] = {{1.0f,2.0f,3.0f}, {4.0f,5.0f,6.0f}, {7.0f,8.0f,9.0f}};
+        std::shared_ptr<Matriz<3, 3>> matrizArray = std::make_shared<Matriz<3, 3>>(arr);
         
-        std::cout << "Matriz 3x3:" << std::endl;
+
+
+        std::cout << "Matriz 3x3 vacia:" << std::endl;
         std::cout << *matriz1 << std::endl;
         
         std::cout << "Matriz 4x4:" << std::endl;
@@ -176,8 +180,26 @@ int main() {
         std::cout << "Matriz 3x3:" << std::endl;
         std::cout << *matriz3x3 << std::endl;
         
-        std::cout << "Matriz 4x3 (MIRAR Codigo):" << std::endl;
+        std::cout << "Matriz 4x3:" << std::endl;
         std::cout << *matriz4x3 << std::endl;
+
+        std::cout << "Matriz 3x3 array:" << std::endl;
+        std::cout << *matrizArray << std::endl;
+
+        float arrMult1[2][3] = {{1.0f,2.0f,3.0f}, {4.0f,5.0f,6.0f}};
+        float arrMult2[3][2] = {{10.0f,11.0f}, {20.0f,21.0f}, {30.0f,31.0f}};
+
+        std::shared_ptr<Matriz<2, 3>> matrizMult1 = std::make_shared<Matriz<2, 3>>(arrMult1);
+        std::shared_ptr<Matriz<3, 2>> matrizMult2 = std::make_shared<Matriz<3, 2>>(arrMult2);
+
+        std::shared_ptr<Matriz<2, 2>> resultado = std::make_shared<Matriz<2, 2>>(*matrizMult1 * *matrizMult2);
+
+        std::cout << "Multiplicacion de m1:" << std::endl << *matrizMult1 << std::endl;
+        std::cout << "y m2:" << std::endl << *matrizMult2 << std::endl;
+        std::cout << "RESULTADO:" << std::endl << *resultado << std::endl;
+
+
+
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }
