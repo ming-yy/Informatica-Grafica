@@ -6,8 +6,8 @@
 //*****************************************************************
 
 // Matriz.h
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#pragma once
+
 
 #include <array>
 #include <iostream>
@@ -125,6 +125,3 @@ Matriz<Filas, Columnas2> Matriz<Filas, Columnas>::operator*(const Matriz<Columna
 
     return resultado;
 }
-
-
-#endif // MATRIZ_H
