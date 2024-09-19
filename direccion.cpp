@@ -8,17 +8,14 @@
 #include "direccion.h"
 
 Direccion::Direccion() : PuntoDireccion() {}
-/*
-Direccion::Direccion(Direccion d) {
-    
-}
-*/
+
+Direccion::Direccion(const Direccion& d) : PuntoDireccion(d.coord) {}
 
 Direccion::Direccion(float x, float y, float z) : PuntoDireccion(x, y, z) {}
 
 Direccion::Direccion(std::array<float,3> _coord) : PuntoDireccion(_coord) {}
 
-Matriz<4,1> Direccion::getCoordHomo() {
+Matriz<4,1> Direccion::getCoordHomo() const {
     std::array<std::array<float, 1>, 4> d = {coord[0], coord[1], coord[2], 0.0f};
 
     return d;

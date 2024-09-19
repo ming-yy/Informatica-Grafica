@@ -16,16 +16,15 @@
 #include "base.h"
 
 
-Matriz<4, 1> translate(const std::shared_ptr<PuntoDireccion>& pd, float x, float y, float z);
+Matriz<4, 1> translate(const PuntoDireccion& pd, float x, float y, float z);
 
-Matriz<4, 1> scale(const std::shared_ptr<PuntoDireccion>& pd, float x, float y, float z);
+Matriz<4, 1> scale(const PuntoDireccion& pd, float x, float y, float z);
 
-Matriz<4, 1> rotateX(const std::shared_ptr<PuntoDireccion>& pd, float d);
+Matriz<4, 1> rotateX(const PuntoDireccion& pd, float d);
 
-Matriz<4, 1> rotateY(const std::shared_ptr<PuntoDireccion>& pd, float d);
+Matriz<4, 1> rotateY(const PuntoDireccion& pd, float d);
 
-Matriz<4, 1> rotateZ(const std::shared_ptr<PuntoDireccion>& pd, float d);
+Matriz<4, 1> rotateZ(const PuntoDireccion& pd, float d);
 
 // Función que cambia la punto <p> a la base <b> con origen <o> y devuelve el nuevo punto
-Matriz<4, 1> cambioBase(const std::shared_ptr<Punto>& p, const std::shared_ptr<Base>& b,
-                 const std::shared_ptr<Punto>& o);
+Matriz<4, 1> cambioBase(const Punto& p, const Base& b, const Punto& o);

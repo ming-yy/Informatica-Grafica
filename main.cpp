@@ -17,7 +17,7 @@
 
 
 int main() {
-    int test = 5;
+    int test = 3;
     
     if (test == 1) {
         std::array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -46,11 +46,13 @@ int main() {
         std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> ();
         std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (1.111,2.222,3.333);
         std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> (arrCoord);
+        std::shared_ptr<Direccion> dirCopia = std::make_shared<Direccion> (*dir3);
         
         std::cout << std::endl << "3 - DIRECCION" << std::endl;
         std::cout << *dir1 << std::endl;
         std::cout << *dir2 << std::endl;
         std::cout << *dir3 << std::endl;
+        std::cout << *dirCopia << std::endl;
     
     } else if (test == 2) {
         std::array<float, 3> arrAux2 = {0.111, 1.222, 2.333};
@@ -65,6 +67,7 @@ int main() {
         std::shared_ptr<Direccion> dirEsc = std::make_shared<Direccion> (1, 1, 1);
         std::shared_ptr<Direccion> dir90a = std::make_shared<Direccion> (1, 0, 0);
         std::shared_ptr<Direccion> dir90b = std::make_shared<Direccion> (0, 1, 0);
+        
         
         std::cout << std::endl << "1 - DIRECCION OPERANDOS" << std::endl;
         std::cout << "Suma: " << *dir1 + *dir3 << std::endl;
@@ -132,9 +135,7 @@ int main() {
         }
 
     } else if (test == 3) {
-        
         std::shared_ptr<Matriz<3, 3>> matriz1 = std::make_shared<Matriz<3, 3>> ();
-        
         std::shared_ptr<Matriz<4, 4>> matriz4x4 = std::make_shared<Matriz<4, 4>>(
             std::initializer_list<std::initializer_list<float>>{
                 {1.0f, 2.0f, 3.0f, 4.0f},
@@ -183,6 +184,8 @@ int main() {
         std::cout << "Multiplicacion de m1:" << std::endl << *matrizMult1 << std::endl;
         std::cout << "y m2:" << std::endl << *matrizMult2 << std::endl;
         std::cout << "RESULTADO:" << std::endl << *resultado << std::endl;
+        
+        //std::cout << "Inversa de m1: " << std::endl << (*matriz4x4).inversa() << std::endl;
 
     } else if (test == 4) {
         std::shared_ptr<Punto> punto1 = std::make_shared<Punto> (1.111,2.222,3.333);
@@ -203,22 +206,21 @@ int main() {
         std::cout << "VAMOS A MOVER el punto1:" << std::endl << *punto1 << std::endl << std::endl;
         
         std::cout << "TRASLACION con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
-        std::cout << "RESULTADO:" << std::endl << translate(punto1, x1, y1, z1) << std::endl;
+        std::cout << "RESULTADO:" << std::endl << translate(*punto1, x1, y1, z1) << std::endl;
         
         std::cout << "ESCALADO con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
-        std::cout << "RESULTADO:" << std::endl << scale(punto1, x1, y1, z1) << std::endl;
+        std::cout << "RESULTADO:" << std::endl << scale(*punto1, x1, y1, z1) << std::endl;
         
         std::cout << "ROTACION en X con d = " << d << std::endl;
-        std::cout << "RESULTADO:" << std::endl << rotateX(punto1, d) << std::endl;
+        std::cout << "RESULTADO:" << std::endl << rotateX(*punto1, d) << std::endl;
         
         std::cout << "ROTACION en Y con d = " << d << std::endl;
-        std::cout << "RESULTADO:" << std::endl << rotateY(punto1, d) << std::endl;
+        std::cout << "RESULTADO:" << std::endl << rotateY(*punto1, d) << std::endl;
         
         std::cout << "ROTACION en Z con d = " << d << std::endl;
-        std::cout << "RESULTADO:" << std::endl << rotateZ(punto1, d) << std::endl;
+        std::cout << "RESULTADO:" << std::endl << rotateZ(*punto1, d) << std::endl;
         
-        //std::shared_ptr<Matriz<4,1>> mat = std::make_shared<Matriz<4,1>>();
-        std::cout << "CAMBIOBASE de " << *punto2 << ":\n" << cambioBase(punto2, b1, o1) << std::endl;
+        std::cout << "CAMBIOBASE de " << *punto2 << ":\n" << cambioBase(*punto2, *b1, *o1) << std::endl;
         
     } else if (test == 5) {
         std::shared_ptr<Base> base1 = std::make_shared<Base> ();

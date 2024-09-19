@@ -15,10 +15,10 @@
 class Direccion : public PuntoDireccion {
 public:
     Direccion();
-    //Direccion(Direccion d);
+    Direccion(const Direccion& d);
     Direccion(float x, float y, float z);
     Direccion(std::array<float,3> _coord);
-    Matriz<4,1> getCoordHomo() override;
+    Matriz<4,1> getCoordHomo() const override;
 
     // Operación de suma de dos direcciones
     Direccion operator+(const Direccion& d) const;

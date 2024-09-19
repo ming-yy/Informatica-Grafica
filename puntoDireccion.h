@@ -19,7 +19,7 @@ public:
     PuntoDireccion(std::array<float, 3> _coord);
     
     // Método que devuelve las coordenadas homogéneas
-    virtual Matriz<4,1> getCoordHomo() = 0;
+    virtual Matriz<4,1> getCoordHomo() const = 0;
 
     // Función para mostrar por pantalla el contenido del punto o dirección
     friend std::ostream& operator<<(std::ostream& os, const PuntoDireccion& pd);
