@@ -33,7 +33,42 @@ public:
     Matriz<Filas, Columnas2> operator*(const Matriz<Columnas, Columnas2>& otra) const;
     
     // Método que devuelve la matriz inversa
-    //Matriz<4, 4> inversa() const;
+    Matriz<4, 4> inversa() const {
+        Matriz<4, 4> inv;
+        Matriz<4, 4> temp = *this; // Crear una copia temporal de la matriz actual
+
+        // Matriz identidad
+        for (std::size_t i = 0; i < 4; ++i) {
+            inv.matriz[i][i] = 1.0f;
+        }
+
+        // Implementación de Gauss-Jordan para la inversa
+        for (std::size_t i = 0; i < 4; ++i) {
+            float diagElem = temp.matriz[i][i];
+            if (diagElem == 0.0f) {
+                throw std::runtime_error("La matriz es singular y no tiene inversa.");
+            }
+
+            // Dividir la fila actual por el elemento diagonal
+            for (std::size_t j = 0; j < 4; ++j) {
+                temp.matriz[i][j] /= diagElem;
+                inv.matriz[i][j] /= diagElem;
+            }
+
+            // Hacer ceros en la columna actual para las otras filas
+            for (std::size_t k = 0; k < 4; ++k) {
+                if (k != i) {
+                    float factor = temp.matriz[k][i];
+                    for (std::size_t j = 0; j < 4; ++j) {
+                        temp.matriz[k][j] -= factor * temp.matriz[i][j];
+                        inv.matriz[k][j] -= factor * inv.matriz[i][j];
+                    }
+                }
+            }
+        }
+
+        return inv;
+    }
     
     // Función para mostrar por pantalla la matriz <m>
     friend std::ostream& operator<<(std::ostream& os, const Matriz& m) {
@@ -123,42 +158,4 @@ Matriz<Filas, Columnas2> Matriz<Filas, Columnas>::operator*(const Matriz<Columna
 }
 
 // Método para obtener la inversa de la matriz 4x4
-/*
- template <>
- Matriz<4, 4> Matriz<4, 4>::inversa() const {
- Matriz<4, 4> inv;
- Matriz<4, 4> temp = *this; // Crear una copia temporal de la matriz actual
- 
- // Matriz identidad
- for (std::size_t i = 0; i < 4; ++i) {
- inv.matriz[i][i] = 1.0f;
- }
- 
- // Implementación de Gauss-Jordan para la inversa
- for (std::size_t i = 0; i < 4; ++i) {
- float diagElem = temp.matriz[i][i];
- if (diagElem == 0.0f) {
- throw std::runtime_error("La matriz es singular y no tiene inversa.");
- }
- 
- // Dividir la fila actual por el elemento diagonal
- for (std::size_t j = 0; j < 4; ++j) {
- temp.matriz[i][j] /= diagElem;
- inv.matriz[i][j] /= diagElem;
- }
- 
- // Hacer ceros en la columna actual para las otras filas
- for (std::size_t k = 0; k < 4; ++k) {
- if (k != i) {
- float factor = temp.matriz[k][i];
- for (std::size_t j = 0; j < 4; ++j) {
- temp.matriz[k][j] -= factor * temp.matriz[i][j];
- inv.matriz[k][j] -= factor * inv.matriz[i][j];
- }
- }
- }
- }
- 
- return inv;
- }
- */
+

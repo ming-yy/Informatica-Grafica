@@ -160,6 +160,15 @@ int main() {
                 {0.0f, 0.0f, 1.0f},
             }
         );
+        
+        std::shared_ptr<Matriz<4, 4>> matrizInv = std::make_shared<Matriz<4, 4>>(
+            std::initializer_list<std::initializer_list<float>>{
+                {1.0f, 0.0f, 0.0f, 2.0f},
+                {0.0f, 1.0f, 2.0f, 0.0f},
+                {0.0f, 2.0f, 1.0f, 0.0f},
+                {2.0f, 0.0f, 0.0f, 1.0f}
+            }
+        );
 
         std::cout << "Matriz 3x3 vacia:" << std::endl;
         std::cout << *matriz1 << std::endl;
@@ -184,8 +193,7 @@ int main() {
         std::cout << "Multiplicacion de m1:" << std::endl << *matrizMult1 << std::endl;
         std::cout << "y m2:" << std::endl << *matrizMult2 << std::endl;
         std::cout << "RESULTADO:" << std::endl << *resultado << std::endl;
-        
-        //std::cout << "Inversa de m1: " << std::endl << (*matriz4x4).inversa() << std::endl;
+        std::cout << "Inversa de m1: " << std::endl << (*matrizInv).inversa() << std::endl;
 
     } else if (test == 4) {
         std::shared_ptr<Punto> punto1 = std::make_shared<Punto> (1.111,2.222,3.333);
@@ -258,7 +266,6 @@ int main() {
         
         std::cout << "Base dimensiones incorrectas:" << std::endl;
         std::cout << *baseError << std::endl;
-        
         
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
