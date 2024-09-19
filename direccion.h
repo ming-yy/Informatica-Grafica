@@ -15,7 +15,7 @@
 class Direccion : public PuntoDireccion {
 public:
     Direccion();
-    Direccion(Direccion d);
+    //Direccion(Direccion d);
     Direccion(float x, float y, float z);
     Direccion(std::array<float,3> _coord);
     Matriz<4,1> getCoordHomo() override;
