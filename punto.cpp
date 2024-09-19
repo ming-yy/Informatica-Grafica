@@ -13,6 +13,12 @@ Punto::Punto(float x, float y, float z) : PuntoDireccion(x, y, z), o{0.0f, 0.0f,
 
 Punto::Punto(std::array<float, 3> _coord) : PuntoDireccion(_coord), o{0.0f, 0.0f, 0.0f}{}
 
+Matriz<4,1> Punto::getCoordHomo() {
+    std::array<std::array<float, 1>, 4> p = {coord[0], coord[1], coord[2], 1.0f};
+
+    return p;
+}
+
 Punto Punto::operator+(const Direccion& d) const {
     return Punto(coord[0] + d.coord[0], coord[1] + d.coord[1], coord[2] + d.coord[2]);
 }
@@ -31,10 +37,4 @@ Punto Punto::operator/(const float escalar) const {
     }
     
     return Punto(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
-}
-
-Matriz<4,1> Punto::aMatriz4x1() {
-    std::array<std::array<float, 1>, 4> p = {coord[0], coord[1], coord[2], 1.0f};
-
-    return p;
 }

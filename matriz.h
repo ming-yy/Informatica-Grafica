@@ -5,14 +5,12 @@
 // Coms:   Práctica 1 de Informática Gráfica
 //*****************************************************************
 
-// Matriz.h
 #pragma once
-
-
 #include <array>
 #include <iostream>
 #include <initializer_list>
 #include <cmath>
+
 
 template <std::size_t Filas, std::size_t Columnas>
 class Matriz {
@@ -20,21 +18,25 @@ class Matriz {
 public:
     std::array<std::array<float, Columnas>, Filas> matriz;
 
-    Matriz(); // Constructor por defecto
+    Matriz();
     Matriz(std::initializer_list<std::initializer_list<float>> valores);
     Matriz(std::array<std::array<float, Columnas>, Filas> valores);
-
-
+    
+    // Método para obtener el número de filas
     std::size_t getFilas() const { return Filas; }
+    
+    // Método para obtener el número de columnas
     std::size_t getColumnas() const { return Columnas; }
 
-    // Sobrecarga del operador de multiplicación como un método miembro
+    // Método para multiplicar dos matrices: AxB * BxC = AxC
     template <std::size_t Columnas2>
     Matriz<Filas, Columnas2> operator*(const Matriz<Columnas, Columnas2>& otra) const;
-
+    
+    // Función para mostrar por pantalla la matriz <m>
     friend std::ostream& operator<<(std::ostream& os, const Matriz& m) {
         for (const auto& fila : m.matriz) {
-
+            os << "|";
+            
             // Formatea para poder poner hasta nums de 3 cifras y que quede bonito
             for (const auto& valor : fila) {
                 if(valor == 0.0f){
@@ -47,21 +49,23 @@ public:
                 
                 os << " " << valor;
             }
-            os << std::endl;
+            os << "|" << std::endl;
         }
         return os;
     }
-
-
 };
 
-// Implementación de la plantilla
+
+// ----------------------------------------------------------------
+//                          Implementación
+// ----------------------------------------------------------------
 template <std::size_t Filas, std::size_t Columnas>
 Matriz<Filas, Columnas>::Matriz() {
     for (auto& fila : matriz) {
         fila.fill(0.0f);
     }
 }
+
 
 template <std::size_t Filas, std::size_t Columnas>
 Matriz<Filas, Columnas>::Matriz(std::initializer_list<std::initializer_list<float>> valores) {
@@ -83,24 +87,12 @@ Matriz<Filas, Columnas>::Matriz(std::initializer_list<std::initializer_list<floa
             }
             i++;
         }  
-
     } catch (const std::invalid_argument& e) {
         std::cerr << e.what() << std::endl;
     }
-    
-    
-      
-    
 }
 
-/*
-template <std::size_t Filas, std::size_t Columnas>
-Matriz<Filas, Columnas>::Matriz(float valores[Filas][Columnas]) {
-    for (std::size_t i = 0; i < Filas; ++i) {
-        std::copy(std::begin(valores[i]), std::end(valores[i]), matriz[i].begin());
-    }
-}
-*/
+
 template <std::size_t Filas, std::size_t Columnas>
 Matriz<Filas, Columnas>::Matriz(std::array<std::array<float, Columnas>, Filas> valores) {
     for (std::size_t i = 0; i < Filas; ++i) {
@@ -108,7 +100,7 @@ Matriz<Filas, Columnas>::Matriz(std::array<std::array<float, Columnas>, Filas> v
     }
 }
 
-// Implementación de la sobrecarga del operador de multiplicación
+
 template <std::size_t Filas, std::size_t Columnas>
 template <std::size_t Columnas2>
 Matriz<Filas, Columnas2> Matriz<Filas, Columnas>::operator*(const Matriz<Columnas, Columnas2>& otra) const {

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include "coordenadas.h"
+#include "base.h"
 #include "punto.h"
 #include "direccion.h"
 #include "matriz.h"
@@ -17,20 +17,10 @@
 
 
 int main() {
-    int test = 4;
+    int test = 5;
     
     if (test == 1) {
         std::array<float, 3> arrCoord = {4.44,5.55,6.66};
-        
-        // PRUEBA 1 - COORDENADAS
-        std::shared_ptr<Coordenadas> coord1 = std::make_shared<Coordenadas> ();
-        std::shared_ptr<Coordenadas> coord2 = std::make_shared<Coordenadas> (1.11,2.22,3.33);
-        std::shared_ptr<Coordenadas> coord3 = std::make_shared<Coordenadas> (arrCoord);
-        std::cout << std::endl << "1 - COORDENADAS" << std::endl;
-        std::cout << *coord1 << std::endl;
-        std::cout << *coord2 << std::endl;
-        std::cout << *coord3 << std::endl;
-        
         /*
         // PRUEBA 1.5 - PUNTODIRECCION
         // quitada porque ahora es abstracta y no se puede instanciar
@@ -197,26 +187,79 @@ int main() {
 
     } else if (test == 4) {
         std::shared_ptr<Punto> punto1 = std::make_shared<Punto> (1.111,2.222,3.333);
+        std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1,1,1);
+        std::shared_ptr<Punto> o1 = std::make_shared<Punto> (0,0,0);
+        std::shared_ptr<Punto> o2 = std::make_shared<Punto> (1,2,3);
         float x1=3, y1=2, z1=1, d=90;
-
+        
+        std::shared_ptr<Base> b1 = std::make_shared<Base>(
+            std::initializer_list<std::initializer_list<float>>{
+                {1.0f, 0.0f, 0.0f},
+                {0.0f, 2.0f, 0.0f},
+                {0.0f, 0.0f, 3.0f},
+            }
+        );
+        
+        
         std::cout << "VAMOS A MOVER el punto1:" << std::endl << *punto1 << std::endl << std::endl;
-
+        
         std::cout << "TRASLACION con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
         std::cout << "RESULTADO:" << std::endl << translate(punto1, x1, y1, z1) << std::endl;
-
+        
         std::cout << "ESCALADO con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
         std::cout << "RESULTADO:" << std::endl << scale(punto1, x1, y1, z1) << std::endl;
-
+        
         std::cout << "ROTACION en X con d = " << d << std::endl;
         std::cout << "RESULTADO:" << std::endl << rotateX(punto1, d) << std::endl;
-
+        
         std::cout << "ROTACION en Y con d = " << d << std::endl;
         std::cout << "RESULTADO:" << std::endl << rotateY(punto1, d) << std::endl;
-
+        
         std::cout << "ROTACION en Z con d = " << d << std::endl;
         std::cout << "RESULTADO:" << std::endl << rotateZ(punto1, d) << std::endl;
-
-
+        
+        std::array<float,3> arr = cambioBase(punto2, b1, o1);
+        std::shared_ptr<Punto> aux = std::make_shared<Punto>(arr);
+        std::cout << "CAMBIOBASE: " << aux << std::endl;
+        
+    } else if (test == 5) {
+        std::shared_ptr<Base> base1 = std::make_shared<Base> ();
+        
+        std::shared_ptr<Base> base2 = std::make_shared<Base>(
+            std::initializer_list<std::initializer_list<float>>{
+                {1.0f, 0.0f, 0.0f},
+                {0.0f, 1.0f, 0.0f},
+                {0.0f, 0.0f, 1.0f},
+            }
+        );
+        
+        std::array<std::array<float, 3>, 3> arrBase3 = {
+            {{1.0f,2.0f,0.0f}, {1.0f,0.0f,5.0f}, {0.0f, 7.0f, 0.0f}}
+        };
+        std::shared_ptr<Base> base3 = std::make_shared<Base>(arrBase3);
+        
+        std::shared_ptr<Base> baseError = std::make_shared<Base>(
+            std::initializer_list<std::initializer_list<float>>{
+                {1.0f, 2.0f, 3.0f, 4.0f},
+                {5.0f, 6.0f, 7.0f, 8.0f},
+                {9.0f, 10.0f, 11.0f, 12.0f},
+                {13.0f, 14.0f, 15.0f, 16.0f}
+            }
+        );
+        
+        std::cout << "Base constructor default:" << std::endl;
+        std::cout << *base1 << std::endl;
+        
+        std::cout << "Base constructor inicializer_list:" << std::endl;
+        std::cout << *base2 << std::endl;
+        
+        std::cout << "Base constructor array:" << std::endl;
+        std::cout << *base3 << std::endl;
+        
+        std::cout << "Base dimensiones incorrectas:" << std::endl;
+        std::cout << *baseError << std::endl;
+        
+        
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }

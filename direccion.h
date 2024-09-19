@@ -17,9 +17,8 @@ public:
     Direccion();
     Direccion(float x, float y, float z);
     Direccion(std::array<float,3> _coord);
-    Matriz<4,1> aMatriz4x1() override;
+    Matriz<4,1> getCoordHomo() override;
 
-    
     // Operación de suma de dos direcciones
     Direccion operator+(const Direccion& d) const;
     
