@@ -184,10 +184,9 @@ int main() {
         std::cout << "y m2:" << std::endl << *matrizMult2 << std::endl;
         std::cout << "RESULTADO:" << std::endl << *resultado << std::endl;
 
-
     } else if (test == 4) {
         std::shared_ptr<Punto> punto1 = std::make_shared<Punto> (1.111,2.222,3.333);
-        std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1,1,1);
+        std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1,2,3);
         std::shared_ptr<Punto> o1 = std::make_shared<Punto> (0,0,0);
         std::shared_ptr<Punto> o2 = std::make_shared<Punto> (1,2,3);
         float x1=3, y1=2, z1=1, d=90;
@@ -218,9 +217,8 @@ int main() {
         std::cout << "ROTACION en Z con d = " << d << std::endl;
         std::cout << "RESULTADO:" << std::endl << rotateZ(punto1, d) << std::endl;
         
-        std::array<float,3> arr = cambioBase(punto2, b1, o1);
-        std::shared_ptr<Punto> aux = std::make_shared<Punto>(arr);
-        std::cout << "CAMBIOBASE: " << aux << std::endl;
+        //std::shared_ptr<Matriz<4,1>> mat = std::make_shared<Matriz<4,1>>();
+        std::cout << "CAMBIOBASE de " << *punto2 << ":\n" << cambioBase(punto2, b1, o1) << std::endl;
         
     } else if (test == 5) {
         std::shared_ptr<Base> base1 = std::make_shared<Base> ();

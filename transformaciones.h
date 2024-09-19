@@ -27,5 +27,5 @@ Matriz<4, 1> rotateY(const std::shared_ptr<PuntoDireccion>& pd, float d);
 Matriz<4, 1> rotateZ(const std::shared_ptr<PuntoDireccion>& pd, float d);
 
 // Función que cambia la punto <p> a la base <b> con origen <o> y devuelve el nuevo punto
-std::array<float, 3> cambioBase(const std::shared_ptr<Punto>& p, const Base b,
+Matriz<4, 1> cambioBase(const std::shared_ptr<Punto>& p, const std::shared_ptr<Base>& b,
                  const std::shared_ptr<Punto>& o);

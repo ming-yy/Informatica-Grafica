@@ -8,6 +8,11 @@
 #include "direccion.h"
 
 Direccion::Direccion() : PuntoDireccion() {}
+/*
+Direccion::Direccion(Direccion d) {
+    
+}
+*/
 
 Direccion::Direccion(float x, float y, float z) : PuntoDireccion(x, y, z) {}
 

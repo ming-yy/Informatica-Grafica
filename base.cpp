@@ -47,6 +47,7 @@ Base::Base(std::array<std::array<float, 3>, 3> valores) {
     }
 }
 
+
 std::ostream& operator<<(std::ostream& os,const Base& b)
 {
     for (const auto& vector : b.base) {

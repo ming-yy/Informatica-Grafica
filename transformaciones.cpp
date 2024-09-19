@@ -97,23 +97,18 @@ Matriz<4, 1> rotateZ(const std::shared_ptr<PuntoDireccion>& pd, float d) {
 }
 
 
-std::array<float,3> cambioBase(const std::shared_ptr<Punto>& p, const Base b,
+Matriz<4, 1> cambioBase(const std::shared_ptr<Punto>& p, const std::shared_ptr<Base>& b,
                  const std::shared_ptr<Punto>& o) {
     std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
         std::initializer_list<std::initializer_list<float>>{
-            {b.base[0][0], b.base[1][0], b.base[2][0], o->coord[0]},
-            {b.base[0][1], b.base[1][1], b.base[2][1], o->coord[1]},
-            {b.base[0][2], b.base[1][2], b.base[2][2], o->coord[2]},
+            {b->base[0][0], b->base[1][0], b->base[2][0], o->coord[0]},
+            {b->base[0][1], b->base[1][1], b->base[2][1], o->coord[1]},
+            {b->base[0][2], b->base[1][2], b->base[2][2], o->coord[2]},
             {0.0f, 0.0f, 0.0f, 1.0f}
         }
     );
     
     std::shared_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p->getCoordHomo());
-    std::shared_ptr<Matriz<4, 1>> res = std::make_shared<Matriz<4, 1>>(*m * *pCH);
     
-    //return Punto(res->matriz[0][0], res->matriz[1][0], res->matriz[2][0]);
-    std::array<float, 3> arr = {
-        {res->matriz[0][0], res->matriz[1][0], res->matriz[2][0]}
-    };
-    return arr;
+    return *m * *pCH;
 }

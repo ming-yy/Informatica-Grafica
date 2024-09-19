@@ -103,7 +103,8 @@ Matriz<Filas, Columnas>::Matriz(std::array<std::array<float, Columnas>, Filas> v
 
 template <std::size_t Filas, std::size_t Columnas>
 template <std::size_t Columnas2>
-Matriz<Filas, Columnas2> Matriz<Filas, Columnas>::operator*(const Matriz<Columnas, Columnas2>& otra) const {
+Matriz<Filas, Columnas2> Matriz<Filas, Columnas>::operator*(const Matriz<Columnas,
+                                                            Columnas2>& otra) const {
     Matriz<Filas, Columnas2> resultado;
 
     for (std::size_t i = 0; i < Filas; ++i) {
