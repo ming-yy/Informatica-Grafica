@@ -10,6 +10,7 @@
 #include "direccion.h"
 #include "matriz.h"
 
+
 class Punto : public PuntoDireccion {
 public:
     std::array<float, 3> o;
@@ -22,12 +23,19 @@ public:
     // Operación de suma de un punto con una dirección
     Punto operator+(const Direccion& d) const;
     
-    // Operación de resta de un punto con una dirección
-    Punto operator-(const Direccion& d) const;
+    // Operación de resta de un punto con una dirección o un punto
+    Punto operator-(const PuntoDireccion& pd) const;
     
     // Operación de multiplicación entre un escalar y el punto
     Punto operator*(const float escalar) const;
     
     // Operación de división entre un escalar y el punto
     Punto operator/(const float escalar) const;
+    
+    // Función global para calcular el "módulo" de un punto
+    friend float modulo(const Punto& d);
+    
+private:
+    // Método privado para calcular el "módulo" de un punto
+    float modulo() const;
 };

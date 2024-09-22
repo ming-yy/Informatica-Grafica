@@ -12,12 +12,13 @@
 #include "base.h"
 #include "punto.h"
 #include "direccion.h"
+#include "planeta.h"
 #include "matriz.h"
 #include "transformaciones.h"
 
 
 int main() {
-    int test = 3;
+    int test = 6;
     
     if (test == 1) {
         std::array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -234,11 +235,11 @@ int main() {
         std::shared_ptr<Base> base1 = std::make_shared<Base> ();
         
         std::shared_ptr<Base> base2 = std::make_shared<Base>(
-            std::initializer_list<std::initializer_list<float>>{
-                {1.0f, 0.0f, 0.0f},
-                {0.0f, 1.0f, 0.0f},
-                {0.0f, 0.0f, 1.0f},
-            }
+             std::initializer_list<std::initializer_list<float>>{
+                 {1.0f, 0.0f, 0.0f},
+                 {0.0f, 1.0f, 0.0f},
+                 {0.0f, 0.0f, 1.0f},
+             }
         );
         
         std::array<std::array<float, 3>, 3> arrBase3 = {
@@ -247,12 +248,12 @@ int main() {
         std::shared_ptr<Base> base3 = std::make_shared<Base>(arrBase3);
         
         std::shared_ptr<Base> baseError = std::make_shared<Base>(
-            std::initializer_list<std::initializer_list<float>>{
-                {1.0f, 2.0f, 3.0f, 4.0f},
-                {5.0f, 6.0f, 7.0f, 8.0f},
-                {9.0f, 10.0f, 11.0f, 12.0f},
-                {13.0f, 14.0f, 15.0f, 16.0f}
-            }
+             std::initializer_list<std::initializer_list<float>>{
+                 {1.0f, 2.0f, 3.0f, 4.0f},
+                 {5.0f, 6.0f, 7.0f, 8.0f},
+                 {9.0f, 10.0f, 11.0f, 12.0f},
+                 {13.0f, 14.0f, 15.0f, 16.0f}
+             }
         );
         
         std::cout << "Base constructor default:" << std::endl;
@@ -266,6 +267,22 @@ int main() {
         
         std::cout << "Base dimensiones incorrectas:" << std::endl;
         std::cout << *baseError << std::endl;
+        
+    } else if (test == 6) {
+        std::shared_ptr<Punto> centro1 = std::make_shared<Punto>(0,0,0);
+        std::shared_ptr<Punto> cref1 = std::make_shared<Punto>(1,0,0);
+        std::shared_ptr<Direccion> eje1 = std::make_shared<Direccion>(0,2,0);
+        std::shared_ptr<Direccion> eje2 = std::make_shared<Direccion>(0,4,0);
+        
+        std::shared_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1);
+        std::cout << "Planeta: " << *planeta1 << std::endl;
+
+        try {
+            std::shared_ptr<Planeta> planeta2 = std::make_shared<Planeta>(*centro1, *eje2, *cref1);
+            std::cout << "Planeta: " << *planeta2 << std::endl;
+        } catch (const std::invalid_argument& e) {
+            std::cerr << e.what() << std::endl;
+        }
         
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");

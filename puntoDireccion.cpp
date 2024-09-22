@@ -7,6 +7,7 @@
 
 #include "puntoDireccion.h"
 
+
 PuntoDireccion::PuntoDireccion(): coord({0.0f, 0.0f, 0.0f}) {}
 
 PuntoDireccion::PuntoDireccion(float x, float y, float z) : coord({x, y, z}) {}

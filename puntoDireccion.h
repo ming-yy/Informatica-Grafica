@@ -10,6 +10,7 @@
 #include <array>
 #include "matriz.h"
 
+
 class PuntoDireccion {
 public:
     std::array<float, 3> coord;

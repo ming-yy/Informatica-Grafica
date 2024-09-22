@@ -7,6 +7,7 @@
 
 #include "direccion.h"
 
+
 Direccion::Direccion() : PuntoDireccion() {}
 
 Direccion::Direccion(const Direccion& d) : PuntoDireccion(d.coord) {}
