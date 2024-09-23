@@ -23,8 +23,12 @@ Punto Punto::operator+(const Direccion& d) const {
     return Punto(coord[0] + d.coord[0], coord[1] + d.coord[1], coord[2] + d.coord[2]);
 }
 
-Punto Punto::operator-(const PuntoDireccion& pd) const {
-    return Punto(coord[0] - pd.coord[0], coord[1] - pd.coord[1], coord[2] - pd.coord[2]);
+Punto Punto::operator-(const Direccion& d) const {
+    return Punto(coord[0] - d.coord[0], coord[1] - d.coord[1], coord[2] - d.coord[2]);
+}
+
+Direccion Punto::operator-(const Punto& p) const {
+    return Direccion(coord[0] - p.coord[0], coord[1] - p.coord[1], coord[2] - p.coord[2]);
 }
 
 Punto Punto::operator*(const float escalar) const {
@@ -37,12 +41,4 @@ Punto Punto::operator/(const float escalar) const {
     }
     
     return Punto(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
-}
-
-float Punto::modulo() const {
-    return std::sqrt(coord[0] * coord[0] + coord[1] * coord[1] + coord[2] * coord[2]);
-}
-
-float modulo(const Punto& p) {
-    return p.modulo();
 }

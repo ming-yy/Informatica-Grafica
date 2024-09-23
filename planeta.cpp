@@ -11,43 +11,56 @@
 #define GRAD_A_RAD 3.1415926535898f/180
 
 
-Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref):
-                 centro(_centro), eje(_eje), cref(_cref) {
+Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
+                 const float& _inclinacion, const float& _azimut):
+                 centro(_centro), eje(_eje), cref(_cref), estacion{_inclinacion, _azimut} {
+    // Faltan comprobaciones rango de azimut e inclinación
+    estacion[0] = _inclinacion;
+    estacion[1] = _azimut;
+                     
     radio = modulo(_cref - _centro);
     if (abs(modulo(_eje) - radio*2) > MARGEN_ERROR) {
-        std::cout << "Eje: " << modulo(eje) << "\nRadio: " << radio << std::endl;
-        throw std::invalid_argument("El eje del planeta (" + std::to_string(modulo(_eje)) +
+        throw std::invalid_argument("Error: eje del planeta (" + std::to_string(modulo(_eje)) +
                                  ") no es el doble del radio (" + std::to_string(radio) + ").");
     }
 }
 
 
-void Planeta::estacionToUCS(const float& inclinacion, const float& azimut, const Base& ucs, const Punto& o) {
-    // Faltan comprobaciones rango de azimut e inclinación
+void Planeta::getBaseEstacion() {
+    this->normal = normalizar(this->cref - this->centro);
+    this->tangLong = normalizar(cross(this->normal, this->eje));
+    this->tangLat = normalizar(this->eje);
     
-    float sinAzim = static_cast<float>(sin(float(azimut * GRAD_A_RAD)));
-    float sinIncl = static_cast<float>(sin(float(inclinacion * GRAD_A_RAD)));
-    float cosAzim = static_cast<float>(cos(float(azimut * GRAD_A_RAD)));
-    float cosIncl = static_cast<float>(cos(float(inclinacion * GRAD_A_RAD)));
+    std::cout << "Normal: " << this->normal << "\nTangente longitud: " << this->tangLong
+              << "\nTangete latitud: " << this->tangLat << std::endl;
+}
+
+
+void Planeta::estacionToUCS(const Base& ucs, const Punto& o) {
+    float sinAzim = static_cast<float>(sin(float(estacion[1] * GRAD_A_RAD)));
+    float sinIncl = static_cast<float>(sin(float(estacion[0] * GRAD_A_RAD)));
+    float cosAzim = static_cast<float>(cos(float(estacion[1] * GRAD_A_RAD)));
+    float cosIncl = static_cast<float>(cos(float(estacion[0] * GRAD_A_RAD)));
     
     // Obtenemos coordenadas cartesianas de la estación en base al centro del planeta
     float x = this->radio * sinIncl * cosAzim;
     float y = this->radio * sinIncl * sinAzim;
     float z = this->radio * cosIncl;
     
-    std::cout << "Coordenadas cartesianas: (" << x << ", " << y << ", " << z << ")" << std::endl;
+    std::cout << "Coordenadas cartesianas respecto al planeta: ("
+              << x << ", " << y << ", " << z << ")" << std::endl;
     std::cout << "Coordenadas en UCS: \n" << cambioBase(Punto(x, y, z), ucs, o) << std::endl;
+}
+
+
+Direccion getTrayectoria(const Planeta& p) {
+    return Direccion();
 }
 
 
 bool Planeta::impactoOrEscape(const Direccion& trayectoria, const Direccion& normal) {
     float prodEsc = dot(trayectoria, normal);
-    
-    if (prodEsc >= 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return (prodEsc > 0);
 }
 
 

@@ -54,7 +54,7 @@ Direccion Direccion::normalizar() const {
     float longitud = modulo();
     if (longitud == 0) {
         throw std::invalid_argument(
-            "Error: La direccion tiene modulo cero y no se puede calcular el modulo.");
+            "Error: No se puede calcular porque direccion tiene modulo cero.");
     }
     return *this / longitud;
 }
