@@ -273,16 +273,30 @@ int main() {
         std::shared_ptr<Punto> cref1 = std::make_shared<Punto>(1,0,0);
         std::shared_ptr<Direccion> eje1 = std::make_shared<Direccion>(0,2,0);
         std::shared_ptr<Direccion> eje2 = std::make_shared<Direccion>(0,4,0);
+        std::shared_ptr<Base> ucs = std::make_shared<Base>(
+             std::initializer_list<std::initializer_list<float>>{
+                 {1.0f, 0.0f, 0.0f},
+                 {0.0f, 1.0f, 0.0f},
+                 {0.0f, 0.0f, 1.0f},
+             }
+        );
+        std::shared_ptr<Punto> origenUCS = std::make_shared<Punto>(0,0,0);
         
         std::shared_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1);
-        std::cout << "Planeta: " << *planeta1 << std::endl;
+        std::cout << "\nPlaneta: " << *planeta1 << std::endl;
 
         try {
             std::shared_ptr<Planeta> planeta2 = std::make_shared<Planeta>(*centro1, *eje2, *cref1);
-            std::cout << "Planeta: " << *planeta2 << std::endl;
+            std::cout << "\nPlaneta: " << *planeta2 << std::endl;
         } catch (const std::invalid_argument& e) {
             std::cerr << e.what() << std::endl;
         }
+        
+        // Pruebas estacion
+        //planeta1->estacion[0] = 90;
+        //planeta1->estacion[1] = 90;
+        std::cout << std::endl;
+        planeta1->estacionToUCS(45, 0, *ucs, *origenUCS);
         
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
