@@ -37,7 +37,17 @@ void Planeta::estacionToUCS(const float& inclinacion, const float& azimut, const
     
     std::cout << "Coordenadas cartesianas: (" << x << ", " << y << ", " << z << ")" << std::endl;
     std::cout << "Coordenadas en UCS: \n" << cambioBase(Punto(x, y, z), ucs, o) << std::endl;
+}
+
+
+bool Planeta::impactoOrEscape(const Direccion& trayectoria, const Direccion& normal) {
+    float prodEsc = dot(trayectoria, normal);
     
+    if (prodEsc >= 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 

@@ -29,6 +29,16 @@ public:
     //
     void estacionToUCS(const float& inclinacion, const float& azimut, const Base& ucs, const Punto& o);
     
+    // Método que determina si dada la trayectoria del lanzamiento, se va a impactar contra
+    // el planeta (return True) o se va a escapar del planeta (return False).
+    // PRECONDICION: ambas direcciones están en la base centrada en la estacion.
+    bool impactoOrEscape(const Direccion& trayectoria, const Direccion& normal);
+    
+    // Falta función que dadas 2 estaciones y 2 bases, devuelva si el lanzamiento es correcto
+    // 1. Queremos saber si la dirección de lanzamiento (trayectoria) en una base "B" NORMALIZADO coincide
+    //    con la dirección obtenida al restar (PuntoDestinoUCS - PuntoOrigenUCS) en base "B" y NORMALIZADO
+    // 2. En origen comprobamos que es "escape" y en destino comprobamos que hay "impacto"
+    
     // Función para mostrar por pantalla el planeta
     friend std::ostream& operator<<(std::ostream& os, const Planeta& pd);
 };
