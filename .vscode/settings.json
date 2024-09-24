@@ -60,7 +60,8 @@
         "system_error": "cpp",
         "type_traits": "cpp",
         "utility": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "iomanip": "cpp"
     },
     "makefile.configureOnOpen": true
 }

@@ -87,3 +87,10 @@ Direccion Direccion::productoVectorial(const Direccion& d) const {
 Direccion cross(const Direccion& d1, const Direccion& d2) {
     return d1.productoVectorial(d2);
 }
+
+Direccion& Direccion::operator=(const Direccion& d) {
+    if (this != &d) {  // Evitar auto-asignación
+        coord = d.coord;  // Asigna las coordenadas
+    }
+    return *this;
+}

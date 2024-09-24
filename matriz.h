@@ -10,6 +10,7 @@
 #include <iostream>
 #include <initializer_list>
 #include <cmath>
+#include <iomanip>
 
 template<typename T, std::size_t N>
 using array = std::array<T, N>;
@@ -25,6 +26,9 @@ using std::invalid_argument;
 using std::abs;
 using std::ostream;
 using std::runtime_error;
+using std::fixed;
+using std::setprecision;
+using std::setw;
 
 
 
@@ -85,25 +89,32 @@ public:
         return inv;
     }
     
-    // Función para mostrar por pantalla la matriz <m>
-    friend ostream& operator<<(ostream& os, const Matriz& m) {
+
+    friend std::ostream& operator<<(std::ostream& os, const Matriz& m) {
+        os << std::fixed << std::setprecision(3);  // Tres decimales para todos los números
+
+        // Encuentra el ancho máximo que debe ocupar cada número
+        int max_width = 0;
+        for (const auto& fila : m.matriz) {
+            for (const auto& valor : fila) {
+                // Calcula el tamaño de cada número, incluyendo el signo negativo y los decimales
+                // El ancho se calcula solo para el valor absoluto y se ajusta para el signo y el punto decimal
+                int width = std::to_string(static_cast<int>(std::abs(valor))).length() +
+                            (valor < 0 ? 1 : 0) + // Para el signo negativo
+                            4; // Para incluir el punto decimal y los tres decimales
+                max_width = std::max(max_width, width);
+            }
+        }
+
+        // Imprime la matriz alineada
         for (const auto& fila : m.matriz) {
             os << "|";
-            
-            // Formatea para poder poner hasta nums de 3 cifras y que quede bonito
             for (const auto& valor : fila) {
-                if(valor == 0.0f){
-                    os << "  ";
-                } else {
-                    for(int i = log10(abs(valor)); i < 2; i++){
-                        os << " "; 
-                    }
-                }
-                
-                os << " " << valor;
+                os << " " << std::setw(max_width) << valor;  // Alinea cada valor con el ancho máximo
             }
-            os << "|" << endl;
+            os << " |" << std::endl;
         }
+
         return os;
     }
 };

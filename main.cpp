@@ -33,7 +33,7 @@ using std::invalid_argument;
 
 
 int main() {
-    int test = 6;
+    int test = 10;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -340,6 +340,26 @@ int main() {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }
 
+    sh_ptr<Base> ejemplo_print = std::make_shared<Base>(
+             init_list<init_list<float>>{
+                { 1.111, -2.22, 333.333 },
+                { 10.1, 25.555, -0.333 },
+                { -1123.456, 0.0, 7.89912 }
+             }
+        );
+
+    cout << *ejemplo_print;
+
+    sh_ptr<Matriz<4, 4>> ejemplo_print2 = std::make_shared<Matriz<4, 4>>(
+            init_list<init_list<float>>{
+                { 1.111, -2.22, 333.333, 0.0 },
+                { 10.1, 25.555, -0.333, 44.44 },
+                { -123.456, 0.0, 7.89, 3.14159 },
+                { -13.456, 100.0, -7.89, 3.14159 }
+            }
+        );
+
+    cout << *ejemplo_print2;
     
     return 0;
 }

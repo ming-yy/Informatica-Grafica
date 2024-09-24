@@ -50,3 +50,11 @@ Punto Punto::operator/(const float escalar) const {
     
     return Punto(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
 }
+
+Punto& Punto::operator=(const Punto& p) {
+    if (this != &p) {  // Evitar auto-asignación
+        coord = p.coord;  // Asigna las coordenadas
+        o = p.o;          // Asigna el otro atributo
+    }
+    return *this;  // Devuelve la referencia al objeto actual
+}

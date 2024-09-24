@@ -32,17 +32,26 @@ Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref
                                  ") no es el doble del radio (" + to_string(radio) + ").");
     }
     
-    // Obtenemos coordenadas cartesianas de la estación en base al centro del planeta
-    float sinAzim = static_cast<float>(sin(float(estacion[1] * GRAD_A_RAD)));
-    float sinIncl = static_cast<float>(sin(float(estacion[0] * GRAD_A_RAD)));
-    float cosAzim = static_cast<float>(cos(float(estacion[1] * GRAD_A_RAD)));
-    float cosIncl = static_cast<float>(cos(float(estacion[0] * GRAD_A_RAD)));
+    calcularLocEstacion();
+    
+    calcularVectoresCentroPlaneta(); 
+}
+
+void Planeta::calcularLocEstacion(){
+    float sinAzim, sinIncl, cosAzim, cosIncl;
+
+    sinAzim = static_cast<float>(sin(float(estacion[1] * GRAD_A_RAD)));
+    sinIncl = static_cast<float>(sin(float(estacion[0] * GRAD_A_RAD)));
+    cosAzim = static_cast<float>(cos(float(estacion[1] * GRAD_A_RAD)));
+    cosIncl = static_cast<float>(cos(float(estacion[0] * GRAD_A_RAD)));
 
     coordLocEstac[0] = this->radio * sinIncl * cosAzim;
     coordLocEstac[1] = this->radio * sinIncl * sinAzim;
     coordLocEstac[2] = this->radio * cosIncl;
+}
+
+void Planeta::calcularVectoresCentroPlaneta(){
     
-    // Vectores respecto al CENTRO DEL PLANETA
     //this->normal = normalizar(this->cref - this->centro);
     //this->tangLong = normalizar(cross(this->normal, this->eje));
     //this->tangLat = normalizar(this->eje);

@@ -38,4 +38,7 @@ public:
     // Operación de división entre un escalar y el punto
     Punto operator/(const float escalar) const;
 
+    // Operador de asignación
+    Punto& operator=(const Punto& p);
+
 };

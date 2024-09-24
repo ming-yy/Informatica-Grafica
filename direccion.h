@@ -33,6 +33,9 @@ public:
     
     // Operación de división entre un escalar y la dirección
     Direccion operator/(const float escalar) const;
+
+    // Operador de asignación
+    Direccion& operator=(const Direccion& d);
     
     // Función global para calcular el módulo de la dirección
     friend float modulo(const Direccion& d);

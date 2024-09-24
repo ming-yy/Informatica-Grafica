@@ -32,10 +32,16 @@ public:
     Direccion tangLong; // Respecto a superficie planeta y 90º con eje planeta
     Direccion tangLat;  // Respecto superficie planeta y 90º con <tangLong>
     
-    
+    // Constructor de Planeta
     Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
             const float& inclinacion, const float& azimut);
     
+    // Obtiene las coordenadas cartesianas de la estación en base al centro del planeta
+    void calcularLocEstacion();
+
+    // Obtiene los 3 vectores respecto al CENTRO DEL PLANETA
+    void calcularVectoresCentroPlaneta();
+
     // Método que obtiene el sistema de coordenadas (base) de la estación planetaria.
     Base getBaseEstacion();
     
