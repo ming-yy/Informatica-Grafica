@@ -16,6 +16,7 @@ public:
     std::array<float, 3> o;
 
     Punto();
+    Punto(const Punto& p);
     Punto(float x, float y, float z);
     Punto(std::array<float, 3> _coord);
     Matriz<4,1> getCoordHomo() const override;

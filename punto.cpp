@@ -9,6 +9,8 @@
 
 Punto::Punto() : PuntoDireccion(), o{0.0f, 0.0f, 0.0f} {}
 
+Punto::Punto(const Punto& p) : PuntoDireccion(p.coord), o{0.0f, 0.0f, 0.0f} {}
+
 Punto::Punto(float x, float y, float z) : PuntoDireccion(x, y, z), o{0.0f, 0.0f, 0.0f}{}
 
 Punto::Punto(std::array<float, 3> _coord) : PuntoDireccion(_coord), o{0.0f, 0.0f, 0.0f}{}

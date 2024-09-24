@@ -33,11 +33,10 @@ public:
             const float& inclinacion, const float& azimut);
     
     // Método que obtiene el sistema de coordenadas (base) de la estación planetaria.
-    void getBaseEstacion();
+    Base getBaseEstacion();
     
     // Método que ...
-    void estacionToUCS(const Base& ucs, const Punto& o);
-    
+    Punto estacionToUCS(const Base& ucs, const Punto& o) const;
     
     // Falta función que dadas 2 estaciones y 2 bases, devuelva si el lanzamiento es correcto
     // 1. Queremos saber si la dirección de lanzamiento (trayectoria) en una base "B"
@@ -48,13 +47,14 @@ public:
     
     // Método que dado este planeta como origen y el planeta <p> como destino, devuelve
     // la trayectoria entre sus respectivas estaciones en UCS
-    Direccion getTrayectoria(const Planeta& p);
+    Direccion getTrayectoria(const Planeta& pDestino, const Base& ucs, const Punto& o);
     
     // Método que determina si dada la trayectoria del lanzamiento, se va a impactar
     // contra el planeta (return True) o se va a escapar del planeta (return False).
-    // PRECONDICION: ambas direcciones están en la base centrada en la estación.
-    bool impactoOrEscape(const Direccion& trayectoria, const Direccion& normal);
+    // PRECONDICION: <trayectoria> en base local de la estación.
+    bool impactoOrEscape(const Direccion& trayectoria);
     
     // Función para mostrar por pantalla el planeta
     friend std::ostream& operator<<(std::ostream& os, const Planeta& pd);
+    
 };

@@ -15,6 +15,10 @@ Base::Base() {
     }
 }
 
+
+Base::Base(const Base& b) : base(b.base) {}
+
+
 Base::Base(std::initializer_list<std::initializer_list<float>> valores){
     try{
         if((valores.size() != 3) || (valores.begin()->size() != 3)){
@@ -45,6 +49,14 @@ Base::Base(std::array<std::array<float, 3>, 3> valores) {
     for (std::size_t i = 0; i < 3; ++i) {
         std::copy(valores[i].begin(), valores[i].end(), base[i].begin());
     }
+}
+
+
+Base::Base(const std::array<float, 3>& arr1, const std::array<float, 3>& arr2,
+           const std::array<float, 3>& arr3) {
+    std::copy(arr1.begin(), arr1.end(), base[0].begin());
+    std::copy(arr2.begin(), arr2.end(), base[1].begin());
+    std::copy(arr3.begin(), arr3.end(), base[2].begin());
 }
 
 

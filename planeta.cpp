@@ -23,43 +23,51 @@ Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref
         throw std::invalid_argument("Error: eje del planeta (" + std::to_string(modulo(_eje)) +
                                  ") no es el doble del radio (" + std::to_string(radio) + ").");
     }
+    
+    // Obtenemos coordenadas cartesianas de la estación en base al centro del planeta
+    float sinAzim = static_cast<float>(sin(float(estacion[1] * GRAD_A_RAD)));
+    float sinIncl = static_cast<float>(sin(float(estacion[0] * GRAD_A_RAD)));
+    float cosAzim = static_cast<float>(cos(float(estacion[1] * GRAD_A_RAD)));
+    float cosIncl = static_cast<float>(cos(float(estacion[0] * GRAD_A_RAD)));
+
+    coordLocEstac[0] = this->radio * sinIncl * cosAzim;
+    coordLocEstac[1] = this->radio * sinIncl * sinAzim;
+    coordLocEstac[2] = this->radio * cosIncl;
 }
 
-
-void Planeta::getBaseEstacion() {
+Base Planeta::getBaseEstacion() {
     this->normal = normalizar(this->cref - this->centro);
     this->tangLong = normalizar(cross(this->normal, this->eje));
     this->tangLat = normalizar(this->eje);
     
     std::cout << "Normal: " << this->normal << "\nTangente longitud: " << this->tangLong
               << "\nTangete latitud: " << this->tangLat << std::endl;
+    return Base(this->normal.coord, this->tangLong.coord, this->tangLat.coord);
 }
 
 
-void Planeta::estacionToUCS(const Base& ucs, const Punto& o) {
-    float sinAzim = static_cast<float>(sin(float(estacion[1] * GRAD_A_RAD)));
-    float sinIncl = static_cast<float>(sin(float(estacion[0] * GRAD_A_RAD)));
-    float cosAzim = static_cast<float>(cos(float(estacion[1] * GRAD_A_RAD)));
-    float cosIncl = static_cast<float>(cos(float(estacion[0] * GRAD_A_RAD)));
+Punto Planeta::estacionToUCS(const Base& ucs, const Punto& o) const {
+    std::shared_ptr<Punto> estacion = std::make_shared<Punto>(
+                                            cambioBase(Punto(coordLocEstac[0], coordLocEstac[1],                          coordLocEstac[2]), ucs, o));
     
-    // Obtenemos coordenadas cartesianas de la estación en base al centro del planeta
-    float x = this->radio * sinIncl * cosAzim;
-    float y = this->radio * sinIncl * sinAzim;
-    float z = this->radio * cosIncl;
+    std::cout << "Coordenadas cartesianas respecto al planeta: (" << coordLocEstac[0]
+              << ", " << coordLocEstac[1] << ", " << coordLocEstac[2] << ")" << std::endl;
+    std::cout << "Coordenadas en UCS: \n" << *estacion << std::endl;
     
-    std::cout << "Coordenadas cartesianas respecto al planeta: ("
-              << x << ", " << y << ", " << z << ")" << std::endl;
-    std::cout << "Coordenadas en UCS: \n" << cambioBase(Punto(x, y, z), ucs, o) << std::endl;
+    return *estacion;
 }
 
 
-Direccion getTrayectoria(const Planeta& p) {
-    return Direccion();
+Direccion Planeta::getTrayectoria(const Planeta& pDestino, const Base& ucs, const Punto& o) {
+    std::shared_ptr<Punto> origen = std::make_shared<Punto>(this->estacionToUCS(ucs, o));
+    std::shared_ptr<Punto> destino = std::make_shared<Punto>(pDestino.estacionToUCS(ucs, o));
+    std::shared_ptr<Direccion> trayec = std::make_shared<Direccion>(*destino - *origen);
+    return normalizar(*trayec);
 }
 
 
-bool Planeta::impactoOrEscape(const Direccion& trayectoria, const Direccion& normal) {
-    float prodEsc = dot(trayectoria, normal);
+bool Planeta::impactoOrEscape(const Direccion& trayectoria) {
+    float prodEsc = dot(trayectoria, this->normal);
     return (prodEsc > 0);
 }
 
