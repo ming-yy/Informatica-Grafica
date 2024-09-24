@@ -47,7 +47,7 @@ Base Planeta::getBaseEstacion() {
 Punto Planeta::estacionToUCS(const Base& ucs, const Punto& o) const {
     std::shared_ptr<Punto> estacion = std::make_shared<Punto>(
                                             cambioBase(Punto(coordLocEstac[0], coordLocEstac[1],                          coordLocEstac[2]), ucs, o));
-    
+    *estacion = *estacion + this->centro;
     std::cout << "Coordenadas cartesianas respecto al planeta: (" << coordLocEstac[0]
               << ", " << coordLocEstac[1] << ", " << coordLocEstac[2] << ")" << std::endl;
     std::cout << "Coordenadas en UCS: \n" << *estacion << std::endl;

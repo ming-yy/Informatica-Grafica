@@ -22,7 +22,7 @@ public:
     Matriz<4,1> getCoordHomo() const override;
     
     // Operación de suma de un punto con una dirección
-    Punto operator+(const Direccion& d) const;
+    Punto operator+(const PuntoDireccion& pd) const;
     
     // Operación de resta de un punto con una dirección
     Punto operator-(const Direccion& d) const;

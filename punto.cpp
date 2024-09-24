@@ -21,8 +21,8 @@ Matriz<4,1> Punto::getCoordHomo() const {
     return p;
 }
 
-Punto Punto::operator+(const Direccion& d) const {
-    return Punto(coord[0] + d.coord[0], coord[1] + d.coord[1], coord[2] + d.coord[2]);
+Punto Punto::operator+(const PuntoDireccion& pd) const {
+    return Punto(coord[0] + pd.coord[0], coord[1] + pd.coord[1], coord[2] + pd.coord[2]);
 }
 
 Punto Punto::operator-(const Direccion& d) const {

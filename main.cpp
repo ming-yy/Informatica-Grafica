@@ -295,7 +295,7 @@ int main() {
         std::shared_ptr<Punto> centro3 = std::make_shared<Punto>(5,0,0);
         std::shared_ptr<Punto> cref3 = std::make_shared<Punto>(3,0,0);
         std::shared_ptr<Direccion> eje3 = std::make_shared<Direccion>(0,4,0);
-        std::shared_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, 45, 45);
+        std::shared_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, -45, 0);
         std::cout << "\nPlaneta3:\n" << *planeta3 << std::endl;
         
         
