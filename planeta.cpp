@@ -33,10 +33,16 @@ Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref
     coordLocEstac[0] = this->radio * sinIncl * cosAzim;
     coordLocEstac[1] = this->radio * sinIncl * sinAzim;
     coordLocEstac[2] = this->radio * cosIncl;
-                     
-    this->normal = normalizar(this->cref - this->centro);
+    
+    // Vectores respecto al CENTRO DEL PLANETA
+    //this->normal = normalizar(this->cref - this->centro);
+    //this->tangLong = normalizar(cross(this->normal, this->eje));
+    //this->tangLat = normalizar(this->eje);
+    
+    std::shared_ptr<Punto> estacionEnLocal = std::make_shared<Punto>(coordLocEstac);
+    this->normal = normalizar(*estacionEnLocal - this->centro);
     this->tangLong = normalizar(cross(this->normal, this->eje));
-    this->tangLat = normalizar(this->eje);
+    this->tangLat = normalizar(cross(this->normal, this->tangLong));
 }
 
 Base Planeta::getBaseEstacion() {
