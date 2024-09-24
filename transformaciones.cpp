@@ -9,10 +9,19 @@
 
 #define GRAD_A_RAD 3.1415926535898f/180
 
+template<typename T>
+using sh_ptr = std::shared_ptr<T>;
+
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
+
+template<typename T>
+using init_list = std::initializer_list<T>;
+
 
 Matriz<4, 1> translate(const PuntoDireccion& pd, float x, float y, float z) {
-    std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-            std::initializer_list<std::initializer_list<float>>{
+    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+            init_list<init_list<float>>{
                 {1.0f, 0.0f, 0.0f, x},
                 {0.0f, 1.0f, 0.0f, y},
                 {0.0f, 0.0f, 1.0f, z},
@@ -20,14 +29,14 @@ Matriz<4, 1> translate(const PuntoDireccion& pd, float x, float y, float z) {
             }
     );
 
-    std::shared_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
+    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
     return *m * *p;
 }
 
 
 Matriz<4, 1> scale(const PuntoDireccion& pd, float x, float y, float z) {
-    std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-            std::initializer_list<std::initializer_list<float>>{
+    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+            init_list<init_list<float>>{
                 {x, 0.0f, 0.0f, 0.0f},
                 {0.0f, y, 0.0f, 0.0f},
                 {0.0f, 0.0f, z, 0.0f},
@@ -35,7 +44,7 @@ Matriz<4, 1> scale(const PuntoDireccion& pd, float x, float y, float z) {
             }
     );
 
-    std::shared_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
+    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
     return *m * *p;
 }
 
@@ -45,8 +54,8 @@ Matriz<4, 1> rotateX(const PuntoDireccion& pd, float d) {
     float cosD = static_cast<float>(cos(dRad));
     float sinD = static_cast<float>(sin(dRad));
 
-    std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-        std::initializer_list<std::initializer_list<float>>{
+    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+        init_list<init_list<float>>{
             {1.0f, 0.0f, 0.0f, 0.0f},
             {0.0f, cosD, -sinD, 0.0f},
             {0.0f, sinD, cosD, 0.0f},
@@ -54,7 +63,7 @@ Matriz<4, 1> rotateX(const PuntoDireccion& pd, float d) {
         }
     );
 
-    std::shared_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
+    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
     return *m * *p;
 }
 
@@ -64,8 +73,8 @@ Matriz<4, 1> rotateY(const PuntoDireccion& pd, float d) {
     float cosD = static_cast<float>(cos(dRad));
     float sinD = static_cast<float>(sin(dRad));
 
-    std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-        std::initializer_list<std::initializer_list<float>>{
+    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+        init_list<init_list<float>>{
             {cosD, 0.0f, sinD, 0.0f},
             {0.0f, 1.0f, 0.0f, 0.0f},
             {-sinD, 0.0f, cosD, 0.0f},
@@ -73,7 +82,7 @@ Matriz<4, 1> rotateY(const PuntoDireccion& pd, float d) {
         }
     );
 
-    std::shared_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
+    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
     return *m * *p;
 }
 
@@ -83,8 +92,8 @@ Matriz<4, 1> rotateZ(const PuntoDireccion& pd, float d) {
     float cosD = static_cast<float>(cos(dRad));
     float sinD = static_cast<float>(sin(dRad));
 
-    std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-        std::initializer_list<std::initializer_list<float>>{
+    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+        init_list<init_list<float>>{
             {cosD, -sinD, 0.0f, 0.0f},
             {sinD, cosD, 0.0f, 0.0f},
             {0.0f, 0.0f, 1.0f, 0.0f},
@@ -92,15 +101,15 @@ Matriz<4, 1> rotateZ(const PuntoDireccion& pd, float d) {
         }
     );
 
-    std::shared_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
+    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
     return *m * *p;
 }
 
 
 //Matriz<4, 1> cambioBase(const Punto& p, const Base& b, const Punto& o) {
 Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
-    std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-        std::initializer_list<std::initializer_list<float>>{
+    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+        init_list<init_list<float>>{
             {b.base[0][0], b.base[1][0], b.base[2][0], o.coord[0]},
             {b.base[0][1], b.base[1][1], b.base[2][1], o.coord[1]},
             {b.base[0][2], b.base[1][2], b.base[2][2], o.coord[2]},
@@ -108,8 +117,8 @@ Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
         }
     );
     
-    std::shared_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p.getCoordHomo());
-    std::shared_ptr<Matriz<4, 1>> aux = std::make_shared<Matriz<4, 1>>((*m * *pCH).matriz);
+    sh_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p.getCoordHomo());
+    sh_ptr<Matriz<4, 1>> aux = std::make_shared<Matriz<4, 1>>((*m * *pCH).matriz);
     
     //return *m * *pCH;
     return Punto(aux->matriz[0][0], aux->matriz[1][0], aux->matriz[2][0]);
@@ -117,8 +126,8 @@ Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
 
 
 Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o) {
-    std::shared_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-        std::initializer_list<std::initializer_list<float>>{
+    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+        init_list<init_list<float>>{
             {b.base[0][0], b.base[1][0], b.base[2][0], o.coord[0]},
             {b.base[0][1], b.base[1][1], b.base[2][1], o.coord[1]},
             {b.base[0][2], b.base[1][2], b.base[2][2], o.coord[2]},
@@ -126,8 +135,8 @@ Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o) {
         }
     );
     
-    std::shared_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p.getCoordHomo());
-    std::shared_ptr<Matriz<4, 1>> aux = std::make_shared<Matriz<4, 1>>((*m * *pCH).matriz);
+    sh_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p.getCoordHomo());
+    sh_ptr<Matriz<4, 1>> aux = std::make_shared<Matriz<4, 1>>((*m * *pCH).matriz);
     
     return Direccion(aux->matriz[0][0], aux->matriz[1][0], aux->matriz[2][0]);
 }

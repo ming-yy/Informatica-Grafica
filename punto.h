@@ -10,15 +10,17 @@
 #include "direccion.h"
 #include "matriz.h"
 
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
 
 class Punto : public PuntoDireccion {
 public:
-    std::array<float, 3> o;
+    array<float, 3> o;
 
     Punto();
     Punto(const Punto& p);
     Punto(float x, float y, float z);
-    Punto(std::array<float, 3> _coord);
+    Punto(array<float, 3> _coord);
     Matriz<4,1> getCoordHomo() const override;
     
     // Operación de suma de un punto con una dirección

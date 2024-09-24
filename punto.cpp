@@ -7,16 +7,22 @@
 
 #include "punto.h"
 
+
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
+
+using std::invalid_argument;
+
 Punto::Punto() : PuntoDireccion(), o{0.0f, 0.0f, 0.0f} {}
 
 Punto::Punto(const Punto& p) : PuntoDireccion(p.coord), o{0.0f, 0.0f, 0.0f} {}
 
 Punto::Punto(float x, float y, float z) : PuntoDireccion(x, y, z), o{0.0f, 0.0f, 0.0f}{}
 
-Punto::Punto(std::array<float, 3> _coord) : PuntoDireccion(_coord), o{0.0f, 0.0f, 0.0f}{}
+Punto::Punto(array<float, 3> _coord) : PuntoDireccion(_coord), o{0.0f, 0.0f, 0.0f}{}
 
 Matriz<4,1> Punto::getCoordHomo() const {
-    std::array<std::array<float, 1>, 4> p = {coord[0], coord[1], coord[2], 1.0f};
+    array<array<float, 1>, 4> p = {coord[0], coord[1], coord[2], 1.0f};
 
     return p;
 }
@@ -39,7 +45,7 @@ Punto Punto::operator*(const float escalar) const {
 
 Punto Punto::operator/(const float escalar) const {
     if (escalar == 0) {
-        throw std::invalid_argument("Error: Division por cero no permitida.");
+        throw invalid_argument("Error: Division por cero no permitida.");
     }
     
     return Punto(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);

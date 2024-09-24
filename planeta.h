@@ -14,6 +14,10 @@
 #include "matriz.h"
 #include "transformaciones.h"
 
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
+
+using std::ostream;
 
 class Planeta {
 public:
@@ -21,9 +25,9 @@ public:
     Direccion eje;  // Modulo debe ser doble del radio
     Punto cref;     // En UCS
     float radio;
-    std::array<float, 2> estacion;  // [inclinacion, azimut] respecto a <cref>
+    array<float, 2> estacion;  // [inclinacion, azimut] respecto a <cref>
     
-    std::array<float, 3> coordLocEstac; // Coord locales de estación respecto al planeta
+    array<float, 3> coordLocEstac; // Coord locales de estación respecto al planeta
     Direccion normal;   // Respecto a la superficie de la estación y tiene módulo 1
     Direccion tangLong; // Respecto a superficie planeta y 90º con eje planeta
     Direccion tangLat;  // Respecto superficie planeta y 90º con <tangLong>
@@ -48,6 +52,6 @@ public:
     bool impactoOrEscape(const Direccion& trayectoria);
     
     // Función para mostrar por pantalla el planeta
-    friend std::ostream& operator<<(std::ostream& os, const Planeta& pd);
+    friend ostream& operator<<(ostream& os, const Planeta& pd);
     
 };
