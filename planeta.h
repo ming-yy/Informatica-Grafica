@@ -38,13 +38,6 @@ public:
     // Método que ...
     Punto estacionToUCS(const Base& ucs, const Punto& o) const;
     
-    // Falta función que dadas 2 estaciones y 2 bases, devuelva si el lanzamiento es correcto
-    // 1. Queremos saber si la dirección de lanzamiento (trayectoria) en una base "B"
-    //    NORMALIZADO coincide con la dirección obtenida al restar (PtoDestinoUCS - PtoOrigenUCS)
-    //    en base "B" y NORMALIZADO
-    // 2. En origen comprobamos que es "escape" y en destino comprobamos que hay "impacto"
-    
-    
     // Método que dado este planeta como origen y el planeta <p> como destino, devuelve
     // la trayectoria entre sus respectivas estaciones en UCS
     Direccion getTrayectoria(const Planeta& pDestino, const Base& ucs, const Punto& o);
