@@ -16,129 +16,144 @@
 #include "matriz.h"
 #include "transformaciones.h"
 
+template<typename T>
+using sh_ptr = std::shared_ptr<T>;
+
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
+
+template<typename T>
+using init_list = std::initializer_list<T>;
+
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::invalid_argument;
+
+
 
 int main() {
     int test = 6;
     
     if (test == 1) {
-        std::array<float, 3> arrCoord = {4.44,5.55,6.66};
+        array<float, 3> arrCoord = {4.44,5.55,6.66};
         /*
         // PRUEBA 1.5 - PUNTODIRECCION
         // quitada porque ahora es abstracta y no se puede instanciar
-        std::shared_ptr<PuntoDireccion> pd1 = std::make_shared<PuntoDireccion> ();
-        std::shared_ptr<PuntoDireccion> pd2 = std::make_shared<PuntoDireccion> (1.11,2.22,3.33);
-        std::shared_ptr<PuntoDireccion> pd3 = std::make_shared<PuntoDireccion> (arrCoord);
-        std::cout << std::endl << "1.5 - PUNTODIRECCION" << std::endl;
-        std::cout << *pd1 << std::endl;
-        std::cout << *pd2 << std::endl;
-        std::cout << *pd3 << std::endl;
+        sh_ptr<PuntoDireccion> pd1 = std::make_shared<PuntoDireccion> ();
+        sh_ptr<PuntoDireccion> pd2 = std::make_shared<PuntoDireccion> (1.11,2.22,3.33);
+        sh_ptr<PuntoDireccion> pd3 = std::make_shared<PuntoDireccion> (arrCoord);
+        cout << endl << "1.5 - PUNTODIRECCION" << endl;
+        cout << *pd1 << endl;
+        cout << *pd2 << endl;
+        cout << *pd3 << endl;
         */
 
         // PRUEBA 2 - PUNTO
-        std::shared_ptr<Punto> punto1 = std::make_shared<Punto> ();
-        std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1.111,2.222,3.333);
-        std::shared_ptr<Punto> punto3 = std::make_shared<Punto> (arrCoord);
-        std::cout << std::endl << "2 - PUNTO" << std::endl;
-        std::cout << *punto1 << std::endl;
-        std::cout << *punto2 << std::endl;
-        std::cout << *punto3 << std::endl;
+        sh_ptr<Punto> punto1 = std::make_shared<Punto> ();
+        sh_ptr<Punto> punto2 = std::make_shared<Punto> (1.111,2.222,3.333);
+        sh_ptr<Punto> punto3 = std::make_shared<Punto> (arrCoord);
+        cout << endl << "2 - PUNTO" << endl;
+        cout << *punto1 << endl;
+        cout << *punto2 << endl;
+        cout << *punto3 << endl;
         
         // PRUEBA 3 - DIRECCION
-        std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> ();
-        std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (1.111,2.222,3.333);
-        std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> (arrCoord);
-        std::shared_ptr<Direccion> dirCopia = std::make_shared<Direccion> (*dir3);
+        sh_ptr<Direccion> dir1 = std::make_shared<Direccion> ();
+        sh_ptr<Direccion> dir2 = std::make_shared<Direccion> (1.111,2.222,3.333);
+        sh_ptr<Direccion> dir3 = std::make_shared<Direccion> (arrCoord);
+        sh_ptr<Direccion> dirCopia = std::make_shared<Direccion> (*dir3);
         
-        std::cout << std::endl << "3 - DIRECCION" << std::endl;
-        std::cout << *dir1 << std::endl;
-        std::cout << *dir2 << std::endl;
-        std::cout << *dir3 << std::endl;
-        std::cout << *dirCopia << std::endl;
+        cout << endl << "3 - DIRECCION" << endl;
+        cout << *dir1 << endl;
+        cout << *dir2 << endl;
+        cout << *dir3 << endl;
+        cout << *dirCopia << endl;
     
     } else if (test == 2) {
-        std::array<float, 3> arrAux2 = {0.111, 1.222, 2.333};
+        array<float, 3> arrAux2 = {0.111, 1.222, 2.333};
 
         
         // PRUEBA 1 - DIRECCIONES
-        std::shared_ptr<Direccion> dir1 = std::make_shared<Direccion> (1.111,2.222,3.333);
-        std::shared_ptr<Direccion> dir2 = std::make_shared<Direccion> (arrAux2);
-        std::shared_ptr<Direccion> dir3 = std::make_shared<Direccion> ();
-        std::shared_ptr<Direccion> dirMod = std::make_shared<Direccion> (0.111, 0.222, 0.333);
-        std::shared_ptr<Direccion> dirNor = std::make_shared<Direccion> (0, 0, 0);
-        std::shared_ptr<Direccion> dirEsc = std::make_shared<Direccion> (1, 1, 1);
-        std::shared_ptr<Direccion> dir90a = std::make_shared<Direccion> (1, 0, 0);
-        std::shared_ptr<Direccion> dir90b = std::make_shared<Direccion> (0, 1, 0);
+        sh_ptr<Direccion> dir1 = std::make_shared<Direccion> (1.111,2.222,3.333);
+        sh_ptr<Direccion> dir2 = std::make_shared<Direccion> (arrAux2);
+        sh_ptr<Direccion> dir3 = std::make_shared<Direccion> ();
+        sh_ptr<Direccion> dirMod = std::make_shared<Direccion> (0.111, 0.222, 0.333);
+        sh_ptr<Direccion> dirNor = std::make_shared<Direccion> (0, 0, 0);
+        sh_ptr<Direccion> dirEsc = std::make_shared<Direccion> (1, 1, 1);
+        sh_ptr<Direccion> dir90a = std::make_shared<Direccion> (1, 0, 0);
+        sh_ptr<Direccion> dir90b = std::make_shared<Direccion> (0, 1, 0);
         
         
-        std::cout << std::endl << "1 - DIRECCION OPERANDOS" << std::endl;
-        std::cout << "Suma: " << *dir1 + *dir3 << std::endl;
-        std::cout << "Resta: " << *dir1 - *dir2 << std::endl;
+        cout << endl << "1 - DIRECCION OPERANDOS" << endl;
+        cout << "Suma: " << *dir1 + *dir3 << endl;
+        cout << "Resta: " << *dir1 - *dir2 << endl;
 
         // Multiplicacion y division de direcciones por escalares
         float escalar = 2.0f;
         try {
-            std::cout << "Multiplicacion por " << escalar << ": " << *dir1 * escalar
-                    << std::endl;
-            std::cout << "Division por " << escalar << ": " << *dir1 / escalar
-                    << std::endl;
-            std::cout << "Division por 0 (debe lanzar excepcion): " << *dir1 / 0
-                    << std::endl;
-        } catch (const std::invalid_argument& e) {
-            std::cerr << e.what() << std::endl;
+            cout << "Multiplicacion por " << escalar << ": " << *dir1 * escalar
+                    << endl;
+            cout << "Division por " << escalar << ": " << *dir1 / escalar
+                    << endl;
+            cout << "Division por 0 (debe lanzar excepcion): " << *dir1 / 0
+                    << endl;
+        } catch (const invalid_argument& e) {
+            cerr << e.what() << endl;
         }
         
         // Modulo
-        std::cout << "Modulo: " << modulo(*dir1) << std::endl;
-        std::cout << "Modulo tras resta: " << modulo(*dir1 - *dirMod) << std::endl;
+        cout << "Modulo: " << modulo(*dir1) << endl;
+        cout << "Modulo tras resta: " << modulo(*dir1 - *dirMod) << endl;
         
         // Normalizacion
         try {
-            std::cout << "Normalizacion de " << *dir1 << ":" << normalizar(*dir1) << std::endl;
-            std::cout << "Normalizacion de " << *dirMod << ":" << normalizar(*dirMod) << std::endl;
-            std::cout << "Normalizacion de " << *dir2 << ":" << normalizar(*dir2) << std::endl;
-            std::cout << "Normalizacion de " << *dirNor << ":" << normalizar(*dirNor) << std::endl;
-        } catch (const std::invalid_argument& e) {
-            std::cerr << e.what() << std::endl;
+            cout << "Normalizacion de " << *dir1 << ":" << normalizar(*dir1) << endl;
+            cout << "Normalizacion de " << *dirMod << ":" << normalizar(*dirMod) << endl;
+            cout << "Normalizacion de " << *dir2 << ":" << normalizar(*dir2) << endl;
+            cout << "Normalizacion de " << *dirNor << ":" << normalizar(*dirNor) << endl;
+        } catch (const invalid_argument& e) {
+            cerr << e.what() << endl;
         }
         
         // Producto escalar y vectorial
-        std::cout << "Producto escalar: " << dot(*dir1, *dir2) << std::endl;
-        std::cout << "Producto escalar (0 grados): " << dot(*dir1, *dir1) << std::endl;
-        std::cout << "Producto escalar (90 grados): " << dot(*dirNor, *dirEsc) << std::endl;
-        std::cout << "Producto vectorial: " << cross(*dir1, *dir2) << std::endl;
-        std::cout << "Producto vectorial (0 grados): " << cross(*dirEsc, *dirEsc) << std::endl;
-        std::cout << "Producto vectorial (90 grados): " << cross(*dir90a, *dir90b) << std::endl;
+        cout << "Producto escalar: " << dot(*dir1, *dir2) << endl;
+        cout << "Producto escalar (0 grados): " << dot(*dir1, *dir1) << endl;
+        cout << "Producto escalar (90 grados): " << dot(*dirNor, *dirEsc) << endl;
+        cout << "Producto vectorial: " << cross(*dir1, *dir2) << endl;
+        cout << "Producto vectorial (0 grados): " << cross(*dirEsc, *dirEsc) << endl;
+        cout << "Producto vectorial (90 grados): " << cross(*dir90a, *dir90b) << endl;
         
         
         // PRUEBA 2 - PUNTOS
-        std::shared_ptr<Punto> punto1 = std::make_shared<Punto>();
-        std::shared_ptr<Punto> punto2 = std::make_shared<Punto>(arrAux2);
-        std::shared_ptr<Punto> punto3 = std::make_shared<Punto>(1.111, 2.222, 3.333);
+        sh_ptr<Punto> punto1 = std::make_shared<Punto>();
+        sh_ptr<Punto> punto2 = std::make_shared<Punto>(arrAux2);
+        sh_ptr<Punto> punto3 = std::make_shared<Punto>(1.111, 2.222, 3.333);
 
-        std::shared_ptr<Direccion> dir4 = std::make_shared<Direccion>(1.111, 2.222, 3.333);
-        std::shared_ptr<Direccion> dir5 = std::make_shared<Direccion>(arrAux2);
+        sh_ptr<Direccion> dir4 = std::make_shared<Direccion>(1.111, 2.222, 3.333);
+        sh_ptr<Direccion> dir5 = std::make_shared<Direccion>(arrAux2);
 
-        std::cout << std::endl << "2 - PUNTO OPERANDOS" << std::endl;
-        std::cout << "Suma con direccion: " << *punto1 + *dir4 << std::endl;
-        std::cout << "Suma con direccion: " << *punto2 + *dir5 << std::endl;
-        std::cout << "Resta con direccion: " << *punto3 - *dir4 << std::endl;
+        cout << endl << "2 - PUNTO OPERANDOS" << endl;
+        cout << "Suma con direccion: " << *punto1 + *dir4 << endl;
+        cout << "Suma con direccion: " << *punto2 + *dir5 << endl;
+        cout << "Resta con direccion: " << *punto3 - *dir4 << endl;
 
         // Multiplicacion y division de puntos por escalares
         try {
-            std::cout << "Multiplicacion de punto por " << escalar << ": "
-                        << (*punto1 * escalar) << std::endl;
-            std::cout << "Division de punto por " << escalar << ": "
-                        << (*punto3 / escalar) << std::endl;
-            std::cout << "Division de punto por 0 (debe lanzar excepcion): "
-                        << (*punto3 / 0) << std::endl;
-        } catch (const std::invalid_argument& e) {
-            std::cerr << e.what() << std::endl;
+            cout << "Multiplicacion de punto por " << escalar << ": "
+                        << (*punto1 * escalar) << endl;
+            cout << "Division de punto por " << escalar << ": "
+                        << (*punto3 / escalar) << endl;
+            cout << "Division de punto por 0 (debe lanzar excepcion): "
+                        << (*punto3 / 0) << endl;
+        } catch (const invalid_argument& e) {
+            cerr << e.what() << endl;
         }
 
     } else if (test == 3) {
-        std::shared_ptr<Matriz<3, 3>> matriz1 = std::make_shared<Matriz<3, 3>> ();
-        std::shared_ptr<Matriz<4, 4>> matriz4x4 = std::make_shared<Matriz<4, 4>>(
-            std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Matriz<3, 3>> matriz1 = std::make_shared<Matriz<3, 3>> ();
+        sh_ptr<Matriz<4, 4>> matriz4x4 = std::make_shared<Matriz<4, 4>>(
+            init_list<init_list<float>>{
                 {1.0f, 2.0f, 3.0f, 4.0f},
                 {5.0f, 6.0f, 7.0f, 8.0f},
                 {9.0f, 10.0f, 11.0f, 12.0f},
@@ -146,24 +161,24 @@ int main() {
             }
         );
         
-        std::shared_ptr<Matriz<3, 3>> matriz3x3 = std::make_shared<Matriz<3, 3>>(
-            std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Matriz<3, 3>> matriz3x3 = std::make_shared<Matriz<3, 3>>(
+            init_list<init_list<float>>{
                 {1.0f, 0.0f, 0.0f},
                 {0.0f, 1.0f, 0.0f},
                 {0.0f, 0.0f, 1.0f},
             }
         );
         
-        std::shared_ptr<Matriz<4, 3>> matriz4x3 = std::make_shared<Matriz<4, 3>>(
-            std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Matriz<4, 3>> matriz4x3 = std::make_shared<Matriz<4, 3>>(
+            init_list<init_list<float>>{
                 {1.0f, 0.0f, 0.0f},
                 {0.0f, 1.0f, 0.0f},
                 {0.0f, 0.0f, 1.0f},
             }
         );
         
-        std::shared_ptr<Matriz<4, 4>> matrizInv = std::make_shared<Matriz<4, 4>>(
-            std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Matriz<4, 4>> matrizInv = std::make_shared<Matriz<4, 4>>(
+            init_list<init_list<float>>{
                 {1.0f, 0.0f, 0.0f, 2.0f},
                 {0.0f, 1.0f, 2.0f, 0.0f},
                 {0.0f, 2.0f, 1.0f, 0.0f},
@@ -171,40 +186,40 @@ int main() {
             }
         );
 
-        std::cout << "Matriz 3x3 vacia:" << std::endl;
-        std::cout << *matriz1 << std::endl;
+        cout << "Matriz 3x3 vacia:" << endl;
+        cout << *matriz1 << endl;
         
-        std::cout << "Matriz 4x4:" << std::endl;
-        std::cout << *matriz4x4 << std::endl;
+        cout << "Matriz 4x4:" << endl;
+        cout << *matriz4x4 << endl;
         
-        std::cout << "Matriz 3x3:" << std::endl;
-        std::cout << *matriz3x3 << std::endl;
+        cout << "Matriz 3x3:" << endl;
+        cout << *matriz3x3 << endl;
         
-        std::cout << "Matriz 4x3:" << std::endl;
-        std::cout << *matriz4x3 << std::endl;
+        cout << "Matriz 4x3:" << endl;
+        cout << *matriz4x3 << endl;
 
-        std::array<std::array<float, 3>, 2> arrMult1 = {{{1.0f,2.0f,3.0f}, {4.0f,5.0f,6.0f}}};
-        std::array<std::array<float, 2>, 3> arrMult2 = {{{10.0f,11.0f}, {20.0f,21.0f}, {30.0f,31.0f}}};
+        array<array<float, 3>, 2> arrMult1 = {{{1.0f,2.0f,3.0f}, {4.0f,5.0f,6.0f}}};
+        array<array<float, 2>, 3> arrMult2 = {{{10.0f,11.0f}, {20.0f,21.0f}, {30.0f,31.0f}}};
 
-        std::shared_ptr<Matriz<2, 3>> matrizMult1 = std::make_shared<Matriz<2, 3>>(arrMult1);
-        std::shared_ptr<Matriz<3, 2>> matrizMult2 = std::make_shared<Matriz<3, 2>>(arrMult2);
+        sh_ptr<Matriz<2, 3>> matrizMult1 = std::make_shared<Matriz<2, 3>>(arrMult1);
+        sh_ptr<Matriz<3, 2>> matrizMult2 = std::make_shared<Matriz<3, 2>>(arrMult2);
 
-        std::shared_ptr<Matriz<2, 2>> resultado = std::make_shared<Matriz<2, 2>>(*matrizMult1 * *matrizMult2);
+        sh_ptr<Matriz<2, 2>> resultado = std::make_shared<Matriz<2, 2>>(*matrizMult1 * *matrizMult2);
 
-        std::cout << "Multiplicacion de m1:" << std::endl << *matrizMult1 << std::endl;
-        std::cout << "y m2:" << std::endl << *matrizMult2 << std::endl;
-        std::cout << "RESULTADO:" << std::endl << *resultado << std::endl;
-        std::cout << "Inversa de m1: " << std::endl << (*matrizInv).inversa() << std::endl;
+        cout << "Multiplicacion de m1:" << endl << *matrizMult1 << endl;
+        cout << "y m2:" << endl << *matrizMult2 << endl;
+        cout << "RESULTADO:" << endl << *resultado << endl;
+        cout << "Inversa de m1: " << endl << (*matrizInv).inversa() << endl;
 
     } else if (test == 4) {
-        std::shared_ptr<Punto> punto1 = std::make_shared<Punto> (1.111,2.222,3.333);
-        std::shared_ptr<Punto> punto2 = std::make_shared<Punto> (1,2,3);
-        std::shared_ptr<Punto> o1 = std::make_shared<Punto> (0,0,0);
-        std::shared_ptr<Punto> o2 = std::make_shared<Punto> (1,2,3);
+        sh_ptr<Punto> punto1 = std::make_shared<Punto> (1.111,2.222,3.333);
+        sh_ptr<Punto> punto2 = std::make_shared<Punto> (1,2,3);
+        sh_ptr<Punto> o1 = std::make_shared<Punto> (0,0,0);
+        sh_ptr<Punto> o2 = std::make_shared<Punto> (1,2,3);
         float x1=3, y1=2, z1=1, d=90;
         
-        std::shared_ptr<Base> b1 = std::make_shared<Base>(
-            std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Base> b1 = std::make_shared<Base>(
+            init_list<init_list<float>>{
                 {1.0f, 0.0f, 0.0f},
                 {0.0f, 2.0f, 0.0f},
                 {0.0f, 0.0f, 3.0f},
@@ -212,43 +227,43 @@ int main() {
         );
         
         
-        std::cout << "VAMOS A MOVER el punto1:" << std::endl << *punto1 << std::endl << std::endl;
+        cout << "VAMOS A MOVER el punto1:" << endl << *punto1 << endl << endl;
         
-        std::cout << "TRASLACION con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
-        std::cout << "RESULTADO:" << std::endl << translate(*punto1, x1, y1, z1) << std::endl;
+        cout << "TRASLACION con x = " << x1 << ", y = " << y1 << ", z = " << z1 << endl;
+        cout << "RESULTADO:" << endl << translate(*punto1, x1, y1, z1) << endl;
         
-        std::cout << "ESCALADO con x = " << x1 << ", y = " << y1 << ", z = " << z1 << std::endl;
-        std::cout << "RESULTADO:" << std::endl << scale(*punto1, x1, y1, z1) << std::endl;
+        cout << "ESCALADO con x = " << x1 << ", y = " << y1 << ", z = " << z1 << endl;
+        cout << "RESULTADO:" << endl << scale(*punto1, x1, y1, z1) << endl;
         
-        std::cout << "ROTACION en X con d = " << d << std::endl;
-        std::cout << "RESULTADO:" << std::endl << rotateX(*punto1, d) << std::endl;
+        cout << "ROTACION en X con d = " << d << endl;
+        cout << "RESULTADO:" << endl << rotateX(*punto1, d) << endl;
         
-        std::cout << "ROTACION en Y con d = " << d << std::endl;
-        std::cout << "RESULTADO:" << std::endl << rotateY(*punto1, d) << std::endl;
+        cout << "ROTACION en Y con d = " << d << endl;
+        cout << "RESULTADO:" << endl << rotateY(*punto1, d) << endl;
         
-        std::cout << "ROTACION en Z con d = " << d << std::endl;
-        std::cout << "RESULTADO:" << std::endl << rotateZ(*punto1, d) << std::endl;
+        cout << "ROTACION en Z con d = " << d << endl;
+        cout << "RESULTADO:" << endl << rotateZ(*punto1, d) << endl;
         
-        std::cout << "CAMBIOBASE de " << *punto2 << ":\n" << cambioBase(*punto2, *b1, *o1) << std::endl;
+        cout << "CAMBIOBASE de " << *punto2 << ":\n" << cambioBase(*punto2, *b1, *o1) << endl;
         
     } else if (test == 5) {
-        std::shared_ptr<Base> base1 = std::make_shared<Base> ();
+        sh_ptr<Base> base1 = std::make_shared<Base> ();
         
-        std::shared_ptr<Base> base2 = std::make_shared<Base>(
-             std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Base> base2 = std::make_shared<Base>(
+             init_list<init_list<float>>{
                  {1.0f, 0.0f, 0.0f},
                  {0.0f, 1.0f, 0.0f},
                  {0.0f, 0.0f, 1.0f},
              }
         );
         
-        std::array<std::array<float, 3>, 3> arrBase3 = {
+        array<array<float, 3>, 3> arrBase3 = {
             {{1.0f,2.0f,0.0f}, {1.0f,0.0f,5.0f}, {0.0f, 7.0f, 0.0f}}
         };
-        std::shared_ptr<Base> base3 = std::make_shared<Base>(arrBase3);
+        sh_ptr<Base> base3 = std::make_shared<Base>(arrBase3);
         
-        std::shared_ptr<Base> baseError = std::make_shared<Base>(
-             std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Base> baseError = std::make_shared<Base>(
+             init_list<init_list<float>>{
                  {1.0f, 2.0f, 3.0f, 4.0f},
                  {5.0f, 6.0f, 7.0f, 8.0f},
                  {9.0f, 10.0f, 11.0f, 12.0f},
@@ -256,71 +271,71 @@ int main() {
              }
         );
         
-        std::cout << "Base constructor default:" << std::endl;
-        std::cout << *base1 << std::endl;
+        cout << "Base constructor default:" << endl;
+        cout << *base1 << endl;
         
-        std::cout << "Base constructor inicializer_list:" << std::endl;
-        std::cout << *base2 << std::endl;
+        cout << "Base constructor inicializer_list:" << endl;
+        cout << *base2 << endl;
         
-        std::cout << "Base constructor array:" << std::endl;
-        std::cout << *base3 << std::endl;
+        cout << "Base constructor array:" << endl;
+        cout << *base3 << endl;
         
-        std::cout << "Base dimensiones incorrectas:" << std::endl;
-        std::cout << *baseError << std::endl;
+        cout << "Base dimensiones incorrectas:" << endl;
+        cout << *baseError << endl;
         
     } else if (test == 6) {
-        std::shared_ptr<Punto> centro1 = std::make_shared<Punto>(0,0,0);
-        std::shared_ptr<Punto> cref1 = std::make_shared<Punto>(1,0,0);
-        std::shared_ptr<Direccion> eje1 = std::make_shared<Direccion>(0,2,0);
-        std::shared_ptr<Direccion> eje2 = std::make_shared<Direccion>(0,4,0);
-        std::shared_ptr<Base> ucs = std::make_shared<Base>(
-             std::initializer_list<std::initializer_list<float>>{
+        sh_ptr<Punto> centro1 = std::make_shared<Punto>(0,0,0);
+        sh_ptr<Punto> cref1 = std::make_shared<Punto>(1,0,0);
+        sh_ptr<Direccion> eje1 = std::make_shared<Direccion>(0,2,0);
+        sh_ptr<Direccion> eje2 = std::make_shared<Direccion>(0,4,0);
+        sh_ptr<Base> ucs = std::make_shared<Base>(
+             init_list<init_list<float>>{
                  {1.0f, 0.0f, 0.0f},
                  {0.0f, 1.0f, 0.0f},
                  {0.0f, 0.0f, 1.0f},
              }
         );
-        std::shared_ptr<Punto> origenUCS = std::make_shared<Punto>(0,0,0);
+        sh_ptr<Punto> origenUCS = std::make_shared<Punto>(0,0,0);
         
-        std::shared_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1, 45, 0);
-        std::cout << "\nPlaneta1:\n" << *planeta1 << std::endl;
+        sh_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1, 45, 0);
+        cout << "\nPlaneta1:\n" << *planeta1 << endl;
 
         try {
-            std::shared_ptr<Planeta> planeta2 = std::make_shared<Planeta>(*centro1, *eje2, *cref1, 90, 90);
-            std::cout << "\nPlaneta: " << *planeta2 << std::endl;
-        } catch (const std::invalid_argument& e) {
-            std::cerr << e.what() << std::endl;
+            sh_ptr<Planeta> planeta2 = std::make_shared<Planeta>(*centro1, *eje2, *cref1, 90, 90);
+            cout << "\nPlaneta: " << *planeta2 << endl;
+        } catch (const invalid_argument& e) {
+            cerr << e.what() << endl;
         }
         
-        std::shared_ptr<Punto> centro3 = std::make_shared<Punto>(5,0,0);
-        std::shared_ptr<Punto> cref3 = std::make_shared<Punto>(3,0,0);
-        std::shared_ptr<Direccion> eje3 = std::make_shared<Direccion>(0,4,0);
-        std::shared_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, -45, 0);
-        std::cout << "\nPlaneta3:\n" << *planeta3 << std::endl;
+        sh_ptr<Punto> centro3 = std::make_shared<Punto>(5,0,0);
+        sh_ptr<Punto> cref3 = std::make_shared<Punto>(3,0,0);
+        sh_ptr<Direccion> eje3 = std::make_shared<Direccion>(0,4,0);
+        sh_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, -45, 0);
+        cout << "\nPlaneta3:\n" << *planeta3 << endl;
         
         
         // Pruebas estacion y trayectoria e interconexión
         
-        std::cout << std::endl;
+        cout << endl;
         //planeta1->getBaseEstacion();
         //planeta1->estacionToUCS(*ucs, *origenUCS);
         
-        std::cout << "---------------------------------" << std::endl;
+        cout << "---------------------------------" << endl;
         
-        std::shared_ptr<Direccion> trayUCS = std::make_shared<Direccion>(
+        sh_ptr<Direccion> trayUCS = std::make_shared<Direccion>(
                                                 planeta1->getTrayectoria(*planeta3, *ucs, *origenUCS));
         
-        std::shared_ptr<Base> baseDest = std::make_shared<Base>(planeta3->getBaseEstacion());
-        std::shared_ptr<Direccion> trayDest = std::make_shared<Direccion>(
+        sh_ptr<Base> baseDest = std::make_shared<Base>(planeta3->getBaseEstacion());
+        sh_ptr<Direccion> trayDest = std::make_shared<Direccion>(
                                                 cambioBase(*trayUCS, *baseDest, planeta3->cref));
         
-        std::shared_ptr<Base> baseOrig = std::make_shared<Base>(planeta1->getBaseEstacion());
-        std::shared_ptr<Direccion> trayOrig = std::make_shared<Direccion>(
+        sh_ptr<Base> baseOrig = std::make_shared<Base>(planeta1->getBaseEstacion());
+        sh_ptr<Direccion> trayOrig = std::make_shared<Direccion>(
                                                 cambioBase(*trayUCS, *baseOrig, planeta1->cref));
         
         
-        std::cout << "En planeta destino, se escapa? " << planeta3->impactoOrEscape(*trayDest) << std::endl;
-        std::cout << "En planeta origen, se escapa? " << planeta1->impactoOrEscape(*trayOrig) << std::endl;
+        cout << "En planeta destino, se escapa? " << planeta3->impactoOrEscape(*trayDest) << endl;
+        cout << "En planeta origen, se escapa? " << planeta1->impactoOrEscape(*trayOrig) << endl;
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }
