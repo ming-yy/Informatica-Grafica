@@ -33,15 +33,13 @@ Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref
     coordLocEstac[0] = this->radio * sinIncl * cosAzim;
     coordLocEstac[1] = this->radio * sinIncl * sinAzim;
     coordLocEstac[2] = this->radio * cosIncl;
-}
-
-Base Planeta::getBaseEstacion() {
+                     
     this->normal = normalizar(this->cref - this->centro);
     this->tangLong = normalizar(cross(this->normal, this->eje));
     this->tangLat = normalizar(this->eje);
-    
-    std::cout << "Normal: " << this->normal << "\nTangente longitud: " << this->tangLong
-              << "\nTangete latitud: " << this->tangLat << std::endl;
+}
+
+Base Planeta::getBaseEstacion() {
     return Base(this->normal.coord, this->tangLong.coord, this->tangLat.coord);
 }
 
@@ -75,7 +73,9 @@ bool Planeta::impactoOrEscape(const Direccion& trayectoria) {
 std::ostream& operator<<(std::ostream& os, const Planeta& r)
 {
     os << "Centro: " << r.centro << ",\nEje: " << r.eje << ",\nCiudad ref: "
-       << r.cref << "\nRadio: " << r.radio;
+       << r.cref << "\nRadio: " << r.radio << "\nNormal: " << r.normal
+       << "\nTangente longitud: " << r.tangLong
+       << "\nTangete latitud: " << r.tangLat << std::endl;
 
     return os;
 }

@@ -283,7 +283,7 @@ int main() {
         std::shared_ptr<Punto> origenUCS = std::make_shared<Punto>(0,0,0);
         
         std::shared_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1, 45, 0);
-        std::cout << "\nPlaneta:\n" << *planeta1 << std::endl;
+        std::cout << "\nPlaneta1:\n" << *planeta1 << std::endl;
 
         try {
             std::shared_ptr<Planeta> planeta2 = std::make_shared<Planeta>(*centro1, *eje2, *cref1, 90, 90);
@@ -293,18 +293,17 @@ int main() {
         }
         
         std::shared_ptr<Punto> centro3 = std::make_shared<Punto>(5,0,0);
-        std::shared_ptr<Punto> cref3 = std::make_shared<Punto>(7,0,0);
+        std::shared_ptr<Punto> cref3 = std::make_shared<Punto>(3,0,0);
         std::shared_ptr<Direccion> eje3 = std::make_shared<Direccion>(0,4,0);
-        std::shared_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, 45, 0);
-        std::cout << "\nPlaneta:\n" << *planeta3 << std::endl;
+        std::shared_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, 45, 45);
+        std::cout << "\nPlaneta3:\n" << *planeta3 << std::endl;
         
         
         // Pruebas estacion y trayectoria e interconexión
         
         std::cout << std::endl;
-        std::cout << "---------------------------------" << std::endl;
-        planeta1->getBaseEstacion();
-        planeta1->estacionToUCS(*ucs, *origenUCS);
+        //planeta1->getBaseEstacion();
+        //planeta1->estacionToUCS(*ucs, *origenUCS);
         
         std::cout << "---------------------------------" << std::endl;
         
@@ -314,11 +313,13 @@ int main() {
         std::shared_ptr<Base> baseDest = std::make_shared<Base>(planeta3->getBaseEstacion());
         std::shared_ptr<Direccion> trayDest = std::make_shared<Direccion>(
                                                 cambioBase(*trayUCS, *baseDest, planeta3->cref));
-        std::cout << "En planeta destino, se escapa? " << planeta3->impactoOrEscape(*trayDest) << std::endl;
         
         std::shared_ptr<Base> baseOrig = std::make_shared<Base>(planeta1->getBaseEstacion());
         std::shared_ptr<Direccion> trayOrig = std::make_shared<Direccion>(
                                                 cambioBase(*trayUCS, *baseOrig, planeta1->cref));
+        
+        
+        std::cout << "En planeta destino, se escapa? " << planeta3->impactoOrEscape(*trayDest) << std::endl;
         std::cout << "En planeta origen, se escapa? " << planeta1->impactoOrEscape(*trayOrig) << std::endl;
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
