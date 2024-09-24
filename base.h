@@ -10,18 +10,25 @@
 #include <iostream>
 #include <initializer_list>
 
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
+
+template<typename T>
+using init_list = std::initializer_list<T>;
+
+using std::ostream;
 
 class Base {
 public:
-    std::array<std::array<float, 3>, 3> base;
+    array<array<float, 3>, 3> base;
 
     Base();
     Base(const Base& b);
-    Base(std::initializer_list<std::initializer_list<float>> valores);
-    Base(std::array<std::array<float, 3>, 3> valores);
-    Base(const std::array<float, 3>& arr1, const std::array<float, 3>& arr2,
-         const std::array<float, 3>& arr3);
+    Base(init_list<init_list<float>> valores);
+    Base(array<array<float, 3>, 3> valores);
+    Base(const array<float, 3>& arr1, const array<float, 3>& arr2,
+         const array<float, 3>& arr3);
     
     // Función para mostrar por pantalla la base <b>
-    friend std::ostream& operator<<(std::ostream& os, const Base& b);
+    friend ostream& operator<<(ostream& os, const Base& b);
 };

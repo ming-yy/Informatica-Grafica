@@ -11,13 +11,15 @@
 #include <stdexcept>  // Para manejar excepciones
 #include "matriz.h"
 
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
 
 class Direccion : public PuntoDireccion {
 public:
     Direccion();
     Direccion(const Direccion& d);
     Direccion(float x, float y, float z);
-    Direccion(std::array<float,3> _coord);
+    Direccion(array<float,3> _coord);
     Matriz<4,1> getCoordHomo() const override;
 
     // Operación de suma de dos direcciones

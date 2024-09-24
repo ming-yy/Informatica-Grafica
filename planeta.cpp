@@ -11,6 +11,8 @@
 #define GRAD_A_RAD 3.1415926535898f/180
 
 
+
+
 Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
                  const float& _inclinacion, const float& _azimut):
                  centro(_centro), eje(_eje), cref(_cref), estacion{_inclinacion, _azimut} {

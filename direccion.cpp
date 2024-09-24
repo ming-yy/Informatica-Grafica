@@ -7,6 +7,11 @@
 
 #include "direccion.h"
 
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
+
+using std::invalid_argument;
+using std::sqrt;
 
 Direccion::Direccion() : PuntoDireccion() {}
 
@@ -14,10 +19,10 @@ Direccion::Direccion(const Direccion& d) : PuntoDireccion(d.coord) {}
 
 Direccion::Direccion(float x, float y, float z) : PuntoDireccion(x, y, z) {}
 
-Direccion::Direccion(std::array<float,3> _coord) : PuntoDireccion(_coord) {}
+Direccion::Direccion(array<float,3> _coord) : PuntoDireccion(_coord) {}
 
 Matriz<4,1> Direccion::getCoordHomo() const {
-    std::array<std::array<float, 1>, 4> d = {coord[0], coord[1], coord[2], 0.0f};
+    array<array<float, 1>, 4> d = {coord[0], coord[1], coord[2], 0.0f};
 
     return d;
 }
@@ -36,14 +41,14 @@ Direccion Direccion::operator*(const float escalar) const {
 
 Direccion Direccion::operator/(const float escalar) const {
     if (escalar == 0) {
-        throw std::invalid_argument("Error: Division por cero no permitida.");
+        throw invalid_argument("Error: Division por cero no permitida.");
     }
     
     return Direccion(coord[0] / escalar, coord[1] / escalar, coord[2] / escalar);
 }
 
 float Direccion::modulo() const {
-    return std::sqrt(coord[0] * coord[0] + coord[1] * coord[1] + coord[2] * coord[2]);
+    return sqrt(coord[0] * coord[0] + coord[1] * coord[1] + coord[2] * coord[2]);
 }
 
 float modulo(const Direccion& d) {
@@ -53,7 +58,7 @@ float modulo(const Direccion& d) {
 Direccion Direccion::normalizar() const {
     float longitud = modulo();
     if (longitud == 0) {
-        throw std::invalid_argument(
+        throw invalid_argument(
             "Error: No se puede calcular porque direccion tiene modulo cero.");
     }
     return *this / longitud;

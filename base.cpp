@@ -7,6 +7,18 @@
 
 #include "base.h"
 
+template<typename T, std::size_t N>
+using array = std::array<T, N>;
+
+template<typename T>
+using init_list = std::initializer_list<T>;
+
+using std::cerr;
+using std::endl;
+using std::size_t;
+using std::ostream;
+using std::copy;
+using std::invalid_argument;
 
 Base::Base() {
     for (int i=0; i<3; i++) {
@@ -19,52 +31,52 @@ Base::Base() {
 Base::Base(const Base& b) : base(b.base) {}
 
 
-Base::Base(std::initializer_list<std::initializer_list<float>> valores){
+Base::Base(init_list<init_list<float>> valores){
     try{
         if((valores.size() != 3) || (valores.begin()->size() != 3)){
             for (auto& vector : base) {
                 vector.fill(0.0f);
             }
-            throw std::invalid_argument(
+            throw invalid_argument(
                 "Error: Dimensiones de la base a crear son incorrectas.");
         }
 
-        std::size_t i = 0;
+        size_t i = 0;
 
         for (const auto& fila : valores) {
-            std::size_t j = 0;
+            size_t j = 0;
             for (const auto& valor : fila) {
                 base[i][j] = valor;
                 j++;
             }
             i++;
         }
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
+    } catch (const invalid_argument& e) {
+        cerr << e.what() << endl;
     }
 }
 
 
-Base::Base(std::array<std::array<float, 3>, 3> valores) {
-    for (std::size_t i = 0; i < 3; ++i) {
-        std::copy(valores[i].begin(), valores[i].end(), base[i].begin());
+Base::Base(array<array<float, 3>, 3> valores) {
+    for (size_t i = 0; i < 3; ++i) {
+        copy(valores[i].begin(), valores[i].end(), base[i].begin());
     }
 }
 
 
-Base::Base(const std::array<float, 3>& arr1, const std::array<float, 3>& arr2,
-           const std::array<float, 3>& arr3) {
-    std::copy(arr1.begin(), arr1.end(), base[0].begin());
-    std::copy(arr2.begin(), arr2.end(), base[1].begin());
-    std::copy(arr3.begin(), arr3.end(), base[2].begin());
+Base::Base(const array<float, 3>& arr1, const array<float, 3>& arr2,
+           const array<float, 3>& arr3) {
+    copy(arr1.begin(), arr1.end(), base[0].begin());
+    copy(arr2.begin(), arr2.end(), base[1].begin());
+    copy(arr3.begin(), arr3.end(), base[2].begin());
 }
 
 
-std::ostream& operator<<(std::ostream& os,const Base& b)
+ostream& operator<<(ostream& os,const Base& b)
 {
     for (const auto& vector : b.base) {
         os << "("  << vector[0] << ", " << vector[1] << ", " << vector[2] << ")"
-           << std::endl;
+           << endl;
     }
     return os;
 }
