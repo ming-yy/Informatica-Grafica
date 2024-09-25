@@ -10,14 +10,12 @@
 #define MARGEN_ERROR 10e-6
 #define GRAD_A_RAD 3.1415926535898f/180
 
-template<typename T>
-using sh_ptr = std::shared_ptr<T>;
-
 using std::to_string;
 using std::invalid_argument;
 using std::endl;
 using std::ostream;
 using std::cout;
+
 
 Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
                  const float& _inclinacion, const float& _azimut):
@@ -32,12 +30,14 @@ Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref
                                  ") no es el doble del radio (" + to_string(radio) + ").");
     }
     
-    calcularLocEstacion();
+    calcularCoordLocEstacion();
     
-    calcularVectoresCentroPlaneta(); 
+    // No sirve para nada...
+    // calcularVectoresCentroPlaneta();
 }
 
-void Planeta::calcularLocEstacion(){
+
+void Planeta::calcularCoordLocEstacion(){
     float sinAzim, sinIncl, cosAzim, cosIncl;
 
     sinAzim = static_cast<float>(sin(float(estacion[1] * GRAD_A_RAD)));
@@ -50,56 +50,67 @@ void Planeta::calcularLocEstacion(){
     coordLocEstac[2] = this->radio * cosIncl;
 }
 
+
 void Planeta::calcularVectoresCentroPlaneta(){
     // Base de la ciudad de referencia
-    //this->normal = normalizar(this->cref - this->centro);
-    //this->tangLong = normalizar(cross(this->normal, this->eje));
-    //this->tangLat = normalizar(this->eje);
-    
-    // A fuerza
-    this->normal = Direccion(1,0,0);
-    this->tangLong = Direccion(0,1,0);
-    this->tangLat = Direccion(0,0,1);
-    
-    // Base de la estación en UCS!
-    //sh_ptr<Punto> estacionEnLocal = std::make_shared<Punto>(coordLocEstac);
-    //this->normal = normalizar(*estacionEnLocal - this->centro);
-    //this->tangLong = normalizar(cross(this->normal, this->eje));
-    //this->tangLat = normalizar(cross(this->normal, this->tangLong));
+    this->normal = normalizar(this->cref - this->centro);
+    this->tangLong = normalizar(cross(this->normal, this->eje));
+    this->tangLat = normalizar(this->eje);
 }
 
+
 Base Planeta::getBaseEstacion() {
-    return Base(this->normal.coord, this->tangLong.coord, this->tangLat.coord);
+    // estacionUCS = estacionRespCentro + centro (UCS)
+    Punto estacionUCS = Punto(coordLocEstac) + this->centro;
+    Direccion v1 = normalizar(estacionUCS - this->centro);
+    Direccion v2 = normalizar(cross(v1, this->eje));
+    Direccion v3 = normalizar(cross(v1, v2));
+    return Base(v1.coord, v2.coord, v3.coord);
 }
 
 
 Punto Planeta::estacionToUCS(const Base& ucs, const Punto& o) const {
-    sh_ptr<Punto> estacion = std::make_shared<Punto>(
-                                            cambioBase(Punto(coordLocEstac[0], coordLocEstac[1],                          coordLocEstac[2]), ucs, o));
-    *estacion = *estacion + this->centro;
-    cout << "Coordenadas cartesianas respecto al planeta: (" << coordLocEstac[0]
-              << ", " << coordLocEstac[1] << ", " << coordLocEstac[2] << ")" << endl;
-    cout << "Coordenadas en UCS: \n" << *estacion << endl;
-    
-    return *estacion;
+    return Punto(coordLocEstac) + this->centro;
 }
 
 
 Direccion Planeta::getTrayectoria(const Planeta& pDestino, const Base& ucs, const Punto& o) {
-    sh_ptr<Punto> origen = std::make_shared<Punto>(this->estacionToUCS(ucs, o));
-    sh_ptr<Punto> destino = std::make_shared<Punto>(pDestino.estacionToUCS(ucs, o));
-    sh_ptr<Direccion> trayec = std::make_shared<Direccion>(*destino - *origen);
-    return normalizar(*trayec);
+    Punto origen = Punto(this->estacionToUCS(ucs, o));
+    Punto destino = Punto(pDestino.estacionToUCS(ucs, o));
+    Direccion trayec = Direccion(destino - origen);
+    return normalizar(trayec);
 }
 
 
 bool Planeta::impactoOrEscape(const Direccion& trayectoria) {
-    //float prodEsc = dot(trayectoria, this->normal);
-    //std::cout << "prod escalar(" << trayectoria << ", (" << this->normal << ")= " << prodEsc << std::endl;
-    //return (prodEsc > 0);
+    // Miramos la componente Z ("altura")
+    return trayectoria.coord[2] > 0;
+}
+
+
+bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Punto& o) {
+    Direccion trayUCS = Direccion(this->getTrayectoria(pDest, ucs, o));
     
-    // Consideramos que tangente implica impacto
-    return trayectoria.coord[0] > 0;
+    Base baseDest = Base(pDest.getBaseEstacion());
+    Direccion trayDest = Direccion(cambioBase(trayUCS, baseDest, pDest.cref));
+    Base baseOrig = Base(this->getBaseEstacion());
+    Direccion trayOrig = Direccion(cambioBase(trayUCS, baseOrig, this->cref));
+    
+    // Cambiamos de sentido porque pDestino necesita saber de "dónde viene" el cohete
+    trayDest = trayDest * (-1);
+    bool pDestEscape = pDest.impactoOrEscape(trayDest);
+    bool pOrigEscape = this->impactoOrEscape(trayOrig);
+    
+    // DEBUG
+    //cout << "Info Planeta origen:\n" << this << endl;
+    //cout << "Info Planeta destino:\n" << pDest << endl;
+    //cout << "TrayectoriaUCS:" << trayUCS
+    //     << "\nTrayectoria destino: " << trayDest
+    //     << "\nTrayectoria origen:" << trayOrig << endl;
+    //cout << "Planeta origen, impacto (0) o escape (1)? " << pOrigEscape << endl;
+    //cout << "Planeta destino, impacto (0) o escape (1)? " << pDestEscape << endl;
+    
+    return !pDestEscape and pOrigEscape;
 }
 
 

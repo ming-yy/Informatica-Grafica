@@ -314,35 +314,9 @@ int main() {
         cout << "\nPlaneta3:\n" << *planeta3 << endl;
         
         
-        // Pruebas estacion y trayectoria e interconexión
+        bool resultado = planeta1->interconexionPlanetaria(*planeta3, *ucs, *origenUCS);
+        cout << "Interconexion planetaria exitosa? " << resultado << endl;
         
-        cout << endl;
-        //planeta1->getBaseEstacion();
-        //planeta1->estacionToUCS(*ucs, *origenUCS);
-        
-        cout << "---------------------------------" << endl;
-        
-        sh_ptr<Direccion> trayUCS = std::make_shared<Direccion>(
-                                                planeta1->getTrayectoria(*planeta3, *ucs, *origenUCS));
-        
-        sh_ptr<Base> baseDest = std::make_shared<Base>(planeta3->getBaseEstacion());
-        sh_ptr<Direccion> trayDest = std::make_shared<Direccion>(
-                                                cambioBase(*trayUCS, *baseDest, planeta3->cref));
-        
-        sh_ptr<Base> baseOrig = std::make_shared<Base>(planeta1->getBaseEstacion());
-        sh_ptr<Direccion> trayOrig = std::make_shared<Direccion>(
-                                                cambioBase(*trayUCS, *baseOrig, planeta1->cref));
-        
-        
-        *trayDest = *trayDest * (-1);
-        std::cout << "Trayectorias:\n" << *trayUCS << "\n" << *trayDest
-                  << "\n" << *trayOrig << std::endl;
-        
-        std::cout << "Planeta1:\n" << *planeta1 << std::endl;
-        std::cout << "Planeta3:\n" << *planeta3 << std::endl;
-        
-        cout << "En planeta destino, se escapa? " << planeta3->impactoOrEscape(*trayDest) << endl;
-        cout << "En planeta origen, se escapa? " << planeta1->impactoOrEscape(*trayOrig) << endl;
     } else if (test == 7) {
 
     sh_ptr<Base> ejemplo_print = std::make_shared<Base>(
