@@ -33,7 +33,7 @@ using std::invalid_argument;
 
 
 int main() {
-    int test = 10;
+    int test = 6;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -334,11 +334,16 @@ int main() {
                                                 cambioBase(*trayUCS, *baseOrig, planeta1->cref));
         
         
+        *trayDest = *trayDest * (-1);
+        std::cout << "Trayectorias:\n" << *trayUCS << "\n" << *trayDest
+                  << "\n" << *trayOrig << std::endl;
+        
+        std::cout << "Planeta1:\n" << *planeta1 << std::endl;
+        std::cout << "Planeta3:\n" << *planeta3 << std::endl;
+        
         cout << "En planeta destino, se escapa? " << planeta3->impactoOrEscape(*trayDest) << endl;
         cout << "En planeta origen, se escapa? " << planeta1->impactoOrEscape(*trayOrig) << endl;
-    } else {
-        printf("ERROR: No se ha encontrado el numero de prueba.\n");
-    }
+    } else if (test == 7) {
 
     sh_ptr<Base> ejemplo_print = std::make_shared<Base>(
              init_list<init_list<float>>{
@@ -360,6 +365,11 @@ int main() {
         );
 
     cout << *ejemplo_print2;
+        
+        
+} else {
+            printf("ERROR: No se ha encontrado el numero de prueba.\n");
+        }
     
     return 0;
 }

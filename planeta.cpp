@@ -51,15 +51,21 @@ void Planeta::calcularLocEstacion(){
 }
 
 void Planeta::calcularVectoresCentroPlaneta(){
-    
+    // Base de la ciudad de referencia
     //this->normal = normalizar(this->cref - this->centro);
     //this->tangLong = normalizar(cross(this->normal, this->eje));
     //this->tangLat = normalizar(this->eje);
     
-    sh_ptr<Punto> estacionEnLocal = std::make_shared<Punto>(coordLocEstac);
-    this->normal = normalizar(*estacionEnLocal - this->centro);
-    this->tangLong = normalizar(cross(this->normal, this->eje));
-    this->tangLat = normalizar(cross(this->normal, this->tangLong));
+    // A fuerza
+    this->normal = Direccion(1,0,0);
+    this->tangLong = Direccion(0,1,0);
+    this->tangLat = Direccion(0,0,1);
+    
+    // Base de la estación en UCS!
+    //sh_ptr<Punto> estacionEnLocal = std::make_shared<Punto>(coordLocEstac);
+    //this->normal = normalizar(*estacionEnLocal - this->centro);
+    //this->tangLong = normalizar(cross(this->normal, this->eje));
+    //this->tangLat = normalizar(cross(this->normal, this->tangLong));
 }
 
 Base Planeta::getBaseEstacion() {
@@ -88,8 +94,12 @@ Direccion Planeta::getTrayectoria(const Planeta& pDestino, const Base& ucs, cons
 
 
 bool Planeta::impactoOrEscape(const Direccion& trayectoria) {
-    float prodEsc = dot(trayectoria, this->normal);
-    return (prodEsc > 0);
+    //float prodEsc = dot(trayectoria, this->normal);
+    //std::cout << "prod escalar(" << trayectoria << ", (" << this->normal << ")= " << prodEsc << std::endl;
+    //return (prodEsc > 0);
+    
+    // Consideramos que tangente implica impacto
+    return trayectoria.coord[0] > 0;
 }
 
 
