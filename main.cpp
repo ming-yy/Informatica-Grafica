@@ -15,6 +15,8 @@
 #include "planeta.h"
 #include "matriz.h"
 #include "transformaciones.h"
+#include "gestorPPM.h"
+
 
 template<typename T>
 using sh_ptr = std::shared_ptr<T>;
@@ -25,15 +27,17 @@ using array = std::array<T, N>;
 template<typename T>
 using init_list = std::initializer_list<T>;
 
+
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::invalid_argument;
+using std::string;
 
 
 
 int main() {
-    int test = 6;
+    int test = 8;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -318,8 +322,7 @@ int main() {
         cout << "Interconexion planetaria exitosa? " << resultado << endl;
         
     } else if (test == 7) {
-
-    sh_ptr<Base> ejemplo_print = std::make_shared<Base>(
+        sh_ptr<Base> ejemplo_print = std::make_shared<Base>(
              init_list<init_list<float>>{
                 { 1.111, -2.22, 333.333 },
                 { 10.1, 25.555, -0.333 },
@@ -327,9 +330,9 @@ int main() {
              }
         );
 
-    cout << *ejemplo_print;
+        cout << *ejemplo_print;
 
-    sh_ptr<Matriz<4, 4>> ejemplo_print2 = std::make_shared<Matriz<4, 4>>(
+        sh_ptr<Matriz<4, 4>> ejemplo_print2 = std::make_shared<Matriz<4, 4>>(
             init_list<init_list<float>>{
                 { 1.111, -2.22, 333.333, 0.0 },
                 { 10.1, 25.555, -0.333, 44.44 },
@@ -338,12 +341,15 @@ int main() {
             }
         );
 
-    cout << *ejemplo_print2;
+        cout << *ejemplo_print2;
         
+    } else if (test == 8){
+        string nombreFichero = "/Users/ming/github_things/Informatica-Grafica/ppms/forest_path.ppm";
+        return leer_pagina(nombreFichero);
         
-} else {
-            printf("ERROR: No se ha encontrado el numero de prueba.\n");
-        }
-    
+    } else {
+        printf("ERROR: No se ha encontrado el numero de prueba.\n");
+    }
+        
     return 0;
 }
