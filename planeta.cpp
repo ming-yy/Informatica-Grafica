@@ -104,9 +104,9 @@ bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Pun
     // DEBUG
     //cout << "Info Planeta origen:\n" << this << endl;
     //cout << "Info Planeta destino:\n" << pDest << endl;
-    //cout << "TrayectoriaUCS:" << trayUCS
-    //     << "\nTrayectoria destino: " << trayDest
-    //     << "\nTrayectoria origen:" << trayOrig << endl;
+    cout << "Trayectoria UCS: " << trayUCS
+         << "\nTrayectoria destino: " << trayDest
+         << "\nTrayectoria origen:" << trayOrig << endl;
     //cout << "Planeta origen, impacto (0) o escape (1)? " << pOrigEscape << endl;
     //cout << "Planeta destino, impacto (0) o escape (1)? " << pDestEscape << endl;
     
