@@ -37,7 +37,7 @@ using std::string;
 
 
 int main() {
-    int test = 6;
+    int test = 8;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -344,8 +344,8 @@ int main() {
         cout << *ejemplo_print2;
         
     } else if (test == 8){
-        string nombreFichero = "/Users/ming/github_things/Informatica-Grafica/ppms/forest_path.ppm";
-        return leer_pagina(nombreFichero);
+        string nombreFichero = "ppms/forest_path.ppm";
+        return tratarFicheroPPM(nombreFichero);
         
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
