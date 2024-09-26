@@ -69,6 +69,8 @@ void leer_valores(ifstream& fichero, float max, float c, vector<float>& valores)
     int valor;
     while (fichero >> valor) {
         valores.push_back(static_cast<float>(valor) * max / c);
+        //valores.push_back(static_cast<float>(valor)); // Para generar la imagen de nuevo, inalterada (pruebas)
+
     }
 }
 
@@ -168,9 +170,7 @@ int tratarFicheroPPM(const string& nombreFichero) {
     leer_valores(fichero, max, c, valores);
     fichero.close();
 
-    imprimir_resultados(valores, max, alto, ancho, c);
-
-
+    //imprimir_resultados(valores, max, alto, ancho, c);
 
     escribirFicheroPPM(nombreFichero, valores, max, ancho, alto, c);
 
