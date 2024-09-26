@@ -37,7 +37,7 @@ using std::string;
 
 
 int main() {
-    int test = 8;
+    int test = 6;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -318,7 +318,7 @@ int main() {
         cout << "\nPlaneta3:\n" << *planeta3 << endl;
         
         
-        bool resultado = planeta1->interconexionPlanetaria(*planeta3, *ucs, *origenUCS);
+        bool resultado = planeta3->interconexionPlanetaria(*planeta1, *ucs, *origenUCS);
         cout << "Interconexion planetaria exitosa? " << resultado << endl;
         
     } else if (test == 7) {

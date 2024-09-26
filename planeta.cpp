@@ -65,7 +65,9 @@ Base Planeta::getBaseEstacion() {
     Direccion v1 = normalizar(estacionUCS - this->centro);
     Direccion v2 = normalizar(cross(v1, this->eje));
     Direccion v3 = normalizar(cross(v1, v2));
-    return Base(v1.coord, v2.coord, v3.coord);
+    
+    // COMPROBAR QUE ESTAN EN EL ORDEN CORRECTO
+    return Base(v2.coord, v3.coord, v1.coord);
 }
 
 
@@ -92,6 +94,8 @@ bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Pun
     Direccion trayUCS = Direccion(this->getTrayectoria(pDest, ucs, o));
     
     Base baseDest = Base(pDest.getBaseEstacion());
+    
+    // CAMBIAR pDest.cref POR LAS COORDENADAS DE LA ESTACION
     Direccion trayDest = Direccion(cambioBase(trayUCS, baseDest, pDest.cref));
     Base baseOrig = Base(this->getBaseEstacion());
     Direccion trayOrig = Direccion(cambioBase(trayUCS, baseOrig, this->cref));

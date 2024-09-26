@@ -118,6 +118,7 @@ Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
     );
     
     sh_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p.getCoordHomo());
+    // FALTA HACER LA INVERSA de m
     sh_ptr<Matriz<4, 1>> aux = std::make_shared<Matriz<4, 1>>((*m * *pCH).matriz);
     
     //return *m * *pCH;
