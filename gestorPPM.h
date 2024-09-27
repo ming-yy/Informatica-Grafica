@@ -40,11 +40,11 @@ int tratarFicheroPPM(const string& nombreFichero);
 string encontrarNombreFinalFichero(const string&ruta);
 
 // Escribe los metadatos del fichero PPM resultado
-void escribirCabeceraPPM(ofstream& fichero, const float max, const string nombreFichero, 
+void escribirCabeceraPPM(ifstream& fichero, const float max, const string nombreFichero,
                                             const int ancho, const int alto, const float c);
 
 // Escribe los valores de los pixeles (r,g,b) en el fichero PPM resultado
-void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
+void escribirValoresPPM(ifstream& fichero, const vector<float>& valores,
                                                             const int alto, const int ancho);
 
 // Escribe todo el contenido del fichero PPM resultado

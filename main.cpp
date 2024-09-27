@@ -37,7 +37,7 @@ using std::string;
 
 
 int main() {
-    int test = 8;
+    int test = 6;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -301,15 +301,17 @@ int main() {
         );
         sh_ptr<Punto> origenUCS = std::make_shared<Punto>(0,0,0);
         
+        cout << "--- Pruebas planetas ---" << endl;
         sh_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1, 45, 0);
         cout << "\nPlaneta1:\n" << *planeta1 << endl;
-
+        
         try {
             sh_ptr<Planeta> planeta2 = std::make_shared<Planeta>(*centro1, *eje2, *cref1, 90, 90);
             cout << "\nPlaneta: " << *planeta2 << endl;
         } catch (const invalid_argument& e) {
             cerr << e.what() << endl;
         }
+        
         
         sh_ptr<Punto> centro3 = std::make_shared<Punto>(5,0,0);
         sh_ptr<Punto> cref3 = std::make_shared<Punto>(3,0,0);
@@ -318,7 +320,8 @@ int main() {
         cout << "\nPlaneta3:\n" << *planeta3 << endl;
         
         
-        bool resultado = planeta3->interconexionPlanetaria(*planeta1, *ucs, *origenUCS);
+        cout << "--- Pruebas interconexion planetaria ---" << endl;
+        bool resultado = planeta1->interconexionPlanetaria(*planeta3, *ucs, *origenUCS);
         cout << "Interconexion planetaria exitosa? " << resultado << endl;
         
     } else if (test == 7) {

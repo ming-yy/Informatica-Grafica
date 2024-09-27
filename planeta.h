@@ -37,15 +37,15 @@ public:
     Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
             const float& inclinacion, const float& azimut);
     
+    // Método que devuelve las coordenadas de la estación en UCS
+    Punto estacionToUCS() const;
+    
     // Método que devuelve la base de la estación planetaria en UCS
     Base getBaseEstacion();
     
-    // Método que ...
-    Punto estacionToUCS(const Base& ucs, const Punto& o) const;
-    
-    // Método que dado este planeta como origen y el planeta <p> como destino, devuelve
-    // la trayectoria entre sus respectivas estaciones en UCS
-    Direccion getTrayectoria(const Planeta& pDestino, const Base& ucs, const Punto& o);
+    // Método que dado este planeta como origen y el planeta <pDestino> como destino,
+    // devuelve el vector normalizado entre sus respectivas estaciones en UCS
+    Direccion getTrayectoria(const Planeta& pDestino);
     
     // Método que determina si dada la trayectoria del lanzamiento, se va a impactar
     // contra el planeta (return True) o se va a escapar del planeta (return False).

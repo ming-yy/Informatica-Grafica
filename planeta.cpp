@@ -51,7 +51,7 @@ void Planeta::calcularCoordLocEstacion(){
 }
 
 
-void Planeta::calcularVectoresCentroPlaneta(){
+void Planeta::calcularVectoresCentroPlaneta() {
     // Base de la ciudad de referencia
     this->normal = normalizar(this->cref - this->centro);
     this->tangLong = normalizar(cross(this->normal, this->eje));
@@ -59,46 +59,41 @@ void Planeta::calcularVectoresCentroPlaneta(){
 }
 
 
-Base Planeta::getBaseEstacion() {
-    // estacionUCS = estacionRespCentro + centro (UCS)
-    Punto estacionUCS = Punto(coordLocEstac) + this->centro;
-    Direccion v1 = normalizar(estacionUCS - this->centro);
-    Direccion v2 = normalizar(cross(v1, this->eje));
-    Direccion v3 = normalizar(cross(v1, v2));
-    
-    // COMPROBAR QUE ESTAN EN EL ORDEN CORRECTO
-    return Base(v2.coord, v3.coord, v1.coord);
-}
-
-
-Punto Planeta::estacionToUCS(const Base& ucs, const Punto& o) const {
+Punto Planeta::estacionToUCS() const {
     return Punto(coordLocEstac) + this->centro;
 }
 
 
-Direccion Planeta::getTrayectoria(const Planeta& pDestino, const Base& ucs, const Punto& o) {
-    Punto origen = Punto(this->estacionToUCS(ucs, o));
-    Punto destino = Punto(pDestino.estacionToUCS(ucs, o));
+Base Planeta::getBaseEstacion() {
+    Punto estacionUCS = this->estacionToUCS();
+    Direccion k = normalizar(estacionUCS - this->centro);
+    Direccion i = normalizar(cross(k, this->eje));
+    Direccion j = normalizar(cross(k, i));
+    return Base(i.coord, j.coord, k.coord);
+}
+
+
+Direccion Planeta::getTrayectoria(const Planeta& pDestino) {
+    Punto origen = this->estacionToUCS();
+    Punto destino = pDestino.estacionToUCS();
     Direccion trayec = Direccion(destino - origen);
     return normalizar(trayec);
 }
 
 
 bool Planeta::impactoOrEscape(const Direccion& trayectoria) {
-    // Miramos la componente Z ("altura")
+    // Miramos la componente Z ("altura" = la normal)
     return trayectoria.coord[2] > 0;
 }
 
 
 bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Punto& o) {
-    Direccion trayUCS = Direccion(this->getTrayectoria(pDest, ucs, o));
+    Direccion trayUCS = Direccion(this->getTrayectoria(pDest));
+    Base baseDest = pDest.getBaseEstacion();
+    Base baseOrig = this->getBaseEstacion();
     
-    Base baseDest = Base(pDest.getBaseEstacion());
-    
-    // CAMBIAR pDest.cref POR LAS COORDENADAS DE LA ESTACION
-    Direccion trayDest = Direccion(cambioBase(trayUCS, baseDest, pDest.cref));
-    Base baseOrig = Base(this->getBaseEstacion());
-    Direccion trayOrig = Direccion(cambioBase(trayUCS, baseOrig, this->cref));
+    Direccion trayDest = normalizar(cambioBase(trayUCS, baseDest, pDest.estacionToUCS()));
+    Direccion trayOrig = normalizar(cambioBase(trayUCS, baseOrig, this->estacionToUCS()));
     
     // Cambiamos de sentido porque pDestino necesita saber de "dónde viene" el cohete
     trayDest = trayDest * (-1);
@@ -106,13 +101,13 @@ bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Pun
     bool pOrigEscape = this->impactoOrEscape(trayOrig);
     
     // DEBUG
-    //cout << "Info Planeta origen:\n" << this << endl;
+    //cout << "Info Planeta origen:\n" << *this << endl;
     //cout << "Info Planeta destino:\n" << pDest << endl;
     cout << "Trayectoria UCS: " << trayUCS
          << "\nTrayectoria destino: " << trayDest
          << "\nTrayectoria origen:" << trayOrig << endl;
-    //cout << "Planeta origen, impacto (0) o escape (1)? " << pOrigEscape << endl;
-    //cout << "Planeta destino, impacto (0) o escape (1)? " << pDestEscape << endl;
+    cout << "Planeta origen, impacto (0) o escape (1)? " << pOrigEscape << endl;
+    cout << "Planeta destino, impacto (0) o escape (1)? " << pDestEscape << endl;
     
     return !pDestEscape and pOrigEscape;
 }

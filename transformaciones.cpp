@@ -127,8 +127,7 @@ Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
 
 
 Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o) {
-    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-        init_list<init_list<float>>{
+    Matriz<4, 4> m = Matriz<4, 4>(init_list<init_list<float>>{
             {b.base[0][0], b.base[1][0], b.base[2][0], o.coord[0]},
             {b.base[0][1], b.base[1][1], b.base[2][1], o.coord[1]},
             {b.base[0][2], b.base[1][2], b.base[2][2], o.coord[2]},
@@ -136,8 +135,7 @@ Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o) {
         }
     );
     
-    sh_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p.getCoordHomo());
-    sh_ptr<Matriz<4, 1>> aux = std::make_shared<Matriz<4, 1>>((*m * *pCH).matriz);
-    
-    return Direccion(aux->matriz[0][0], aux->matriz[1][0], aux->matriz[2][0]);
+    Matriz<4, 4> ucsToLocal = m.inversa();
+    Matriz<4, 1> res = Matriz<4, 1>((ucsToLocal * p.getCoordHomo()).matriz);
+    return Direccion(res.matriz[0][0], res.matriz[1][0], res.matriz[2][0]);
 }
