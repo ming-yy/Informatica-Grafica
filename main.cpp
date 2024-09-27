@@ -348,7 +348,7 @@ int main() {
         
     } else if (test == 8){
         string nombreFichero = "ppms/forest_path.ppm";
-        return tratarFicheroPPM(nombreFichero);
+        return transformarFicheroPPM(nombreFichero);
         
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");

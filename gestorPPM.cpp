@@ -1,5 +1,6 @@
 
 #include "gestorPPM.h"
+#include "toneMapping.h"
 #include <iomanip>
 
 using std::string;
@@ -15,18 +16,18 @@ using std::setprecision;
 
 
 bool leerFicheroPPM(const string&nombreFich, vector<float>& valores, 
-                            float& max, int& ancho, int& alto, float& c) {
+                            float& maxColorRes, int& ancho, int& alto, float& c, float& maxValor) {
     
     ifstream fichero = abrir_fichero(nombreFich);
     if (!validar_formato(fichero)) {
         return false;
     }
 
-    leer_cabecera(fichero, max, ancho, alto, c);
-    leer_valores(fichero, max, c, valores);
+    leer_cabecera(fichero, maxColorRes, ancho, alto, c);
+    leer_valores(fichero, maxColorRes, c, valores, maxValor);
     fichero.close();
 
-    //imprimir_resultados(valores, max, alto, ancho, c);
+    //imprimir_resultados(valores, maxColorRes, alto, ancho, c);
 
     return true;
 }
@@ -54,13 +55,13 @@ bool validar_formato(ifstream& fichero) {
 }
 
 
-void leer_cabecera(ifstream& fichero, float& max, int& ancho, int& alto, float& c) {
+void leer_cabecera(ifstream& fichero, float& maxColorRes, int& ancho, int& alto, float& c) {
     string linea;
     while (getline(fichero, linea)) {
         if (linea[0] == '#') {
             if (linea.find("#MAX=") != string::npos) {
                 istringstream iss(linea.substr(5));
-                iss >> max;
+                iss >> maxColorRes;
             }
             continue; // Saltar línea de comentario
         } else {
@@ -84,17 +85,20 @@ float leer_resolucion(ifstream& fichero, float& c) {
 }
 
 
-void leer_valores(ifstream& fichero, float max, float c, vector<float>& valores) {
-    int valor;
+void leer_valores(ifstream& fichero, float maxColorRes, float c, vector<float>& valores, float& maxValor) {
+    float valor;
     while (fichero >> valor) {
-        valores.push_back(static_cast<float>(valor) * max / c);
-        //valores.push_back(static_cast<float>(valor)); // Para generar la imagen de nuevo, inalterada (pruebas)
+        if(valor > maxValor){
+            maxValor = valor;
+        }
 
+        valores.push_back((valor * maxColorRes) / c);
+        //valores.push_back(static_cast<float>(valor)); // Para generar la imagen de nuevo, inalterada (pruebas)
     }
 }
 
 
-void imprimir_resultados(const vector<float>& valores, float max, int alto, int ancho, float c) {
+void imprimir_resultados(const vector<float>& valores, float maxColorRes, int alto, int ancho, float c) {
     /*
     // DEBUG
     cout << "Valores resultantes:" << endl;
@@ -104,7 +108,7 @@ void imprimir_resultados(const vector<float>& valores, float max, int alto, int 
     cout << endl;
     */
 
-    cout << "Max Value: " << max << endl;
+    cout << "Max Value: " << maxColorRes << endl;
     cout << "Alto: " << alto << ", Ancho: " << ancho << endl;
     cout << "Resolucion maxima de color: " << c << endl;
 }
@@ -122,16 +126,17 @@ string encontrarNombreFinalFichero(const string&ruta){
 }
 
 
-void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero, const float max, const int ancho, const int alto, const float c){
+void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero, 
+        const float maxColorRes, const int ancho, const int alto, const float c){
     fichero << "P3" << "\n";
-    fichero << "#MAX=" << fixed << setprecision(0) << max << "\n";
+    fichero << "#MAX=" << fixed << setprecision(0) << maxColorRes << "\n";
     fichero << "# " << nombreFichero << "\n";
     fichero << ancho << " " << alto << "\n";
     fichero  << fixed << setprecision(0) << c << "\n";
 }
 
 void escribirValoresPPM(ofstream& fichero, const vector<float>& valores, 
-                                            const float max, const int ancho, const int alto, const float c){
+                                const float maxColorRes, const int ancho, const int alto, const float c){
 
     int anchoTriple = ancho*3;
 
@@ -146,9 +151,9 @@ void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
     for (int h = 0; h < alto; ++h) {
         for (int w = 0; w < anchoTriple; w+=3) {
             indice = h*anchoTriple + w;
-            fichero << (valores.at(indice)*c)/max << " " 
-                    << (valores.at(indice + 1)*c)/max << " "
-                    << (valores.at(indice + 2)*c)/max << "     ";
+            fichero << (valores.at(indice)*c)/maxColorRes << " " 
+                    << (valores.at(indice + 1)*c)/maxColorRes << " "
+                    << (valores.at(indice + 2)*c)/maxColorRes << "     ";
         }
         fichero << "\n";
     }
@@ -157,8 +162,10 @@ void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
 
 
 
-void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, const float max, const int ancho, const int alto, const float c){
-    string rutaFichRes = nombreFich.substr(0, nombreFich.find_last_of(".")) + "_altered.ppm";
+void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, 
+const float maxColorRes, const int ancho, const int alto, const float c, const string& nombreFuncion){
+    
+    string rutaFichRes = nombreFich.substr(0, nombreFich.find_last_of(".")) + "_" + nombreFuncion + ".ppm";
     string nombreFichRes = encontrarNombreFinalFichero(nombreFich);
 
     ofstream ficheroRes(rutaFichRes);
@@ -168,24 +175,55 @@ void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, c
     }
 
     
-    escribirCabeceraPPM(ficheroRes,  nombreFichRes, max, ancho, alto, c);
-    escribirValoresPPM(ficheroRes, valores, max, ancho, alto, c);
+    escribirCabeceraPPM(ficheroRes, nombreFichRes, maxColorRes, ancho, alto, c);
+    escribirValoresPPM(ficheroRes, valores, maxColorRes, ancho, alto, c);
 
     ficheroRes.close();
 }
 
-string transformarValores(vector<float>& valores, const int tipoTransform){
+string transformarValores(vector<float>& valores, const int tipoTransform, const float maxValue){
     string res = "";
-    switch (0)
+    switch (tipoTransform)
     {
     case 0:
         // NINGUNA FUNCION
         // (misma imagen de entrada y salida)
-        res = "0 - Ninguna";
+        res = "0_Ninguna";
         break;
-    
-    default:
 
+    case 1:
+        // FUNCION CLAMPING
+        res = "1_Clamping";
+        clamp(valores);
+        break;
+
+    case 2:
+        // FUNCION EQUALIZATION
+        res = "2_Equalization";
+        equalize(valores, maxValue);
+        break;
+
+    case 3:
+        // FUNCION CLAMPING+EQUALIZATION
+        res = "3_Clamping+Equalization";
+        clampAndEqualize(valores);
+        break;
+
+    case 4:
+        // FUNCION GAMMA
+        res = "4_Gamma";
+        gamma(valores);
+        break;
+
+    case 5:
+        // FUNCION GAMMA+EQUALIZATION
+        res = "5_Gamma+Equalization";
+        gammaAndClamp(valores);
+        break;
+
+    default:
+        // ERROR
+        res = "ERROR";
         break;
     }
 
@@ -198,14 +236,17 @@ string transformarValores(vector<float>& valores, const int tipoTransform){
 int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
     vector<float> valores;
 
-    float max = 1.0f;
+    float maxColorRes = 1.0f;
+    float maxValor = 0.0f;
     int ancho, alto;
     float c;
     string nombreFuncion = "";
     
-    if(leerFicheroPPM(nombreFichero, valores, max, ancho, alto, c)){
-        nombreFuncion = transformarValores(valores, idFuncion);
-        escribirFicheroPPM(nombreFichero, valores, max, ancho, alto, c);
+    if(leerFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c, maxValor)){
+        nombreFuncion = transformarValores(valores, idFuncion, maxValor);
+        escribirFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c, nombreFuncion);
+
+        cout << "Se ha aplicado la funcion de tone mapping " << nombreFuncion << endl;
 
     } else {
         cerr << "ERROR: Ha habido un problema en la lectura del Fichero PPM" << endl;
