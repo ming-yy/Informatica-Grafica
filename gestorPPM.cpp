@@ -13,10 +13,29 @@ using std::istringstream;
 using std::fixed;
 using std::setprecision;
 
-ifstream abrir_fichero(const string& nombreFichero) {
-    ifstream fichero(nombreFichero);
+
+bool leerFicheroPPM(const string&nombreFich, vector<float>& valores, 
+                            float& max, int& ancho, int& alto, float& c) {
+    
+    ifstream fichero = abrir_fichero(nombreFich);
+    if (!validar_formato(fichero)) {
+        return false;
+    }
+
+    leer_cabecera(fichero, max, ancho, alto, c);
+    leer_valores(fichero, max, c, valores);
+    fichero.close();
+
+    //imprimir_resultados(valores, max, alto, ancho, c);
+
+    return true;
+}
+
+
+ifstream abrir_fichero(const string& nombreFich) {
+    ifstream fichero(nombreFich);
     if (!fichero.is_open()) {
-        cerr << "Error al abrir el fichero: " << nombreFichero << endl;
+        cerr << "Error al abrir el fichero: " << nombreFich << endl;
         exit(1); // Salir del programa si no se puede abrir el fichero
     }
     return fichero;
@@ -103,7 +122,7 @@ string encontrarNombreFinalFichero(const string&ruta){
 }
 
 
-void escribirCabeceraPPM(ofstream& fichero, const float max, const string nombreFichero, const int ancho, const int alto, const float c){
+void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero, const float max, const int ancho, const int alto, const float c){
     fichero << "P3" << "\n";
     fichero << "#MAX=" << fixed << setprecision(0) << max << "\n";
     fichero << "# " << nombreFichero << "\n";
@@ -111,7 +130,8 @@ void escribirCabeceraPPM(ofstream& fichero, const float max, const string nombre
     fichero  << fixed << setprecision(0) << c << "\n";
 }
 
-void escribirValoresPPM(ofstream& fichero, const vector<float>& valores, const int alto, const int ancho){
+void escribirValoresPPM(ofstream& fichero, const vector<float>& valores, 
+                                            const float max, const int ancho, const int alto, const float c){
 
     int anchoTriple = ancho*3;
 
@@ -126,9 +146,9 @@ void escribirValoresPPM(ofstream& fichero, const vector<float>& valores, const i
     for (int h = 0; h < alto; ++h) {
         for (int w = 0; w < anchoTriple; w+=3) {
             indice = h*anchoTriple + w;
-            fichero << valores.at(indice) << " " 
-                    << valores.at(indice + 1) << " "
-                    << valores.at(indice + 2) << "     ";
+            fichero << (valores.at(indice)*c)/max << " " 
+                    << (valores.at(indice + 1)*c)/max << " "
+                    << (valores.at(indice + 2)*c)/max << "     ";
         }
         fichero << "\n";
     }
@@ -148,32 +168,48 @@ void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, c
     }
 
     
-    escribirCabeceraPPM(ficheroRes, max, nombreFichRes, ancho, alto, c);
-    escribirValoresPPM(ficheroRes, valores, ancho, alto);
+    escribirCabeceraPPM(ficheroRes,  nombreFichRes, max, ancho, alto, c);
+    escribirValoresPPM(ficheroRes, valores, max, ancho, alto, c);
+
+    ficheroRes.close();
+}
+
+string transformarValores(vector<float>& valores, const int tipoTransform){
+    string res = "";
+    switch (0)
+    {
+    case 0:
+        // NINGUNA FUNCION
+        // (misma imagen de entrada y salida)
+        res = "0 - Ninguna";
+        break;
+    
+    default:
+
+        break;
+    }
+
+    return res;
 }
 
 
 
-int tratarFicheroPPM(const string& nombreFichero) {
-    ifstream fichero = abrir_fichero(nombreFichero);
 
-    if (!validar_formato(fichero)) {
-        return 1;
-    }
+int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
+    vector<float> valores;
 
     float max = 1.0f;
     int ancho, alto;
     float c;
+    string nombreFuncion = "";
+    
+    if(leerFicheroPPM(nombreFichero, valores, max, ancho, alto, c)){
+        nombreFuncion = transformarValores(valores, idFuncion);
+        escribirFicheroPPM(nombreFichero, valores, max, ancho, alto, c);
 
-    leer_cabecera(fichero, max, ancho, alto, c);
-    vector<float> valores;
-    leer_valores(fichero, max, c, valores);
-    fichero.close();
-
-    //imprimir_resultados(valores, max, alto, ancho, c);
-
-    escribirFicheroPPM(nombreFichero, valores, max, ancho, alto, c);
-
+    } else {
+        cerr << "ERROR: Ha habido un problema en la lectura del Fichero PPM" << endl;
+    }
 
     return 0;
 }

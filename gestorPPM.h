@@ -10,6 +10,10 @@ using std::string;
 using std::ifstream;
 using std::vector;
 
+// Función que extrae los metadatos y los valores del fichero
+bool leerFicheroPPM(const string&nombreFich, vector<float>& valores, 
+                            float& max, int& ancho, int& alto, float& c);
+
 // Función que itera por cada valor del RGB de un ppm y lo convierte al
 // nuevo estándar en función de la resolución de color <c> y el valor
 // máximo real como un número real <max>
@@ -34,18 +38,18 @@ void leer_valores(ifstream& fichero, float max, float c, vector<float>& valores)
 void imprimir_resultados(const vector<float>& valores, float max, int alto, int ancho, float c);
 
 // Función principal que coordina el proceso
-int tratarFicheroPPM(const string& nombreFichero);
+int transformarFicheroPPM(const string& nombreFichero);
 
 // Recorta la ruta "nnn/mmm/fichero.ppm" para quedarse solo con fichero.ppm
 string encontrarNombreFinalFichero(const string&ruta);
 
 // Escribe los metadatos del fichero PPM resultado
-void escribirCabeceraPPM(ifstream& fichero, const float max, const string nombreFichero,
-                                            const int ancho, const int alto, const float c);
+void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero, 
+                                const float max, const int ancho, const int alto, const float c);
 
 // Escribe los valores de los pixeles (r,g,b) en el fichero PPM resultado
-void escribirValoresPPM(ifstream& fichero, const vector<float>& valores,
-                                                            const int alto, const int ancho);
+void escribirValoresPPM(ofstream& fichero, const vector<float>& valores, 
+                                 const float max, const int alto, const int ancho, const float c);
 
 // Escribe todo el contenido del fichero PPM resultado
 void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, 
