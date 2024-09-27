@@ -38,9 +38,6 @@ void leer_valores(ifstream& fichero, float maxColorRes, float c, vector<float>& 
 // Función para imprimir los resultados
 void imprimir_resultados(const vector<float>& valores, float maxColorRes, int alto, int ancho, float c);
 
-// Función principal que coordina el proceso
-int transformarFicheroPPM(const string& nombreFichero);
-
 // Recorta la ruta "nnn/mmm/fichero.ppm" para quedarse solo con fichero.ppm
 string encontrarNombreFinalFichero(const string&ruta);
 
@@ -55,3 +52,7 @@ void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
 // Escribe todo el contenido del fichero PPM resultado
 void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, 
                         const float maxColorRes, const int ancho, const int alto, const float c);
+
+
+// Función principal que coordina el proceso
+int transformarFicheroPPM(const string& nombreFichero, const int idFuncion);

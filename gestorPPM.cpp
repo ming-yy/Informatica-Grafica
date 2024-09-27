@@ -151,9 +151,9 @@ void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
     for (int h = 0; h < alto; ++h) {
         for (int w = 0; w < anchoTriple; w+=3) {
             indice = h*anchoTriple + w;
-            fichero << (valores.at(indice)*c)/maxColorRes << " " 
-                    << (valores.at(indice + 1)*c)/maxColorRes << " "
-                    << (valores.at(indice + 2)*c)/maxColorRes << "     ";
+            fichero << ((valores.at(indice)*c)/maxColorRes) << " " 
+                    << ((valores.at(indice + 1)*c)/maxColorRes) << " "
+                    << ((valores.at(indice + 2)*c)/maxColorRes)<< "     ";
         }
         fichero << "\n";
     }
@@ -163,7 +163,8 @@ void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
 
 
 void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, 
-const float maxColorRes, const int ancho, const int alto, const float c, const string& nombreFuncion){
+                            const float maxColorRes, const int ancho, const int alto, 
+                                const float c, const string& nombreFuncion){
     
     string rutaFichRes = nombreFich.substr(0, nombreFich.find_last_of(".")) + "_" + nombreFuncion + ".ppm";
     string nombreFichRes = encontrarNombreFinalFichero(nombreFich);
