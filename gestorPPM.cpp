@@ -203,19 +203,19 @@ string transformarValores(vector<float>& valores, const int tipoTransform, const
     case 3:
         // FUNCION CLAMPING+EQUALIZATION
         res = "3_Clamping+Equalization";
-        clampAndEqualize(valores, maxValue);
+        clampAndEqualize(valores, maxValue/2);
         break;
 
     case 4:
         // FUNCION GAMMA
         res = "4_Gamma";
-        gamma(valores);
+        gamma(valores, maxValue);
         break;
 
     case 5:
         // FUNCION GAMMA+EQUALIZATION
         res = "5_Gamma+Equalization";
-        gammaAndClamp(valores);
+        gammaAndClamp(valores, maxValue/2);
         break;
 
     default:
@@ -238,11 +238,15 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
     float c;
     string nombreFuncion = "";
     
+    cout << "FICHERO \"" << nombreFichero << "\"" << endl;
+    cout << "Aplicando la funcion de tone mapping numero " << idFuncion << endl;
+
     if(leerFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c)){
+
         nombreFuncion = transformarValores(valores, idFuncion, maxColorRes);
         escribirFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c, nombreFuncion);
 
-        cout << "Se ha aplicado la funcion de tone mapping " << nombreFuncion << endl;
+        cout << nombreFuncion << " ha terminado!"<< endl << endl;
 
     } else {
         cerr << "ERROR: Ha habido un problema en la lectura del Fichero PPM" << endl;
