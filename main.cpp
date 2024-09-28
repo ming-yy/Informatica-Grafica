@@ -347,7 +347,7 @@ int main() {
         cout << *ejemplo_print2;
         
     } else if (test == 8){
-        string nombreFichero = "ppms/mpi_office.ppm";
+        string nombreFichero = "ppms/seymour_park.ppm";
         return transformarFicheroPPM(nombreFichero, 1);
         
     } else {

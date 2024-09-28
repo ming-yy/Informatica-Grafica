@@ -2,34 +2,53 @@
 
 using std::vector;
 
+
+
 void clamp(vector<float>& valores){
-    for(auto& valor : valores){
-        if(valor > 1){
-            valor = 1;
+    ifBiggerThenOne(valores, 1);
+}
+
+
+void equalize(vector<float>& valores, const float maxValue){
+    ifSmallerThenNormalize(valores, maxValue);
+}
+
+void clampAndEqualize(vector<float>& valores, const float maxValue){
+    float newValue = maxValue / 2;
+    ifSmallerThenNormalize(valores, newValue);
+    ifBiggerThenOne(valores, newValue);
+}
+
+void gamma(vector<float>& valores, const float maxValue){
+    ifSmallerThenCurve(valores, maxValue);
+}
+
+void gammaAndClamp(vector<float>& valores, const float maxValue){
+    float newValue = maxValue / 2;
+    ifSmallerThenCurve(valores, newValue);
+    ifBiggerThenOne(valores, newValue);
+}
+
+void ifBiggerThenOne(vector<float>& valores, const float threshold){
+    for(int i = 0; i < valores.size(); i++){
+        if(valores[i] > threshold){
+            valores[i] = 1;
         }
     }
 }
 
-void equalize(vector<float>& valores, const float maxValue){
-    for(auto& valor : valores){
-        valor /= maxValue;
+void ifSmallerThenNormalize(vector<float>& valores, const float threshold){
+    for(int i = 0; i < valores.size(); i++){
+        if(valores[i] <= threshold){
+            valores[i] /= threshold;
+        }
     }
 }
 
-void clampAndEqualize(vector<float>& valores){
-    for(auto& valor : valores){
-        
-    }
-}
-
-void gamma(vector<float>& valores){
-    for(auto& valor : valores){
-        
-    }
-}
-
-void gammaAndClamp(vector<float>& valores){
-    for(auto& valor : valores){
-        
+void ifSmallerThenCurve(vector<float>& valores, const float threshold){
+    for(int i = 0; i < valores.size(); i++){
+        if(valores[i] <= threshold){
+            // FALTA AÑADIR FUNCION LOGARITMICA? IDK
+        }
     }
 }

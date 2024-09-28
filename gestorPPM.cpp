@@ -16,7 +16,7 @@ using std::setprecision;
 
 
 bool leerFicheroPPM(const string&nombreFich, vector<float>& valores, 
-                            float& maxColorRes, int& ancho, int& alto, float& c, float& maxValor) {
+                            float& maxColorRes, int& ancho, int& alto, float& c) {
     
     ifstream fichero = abrir_fichero(nombreFich);
     if (!validar_formato(fichero)) {
@@ -24,7 +24,7 @@ bool leerFicheroPPM(const string&nombreFich, vector<float>& valores,
     }
 
     leer_cabecera(fichero, maxColorRes, ancho, alto, c);
-    leer_valores(fichero, maxColorRes, c, valores, maxValor);
+    leer_valores(fichero, maxColorRes, c, valores);
     fichero.close();
 
     //imprimir_resultados(valores, maxColorRes, alto, ancho, c);
@@ -85,13 +85,9 @@ float leer_resolucion(ifstream& fichero, float& c) {
 }
 
 
-void leer_valores(ifstream& fichero, float maxColorRes, float c, vector<float>& valores, float& maxValor) {
+void leer_valores(ifstream& fichero, float maxColorRes, float c, vector<float>& valores) {
     float valor;
     while (fichero >> valor) {
-        if(valor > maxValor){
-            maxValor = valor;
-        }
-
         valores.push_back((valor * maxColorRes) / c);
         //valores.push_back(static_cast<float>(valor)); // Para generar la imagen de nuevo, inalterada (pruebas)
     }
@@ -207,7 +203,7 @@ string transformarValores(vector<float>& valores, const int tipoTransform, const
     case 3:
         // FUNCION CLAMPING+EQUALIZATION
         res = "3_Clamping+Equalization";
-        clampAndEqualize(valores);
+        clampAndEqualize(valores, maxValue);
         break;
 
     case 4:
@@ -238,13 +234,12 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
     vector<float> valores;
 
     float maxColorRes = 1.0f;
-    float maxValor = 0.0f;
     int ancho, alto;
     float c;
     string nombreFuncion = "";
     
-    if(leerFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c, maxValor)){
-        nombreFuncion = transformarValores(valores, idFuncion, maxValor);
+    if(leerFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c)){
+        nombreFuncion = transformarValores(valores, idFuncion, maxColorRes);
         escribirFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c, nombreFuncion);
 
         cout << "Se ha aplicado la funcion de tone mapping " << nombreFuncion << endl;

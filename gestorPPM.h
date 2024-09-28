@@ -33,7 +33,7 @@ void leer_dimensiones(int& ancho, int& alto, string& linea);
 float leer_resolucion(ifstream& fichero, float& c);
 
 // Función para leer los valores de los píxeles
-void leer_valores(ifstream& fichero, float maxColorRes, float c, vector<float>& valores, float& maxValor);
+void leer_valores(ifstream& fichero, float maxColorRes, float c, vector<float>& valores);
 
 // Función para imprimir los resultados
 void imprimir_resultados(const vector<float>& valores, float maxColorRes, int alto, int ancho, float c);
