@@ -92,11 +92,17 @@ bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Pun
     Base baseDest = pDest.getBaseEstacion();
     Base baseOrig = this->getBaseEstacion();
     
+    // DEBUG
+    //cout << "Base estacion destino:\n" << baseDest << endl;
+    //cout << "Base estacion origen:\n" << baseOrig << endl;
+    //cout << "Estacion destino UCS:" << pDest.estacionToUCS() << endl;
+    //cout << "Estacion origen UCS:" << this->estacionToUCS() << endl;
+    
     Direccion trayDest = normalizar(cambioBase(trayUCS, baseDest, pDest.estacionToUCS()));
     Direccion trayOrig = normalizar(cambioBase(trayUCS, baseOrig, this->estacionToUCS()));
     
     // Cambiamos de sentido porque pDestino necesita saber de "dónde viene" el cohete
-    trayDest = trayDest * (-1);
+    //trayDest = trayDest * (-1);
     bool pDestEscape = pDest.impactoOrEscape(trayDest);
     bool pOrigEscape = this->impactoOrEscape(trayOrig);
     

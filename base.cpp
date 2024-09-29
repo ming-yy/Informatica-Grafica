@@ -24,6 +24,7 @@ using std::fixed;
 using std::setprecision;
 using std::setw;
 
+
 Base::Base() {
     for (int i=0; i<3; i++) {
         base[i].fill(0.0f);

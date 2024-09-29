@@ -26,6 +26,7 @@ public:
     Punto cref;     // En UCS
     float radio;
     array<float, 2> estacion;  // [inclinacion, azimut] respecto a <cref>
+                               // inclin = (0, pi)   azimut = (-pi, pi]
     array<float, 3> coordLocEstac; // Coord locales de estación respecto centro planeta
     
     // De momento NO SIRVE PARA NADA

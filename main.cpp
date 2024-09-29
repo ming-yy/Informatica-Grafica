@@ -37,7 +37,7 @@ using std::string;
 
 
 int main() {
-    int test = 9;
+    int test = 6;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -303,6 +303,7 @@ int main() {
         
         cout << "--- Pruebas planetas ---" << endl;
         sh_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1, 45, 0);
+        //sh_ptr<Planeta> planeta1 = std::make_shared<Planeta>(*centro1, *eje1, *cref1, 90, 0);
         cout << "\nPlaneta1:\n" << *planeta1 << endl;
         
         try {
@@ -317,6 +318,7 @@ int main() {
         sh_ptr<Punto> cref3 = std::make_shared<Punto>(3,0,0);
         sh_ptr<Direccion> eje3 = std::make_shared<Direccion>(0,4,0);
         sh_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, -45, 0);
+        //sh_ptr<Planeta> planeta3 = std::make_shared<Planeta>(*centro3, *eje3, *cref3, 90, 180);
         cout << "\nPlaneta3:\n" << *planeta3 << endl;
         
         

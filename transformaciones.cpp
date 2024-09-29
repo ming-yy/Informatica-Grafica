@@ -108,8 +108,7 @@ Matriz<4, 1> rotateZ(const PuntoDireccion& pd, float d) {
 
 //Matriz<4, 1> cambioBase(const Punto& p, const Base& b, const Punto& o) {
 Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
-    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
-        init_list<init_list<float>>{
+    Matriz<4, 4> m = Matriz<4, 4>(init_list<init_list<float>>{
             {b.base[0][0], b.base[1][0], b.base[2][0], o.coord[0]},
             {b.base[0][1], b.base[1][1], b.base[2][1], o.coord[1]},
             {b.base[0][2], b.base[1][2], b.base[2][2], o.coord[2]},
@@ -117,12 +116,11 @@ Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
         }
     );
     
-    sh_ptr<Matriz<4, 1>> pCH = std::make_shared<Matriz<4, 1>>(p.getCoordHomo());
-    // FALTA HACER LA INVERSA de m
-    sh_ptr<Matriz<4, 1>> aux = std::make_shared<Matriz<4, 1>>((*m * *pCH).matriz);
+    Matriz<4, 4> ucsToLocal = m.inversa();
+    Matriz<4, 1> res = Matriz<4, 1>((ucsToLocal * p.getCoordHomo()).matriz);
     
-    //return *m * *pCH;
-    return Punto(aux->matriz[0][0], aux->matriz[1][0], aux->matriz[2][0]);
+    // std::cout << m << "\n" << ucsToLocal << std::endl;
+    return Punto(res.matriz[0][0], res.matriz[1][0], res.matriz[2][0]);
 }
 
 
@@ -137,5 +135,7 @@ Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o) {
     
     Matriz<4, 4> ucsToLocal = m.inversa();
     Matriz<4, 1> res = Matriz<4, 1>((ucsToLocal * p.getCoordHomo()).matriz);
+    
+    // std::cout << m << "\n" << ucsToLocal << std::endl;
     return Direccion(res.matriz[0][0], res.matriz[1][0], res.matriz[2][0]);
 }

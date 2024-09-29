@@ -51,10 +51,11 @@ public:
     template <size_t Columnas2>
     Matriz<Filas, Columnas2> operator*(const Matriz<Columnas, Columnas2>& otra) const;
     
+    
     // Método que devuelve la matriz inversa
     Matriz<4, 4> inversa() const {
         Matriz<4, 4> inv;
-        Matriz<4, 4> temp = *this; // Crear una copia temporal de la matriz actual
+        Matriz<4, 4> temp = *this;
 
         // Matriz identidad
         for (size_t i = 0; i < 4; ++i) {
@@ -63,8 +64,23 @@ public:
 
         // Implementación de Gauss-Jordan para la inversa
         for (size_t i = 0; i < 4; ++i) {
+            // Buscar el pivote más grande en la columna i para intercambiar filas
+            size_t maxRow = i;
+            for (size_t k = i + 1; k < 4; ++k) {
+                if (std::abs(temp.matriz[k][i]) > std::abs(temp.matriz[maxRow][i])) {
+                    maxRow = k;
+                }
+            }
+
+            // Intercambiar filas si es necesario
+            if (i != maxRow) {
+                std::swap(temp.matriz[i], temp.matriz[maxRow]);
+                std::swap(inv.matriz[i], inv.matriz[maxRow]);
+            }
+
+            // Verificar si la matriz es singular
             float diagElem = temp.matriz[i][i];
-            if (diagElem == 0.0f) {
+            if (std::abs(diagElem) < 1e-7) {
                 throw runtime_error("La matriz es singular y no tiene inversa.");
             }
 
@@ -182,6 +198,3 @@ Matriz<Filas, Columnas2> Matriz<Filas, Columnas>::operator*(const Matriz<Columna
 
     return resultado;
 }
-
-// Método para obtener la inversa de la matriz 4x4
-
