@@ -37,7 +37,7 @@ using std::string;
 
 
 int main() {
-    int test = 6;
+    int test = 9;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -349,11 +349,11 @@ int main() {
         cout << *ejemplo_print2;
         
     } else if (test == 8){
-        string nombreFichero = "ppms/seymour_park.ppm";
-        return transformarFicheroPPM(nombreFichero, 1);
+        string nombreFichero = "/Users/ming/github_things/Informatica-Grafica/ppms/forest_path.ppm";
+        return transformarFicheroPPM(nombreFichero, 2);
 
     } else if (test == 9){
-        string nombreFichero = "ppms/seymour_park.ppm";
+        string nombreFichero = "/Users/ming/github_things/Informatica-Grafica/ppms/forest_path.ppm";
         transformarFicheroPPM(nombreFichero, 1);
         transformarFicheroPPM(nombreFichero, 2);
         transformarFicheroPPM(nombreFichero, 3);

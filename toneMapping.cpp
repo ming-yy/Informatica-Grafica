@@ -1,10 +1,17 @@
+//*****************************************************************
+// File:   toneMapping.h
+// Author: Ming Tao, Ye   NIP: 839757, Puig Rubio, Manel Jorda  NIP: 839304
+// Date:   octubre 2024
+// Coms:   Práctica 1 de Informática Gráfica
+//*****************************************************************
+
 #include "toneMapping.h"
-#include <cmath>
 
 using std::vector;
 using std::pow;
 
-// GAMMA puede ser otro, pero 2.2 es un valor común 
+
+// GAMMA puede ser otro, pero 2.2 es un valor común
 // utilizado para la corrección gamma en monitores estándar.
 #define GAMMA 2.2
 

@@ -1,3 +1,9 @@
+//*****************************************************************
+// File:   gestorPPM.cpp
+// Author: Ming Tao, Ye   NIP: 839757, Puig Rubio, Manel Jorda  NIP: 839304
+// Date:   octubre 2024
+// Coms:   Práctica 1 de Informática Gráfica
+//*****************************************************************
 
 #include "gestorPPM.h"
 #include "toneMapping.h"
@@ -15,24 +21,6 @@ using std::fixed;
 using std::setprecision;
 
 
-bool leerFicheroPPM(const string&nombreFich, vector<float>& valores, 
-                            float& maxColorRes, int& ancho, int& alto, float& c) {
-    
-    ifstream fichero = abrir_fichero(nombreFich);
-    if (!validar_formato(fichero)) {
-        return false;
-    }
-
-    leer_cabecera(fichero, maxColorRes, ancho, alto, c);
-    leer_valores(fichero, maxColorRes, c, valores);
-    fichero.close();
-
-    //imprimir_resultados(valores, maxColorRes, alto, ancho, c);
-
-    return true;
-}
-
-
 ifstream abrir_fichero(const string& nombreFich) {
     ifstream fichero(nombreFich);
     if (!fichero.is_open()) {
@@ -42,16 +30,35 @@ ifstream abrir_fichero(const string& nombreFich) {
     return fichero;
 }
 
+void quitarEspaciosSaltos(string &str) {
+    while (!str.empty() && std::isspace(str.back())) {
+        str.pop_back();  // elimina el último carácter si es un espacio o salto de línea
+    }
+}
+
 
 bool validar_formato(ifstream& fichero) {
     string linea;
     getline(fichero, linea);
     
+    quitarEspaciosSaltos(linea);
     if (linea != "P3") {
         cerr << "Formato de fichero no soportado, se esperaba 'P3', no " << linea << endl;
         return false;
     }
     return true;
+}
+
+
+void leer_dimensiones(int& ancho, int& alto, string& linea) {
+    istringstream ss(linea);
+    ss >> ancho >> alto;
+}
+
+
+float leer_resolucion(ifstream& fichero, float& c) {
+    fichero >> c;
+    return c;
 }
 
 
@@ -70,18 +77,6 @@ void leer_cabecera(ifstream& fichero, float& maxColorRes, int& ancho, int& alto,
             break;
         }
     }
-}
-
-
-void leer_dimensiones(int& ancho, int& alto, string& linea) {
-    istringstream ss(linea);
-    ss >> ancho >> alto;
-}
-
-
-float leer_resolucion(ifstream& fichero, float& c) {
-    fichero >> c;
-    return c;
 }
 
 
@@ -109,16 +104,19 @@ void imprimir_resultados(const vector<float>& valores, float maxColorRes, int al
     cout << "Resolucion maxima de color: " << c << endl;
 }
 
-string encontrarNombreFinalFichero(const string&ruta){
-     // Encontrar la posición del último '/'
-    size_t pos = ruta.find_last_of("/");
 
-    // Si encontró el '/' obtener la parte posterior
-    if (pos != std::string::npos) {
-        return ruta.substr(pos + 1); // Obtener el substring después del '/'
-    } else {
-        return ruta; // Si no hay '/', devolver el string completo
+bool leerFicheroPPM(const string&nombreFich, vector<float>& valores,
+                            float& maxColorRes, int& ancho, int& alto, float& c) {
+    ifstream fichero = abrir_fichero(nombreFich);
+    if (!validar_formato(fichero)) {
+        return false;
     }
+
+    leer_cabecera(fichero, maxColorRes, ancho, alto, c);
+    leer_valores(fichero, maxColorRes, c, valores);
+    fichero.close();
+    //imprimir_resultados(valores, maxColorRes, alto, ancho, c);
+    return true;
 }
 
 
@@ -131,19 +129,15 @@ void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero,
     fichero  << fixed << setprecision(0) << c << "\n";
 }
 
-void escribirValoresPPM(ofstream& fichero, const vector<float>& valores, 
+
+void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
                                 const float maxColorRes, const int ancho, const int alto, const float c){
-
     int anchoTriple = ancho*3;
-
-    if(valores.size() != anchoTriple * alto){
+    if (valores.size() != anchoTriple * alto){
         cerr << "ERROR: El tamano (ancho x alto) del fichero de entrada es incorrecto" << endl;
         return;
     }
-
-            
     int indice = 0;
-    // Imprimir la matriz en filas y columnas
     for (int h = 0; h < alto; ++h) {
         for (int w = 0; w < anchoTriple; w+=3) {
             indice = h*anchoTriple + w;
@@ -153,24 +147,31 @@ void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
         }
         fichero << "\n";
     }
-    
 }
 
 
-
-void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, 
-                            const float maxColorRes, const int ancho, const int alto, 
-                                const float c, const string& nombreFuncion){
+string encontrarNombreFinalFichero(const string& ruta){
+    size_t pos = ruta.find_last_of("/");    // Posición del último '/'
     
-    string rutaFichRes = nombreFich.substr(0, nombreFich.find_last_of(".")) + "_" + nombreFuncion + ".ppm";
-    string nombreFichRes = encontrarNombreFinalFichero(nombreFich);
+    if (pos != std::string::npos) {    // Si hay '/'
+        return ruta.substr(pos + 1); // Obtener el substring después del '/'
+    } else {
+        return ruta; // Si no hay '/', devolver el string completo
+    }
+}
 
+
+void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores,
+                            const float maxColorRes, const int ancho, const int alto,
+                                const float c, const string& nombreFuncion){
+    string nombreFichRes = encontrarNombreFinalFichero(nombreFich);
+    string rutaFichRes = nombreFich.substr(0, nombreFich.find_last_of(".")) +
+                         "_" + nombreFuncion + ".ppm";
     ofstream ficheroRes(rutaFichRes);
     if(!ficheroRes){
         cerr << "ERROR al crear el archivo de salida." << endl;
         return;
     }
-
     
     escribirCabeceraPPM(ficheroRes, nombreFichRes, maxColorRes, ancho, alto, c);
     escribirValoresPPM(ficheroRes, valores, maxColorRes, ancho, alto, c);
@@ -178,56 +179,46 @@ void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores,
     ficheroRes.close();
 }
 
+
 string transformarValores(vector<float>& valores, const int tipoTransform, const float maxValue){
     string res = "";
-    switch (tipoTransform)
-    {
-    case 0:
-        // NINGUNA FUNCION
-        // (misma imagen de entrada y salida)
+    switch (tipoTransform) {
+    case 0:     // Misma imagen de entrada y salida
         res = "0_Ninguna";
         break;
 
-    case 1:
-        // FUNCION CLAMPING
+    case 1:     // FUNCION CLAMPING
         res = "1_Clamping";
         clamp(valores);
         break;
 
-    case 2:
-        // FUNCION EQUALIZATION
+    case 2:     // FUNCION EQUALIZATION
         res = "2_Equalization";
         equalize(valores, maxValue);
         break;
 
-    case 3:
-        // FUNCION CLAMPING+EQUALIZATION
+    case 3:     // FUNCION CLAMPING+EQUALIZATION
         res = "3_Clamping+Equalization";
         clampAndEqualize(valores, maxValue/2);
         break;
 
-    case 4:
-        // FUNCION GAMMA
+    case 4:     // FUNCION GAMMA
         res = "4_Gamma";
         gamma(valores, maxValue);
         break;
 
-    case 5:
-        // FUNCION GAMMA+EQUALIZATION
+    case 5:     // FUNCION GAMMA+EQUALIZATION
         res = "5_Gamma+Equalization";
         gammaAndClamp(valores, maxValue/2);
         break;
 
-    default:
-        // ERROR
+    default:    // ERROR
         res = "ERROR";
         break;
     }
 
     return res;
 }
-
-
 
 
 int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
@@ -242,8 +233,11 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
     cout << "Aplicando la funcion de tone mapping numero " << idFuncion << endl;
 
     if(leerFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c)){
-
         nombreFuncion = transformarValores(valores, idFuncion, maxColorRes);
+        
+        // Recalculamos MAX y C antes de escribir el fichero
+        maxColorRes = *max_element(valores.begin(), valores.end());
+        c = 255;    // Porque es RGB (=2^8)
         escribirFicheroPPM(nombreFichero, valores, maxColorRes, ancho, alto, c, nombreFuncion);
 
         cout << nombreFuncion << " ha terminado!"<< endl << endl;
