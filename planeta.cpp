@@ -87,7 +87,7 @@ bool Planeta::impactoOrEscape(const Direccion& trayectoria) {
 }
 
 
-bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Punto& o) {
+bool Planeta::interconexion(Planeta& pDest, const Base& ucs, const Punto& o) {
     Direccion trayUCS = Direccion(this->getTrayectoria(pDest));
     Base baseDest = pDest.getBaseEstacion();
     Base baseOrig = this->getBaseEstacion();
@@ -116,6 +116,55 @@ bool Planeta::interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Pun
     cout << "Planeta destino, impacto (0) o escape (1)? " << pDestEscape << endl;
     
     return !pDestEscape and pOrigEscape;
+}
+
+
+bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest, const Base& ucs,
+                             const Punto& o) {
+    return pOrig.interconexion(pDest, ucs, o);
+}
+
+
+bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e) {
+    bool resVal = true;
+    float a, b, c;
+    
+    a = modulo(d);
+    a *= a;
+    b = 2 * dot(d, p - e.centro);
+    c = (modulo(p - e.centro) * modulo(p - e.centro)) - (e.radio * e.radio);
+    
+    // DEBUG
+    cout << "a = " << a << "\nb = " << b << "\nc = " << c << endl;
+    
+    // Cálculo del discriminante
+    float discriminante = b * b - 4 * a * c;
+
+    // Caso de soluciones reales
+    if (discriminante > 0) {
+        float t1 = (-b + sqrt(discriminante)) / (2 * a);
+        float t2 = (-b - sqrt(discriminante)) / (2 * a);
+        Punto p1 = p + d * t1;
+        Punto p2 = p + d * t2;
+        cout << "Hay 2 puntos de interseccion: " << endl;
+        cout << "t1 = " << t1 << " --> " << p1 << endl;
+        cout << "t2 = " << t2 << " --> " << p2 << endl;
+        cout << "Primero intersecara con: ";
+        cout << (modulo(p - p1) < modulo(p - p2) ? p1 : p2) << endl;
+    }
+    // Caso de una solución única
+    else if (discriminante == 0) {
+        float t = -b / (2 * a);
+        cout << "Hay 1 punto de interseccion (tngente): " << endl;
+        cout << "t = " << t << " --> " << p + d * t << endl;
+    }
+    // Caso de soluciones complejas
+    else {
+        cout << "No hay puntos de intersección!" << endl;
+        resVal = false;
+    }
+    
+    return resVal;
 }
 
 

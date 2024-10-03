@@ -55,10 +55,13 @@ public:
     // PRECONDICION: <trayectoria> en base local de la estación.
     bool impactoOrEscape(const Direccion& trayectoria);
     
-    // Método que dados el planeta destino, la base UCS y el punto de origen UCS,
-    // devuelve <True> si y solo si la interconexión entre nuestro planeta y el
-    // planeta destino ha sido exitosa.
-    bool interconexionPlanetaria(Planeta& pDest, const Base& ucs, const Punto& o);
+    // Método que dados el planeta origen, planeta destino, la base UCS y el punto
+    // de origen UCS, devuelve <True> si y solo si la interconexión entre nuestro
+    // planeta y el planeta destino ha sido exitosa.
+    friend bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest,
+                                        const Base& ucs, const Punto& o);
+    
+    friend bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e);
     
     // Función para mostrar por pantalla el planeta
     friend ostream& operator<<(ostream& os, const Planeta& pd);
@@ -71,5 +74,10 @@ private:
     // NO SIRVE PARA NADA
     // Obtiene los 3 vectores respecto al CENTRO DEL PLANETA
     void calcularVectoresCentroPlaneta();
+    
+    // Método AUXILIAR que dados el planeta destino, la base UCS y el punto de origen
+    // UCS, devuelve <True> si y solo si la interconexión entre nuestro planeta y el
+    // planeta destino ha sido exitosa.
+    bool interconexion(Planeta& pDest, const Base& ucs, const Punto& o);
 
 };

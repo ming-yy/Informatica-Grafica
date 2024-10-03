@@ -37,7 +37,7 @@ using std::string;
 
 
 int main() {
-    int test = 9;
+    int test = 6;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -323,8 +323,13 @@ int main() {
         
         
         cout << "--- Pruebas interconexion planetaria ---" << endl;
-        bool resultado = planeta1->interconexionPlanetaria(*planeta3, *ucs, *origenUCS);
+        bool resultado = interconexionPlanetaria(*planeta1, *planeta3, *ucs, *origenUCS);
         cout << "Interconexion planetaria exitosa? " << resultado << endl;
+        
+        cout << endl << endl;
+        cout << "--- Pruebas interseccion Rayo Esfera ---" << endl;
+        sh_ptr<Direccion> rayo = std::make_shared<Direccion>(1,0,0);
+        interseccionRayoEsfera(*origenUCS, *rayo, *planeta3);
         
     } else if (test == 7) {
         sh_ptr<Base> ejemplo_print = std::make_shared<Base>(
@@ -359,7 +364,9 @@ int main() {
         transformarFicheroPPM(nombreFichero, 3);
         transformarFicheroPPM(nombreFichero, 4);
         transformarFicheroPPM(nombreFichero, 5);
-
+        
+    } else if (test == 10) {
+        
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }
