@@ -25,7 +25,14 @@ public:
     
     // Método que devuelve las coordenadas homogéneas
     virtual Matriz<4,1> getCoordHomo() const = 0;
+    
+    // Función para calcular producto escalar entre d1 y d2
+    friend float dot(const PuntoDireccion& d1, const PuntoDireccion& d2);
 
     // Función para mostrar por pantalla el contenido del punto o dirección
     friend ostream& operator<<(ostream& os, const PuntoDireccion& pd);
+
+private:
+    // Método privado para calcular el producto escalar
+    float productoEscalar(const PuntoDireccion& d) const;
 };

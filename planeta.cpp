@@ -125,7 +125,7 @@ bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest, const Base& ucs,
 }
 
 
-bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e) {
+bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e, Punto& puntoInterseccion) {
     bool resVal = true;
     float a, b, c;
     
@@ -146,17 +146,19 @@ bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e) {
         float t2 = (-b - sqrt(discriminante)) / (2 * a);
         Punto p1 = p + d * t1;
         Punto p2 = p + d * t2;
+        puntoInterseccion = (modulo(p - p1) < modulo(p - p2) ? p1 : p2);
         cout << "Hay 2 puntos de interseccion: " << endl;
         cout << "t1 = " << t1 << " --> " << p1 << endl;
         cout << "t2 = " << t2 << " --> " << p2 << endl;
         cout << "Primero intersecara con: ";
-        cout << (modulo(p - p1) < modulo(p - p2) ? p1 : p2) << endl;
+        cout << puntoInterseccion << endl;
     }
     // Caso de una solución única
     else if (discriminante == 0) {
         float t = -b / (2 * a);
+        puntoInterseccion = p + d * t;
         cout << "Hay 1 punto de interseccion (tngente): " << endl;
-        cout << "t = " << t << " --> " << p + d * t << endl;
+        cout << "t = " << t << " --> " << puntoInterseccion << endl;
     }
     // Caso de soluciones complejas
     else {

@@ -42,9 +42,6 @@ public:
     
     // Función global para normalizar la dirección
     friend Direccion normalizar(const Direccion& d);
-
-    // Función global para producto escalar entre dos direcciones
-    friend float dot(const Direccion& d1, const Direccion& d2);
     
     // Función global para producto vectorial entre dos direcciones
     friend Direccion cross(const Direccion& d1, const Direccion& d2);
@@ -56,9 +53,6 @@ private:
     // Método privado para normalizar la dirección
     Direccion normalizar() const;
     
-    // Método privado para producto escalar con otra dirección
-    float productoEscalar(const Direccion& d) const;
-
     // Método privado para producto vectorial con otra dirección
     Direccion productoVectorial(const Direccion& d) const;
 };

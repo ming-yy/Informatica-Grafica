@@ -61,7 +61,8 @@ public:
     friend bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest,
                                         const Base& ucs, const Punto& o);
     
-    friend bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e);
+    friend bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e,
+                                       Punto& puntoInterseccion);
     
     // Función para mostrar por pantalla el planeta
     friend ostream& operator<<(ostream& os, const Planeta& pd);

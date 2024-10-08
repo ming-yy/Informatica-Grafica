@@ -14,6 +14,7 @@
 #include "direccion.h"
 #include "planeta.h"
 #include "matriz.h"
+#include "plano.h"
 #include "transformaciones.h"
 #include "gestorPPM.h"
 
@@ -329,7 +330,17 @@ int main() {
         cout << endl << endl;
         cout << "--- Pruebas interseccion Rayo Esfera ---" << endl;
         sh_ptr<Direccion> rayo = std::make_shared<Direccion>(1,0,0);
-        interseccionRayoEsfera(*origenUCS, *rayo, *planeta3);
+        sh_ptr<Punto> ptoIntersec = std::make_shared<Punto>();
+        interseccionRayoEsfera(*origenUCS, *rayo, *planeta3, *ptoIntersec);
+        
+        cout << endl << endl;
+        cout << "--- Pruebas interseccion Rayo Plano ---" << endl;
+        sh_ptr<Direccion> normalPlano = std::make_shared<Direccion>(1,0,0);
+        sh_ptr<Punto> centroPlano = std::make_shared<Punto>(5,0,0);
+        float distanciaPlano = -5.0f;   // El plano está a 5 unidades del origen UCS
+        sh_ptr<Plano> plano = std::make_shared<Plano>(*centroPlano, *normalPlano, distanciaPlano);
+        cout << *plano << endl;
+        interseccionRayoPlano(*origenUCS, *rayo, *plano, *ptoIntersec);
         
     } else if (test == 7) {
         sh_ptr<Base> ejemplo_print = std::make_shared<Base>(

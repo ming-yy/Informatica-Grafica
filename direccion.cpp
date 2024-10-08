@@ -68,14 +68,6 @@ Direccion normalizar(const Direccion& d) {
     return d.normalizar();
 }
 
-float Direccion::productoEscalar(const Direccion& d) const {
-    return coord[0] * d.coord[0] + coord[1] * d.coord[1] + coord[2] * d.coord[2];
-}
-
-float dot(const Direccion& d1, const Direccion& d2) {
-    return d1.productoEscalar(d2);
-}
-
 Direccion Direccion::productoVectorial(const Direccion& d) const {
     return Direccion(
         coord[1] * d.coord[2] - coord[2] * d.coord[1],
