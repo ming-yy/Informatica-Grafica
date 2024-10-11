@@ -17,6 +17,7 @@
 #include "plano.h"
 #include "transformaciones.h"
 #include "gestorPPM.h"
+#include "triangulo.h"
 
 
 template<typename T>
@@ -38,7 +39,7 @@ using std::string;
 
 
 int main() {
-    int test = 6;
+    int test = 10;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -377,7 +378,32 @@ int main() {
         transformarFicheroPPM(nombreFichero, 5);
         
     } else if (test == 10) {
-        
+        cout << endl << "PRUEBA 10 - INTERSECCION RAYO-TRIANGULO" << endl;
+
+        // Vértices del triángulo
+        array<float, 3> arrV0 = {0.0f, 0.0f, 0.0f};
+        array<float, 3> arrV1 = {1.0f, 0.0f, 0.0f};
+        array<float, 3> arrV2 = {0.0f, 1.0f, 0.0f};
+
+        Punto v0(arrV0);
+        Punto v1(arrV1);
+        Punto v2(arrV2);
+        Triangulo triangulo(v0, v1, v2);
+
+        array<float, 3> arrOrigenRayo = {0.5f, 0.5f, -1.0f};
+        array<float, 3> arrDireccionRayo = {0.0f, 0.0f, 1.0f};
+
+        Punto origenRayo(arrOrigenRayo);
+        Direccion direccionRayo(arrDireccionRayo);
+        Punto puntoInterseccion;
+
+        bool hayInterseccion = triangulo.interseccionRayoTriangulo(origenRayo, direccionRayo, puntoInterseccion);
+
+        if (hayInterseccion) {
+            cout << "¡Hay interseccion! El punto de interseccion es: " << puntoInterseccion << endl;
+        } else {
+            cout << "No hay interseccion." << endl;
+        }
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }
