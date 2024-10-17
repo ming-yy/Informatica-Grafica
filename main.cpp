@@ -18,6 +18,7 @@
 #include "transformaciones.h"
 #include "gestorPPM.h"
 #include "triangulo.h"
+#include "camara.h"
 
 
 template<typename T>
@@ -39,7 +40,7 @@ using std::string;
 
 
 int main() {
-    int test = 10;
+    int test = 11;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -404,6 +405,11 @@ int main() {
         } else {
             cout << "No hay interseccion." << endl;
         }
+    } else if (test == 11) {
+        cout << endl << "PRUEBA 11 - CAMARA Y COSAS" << endl;
+
+        Camara cam1 = Camara();
+        cout << "Test camara1: " << modulo(cam1.f) << endl;
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }

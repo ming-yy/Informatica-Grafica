@@ -15,9 +15,10 @@
 class Triangulo {
 public:
     Punto v0, v1, v2;
+    array<float, 3> emision;
 
     Triangulo();
-    Triangulo(Punto& _v0, Punto& _v1, Punto& _v2);
+    Triangulo(Punto& _v0, Punto& _v1, Punto& _v2, array<float, 3> _emision);
 
     // Método para calcular la intersección entre un rayo y el triángulo
     // Devuelve <True> si hay intersección y almacena el punto de intersección

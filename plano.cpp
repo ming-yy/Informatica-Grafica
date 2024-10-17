@@ -12,9 +12,12 @@ using std::cout;
 using std::endl;
 
 
-Plano::Plano(): c(0.0f, 0.0f, 0.0f), n(0.0f, 0.0f, 0.0f), d(0.0f){}
+Plano::Plano(): c(0.0f, 0.0f, 0.0f), n(0.0f, 0.0f, 0.0f), d(0.0f),
+                emision({0.0f, 0.0f, 0.0f}) {}
 
-Plano::Plano(Punto& _c, Direccion& _n, float _d): c(_c), n(_n), d(_d){}
+Plano::Plano(Punto& _c, Direccion& _n, float _d,
+             array<float, 3> _emision = {0.0f, 0.0f, 0.0f}):
+             c(_c), n(_n), d(_d), emision(_emision) {}
 
 
 bool interseccionRayoPlano(Punto& p, Direccion& d, Plano& e, Punto& puntoInterseccion) {

@@ -28,15 +28,17 @@ public:
     array<float, 2> estacion;  // [inclinacion, azimut] respecto a <cref>
                                // inclin = (0, pi)   azimut = (-pi, pi]
     array<float, 3> coordLocEstac; // Coord locales de estación respecto centro planeta
+    array<float, 3> emision;    // (r,g,b)
     
     // De momento NO SIRVE PARA NADA
-    Direccion normal;   // Respecto a la superficie de la estación y tiene módulo 1
-    Direccion tangLong; // Respecto a superficie planeta y 90º con eje planeta
-    Direccion tangLat;  // Respecto superficie planeta y 90º con <tangLong>
+    //Direccion normal;   // Respecto a la superficie de la estación y tiene módulo 1
+    //Direccion tangLong; // Respecto a superficie planeta y 90º con eje planeta
+    //Direccion tangLat;  // Respecto superficie planeta y 90º con <tangLong>
     
-    // Constructor de Planeta
+    
+    Planeta();
     Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
-            const float& inclinacion, const float& azimut);
+            const float& inclinacion, const float& azimut, array<float, 3> _emision);
     
     // Método que devuelve las coordenadas de la estación en UCS
     Punto estacionToUCS() const;
@@ -74,7 +76,7 @@ private:
     
     // NO SIRVE PARA NADA
     // Obtiene los 3 vectores respecto al CENTRO DEL PLANETA
-    void calcularVectoresCentroPlaneta();
+    // void calcularVectoresCentroPlaneta();
     
     // Método AUXILIAR que dados el planeta destino, la base UCS y el punto de origen
     // UCS, devuelve <True> si y solo si la interconexión entre nuestro planeta y el

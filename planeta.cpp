@@ -17,9 +17,15 @@ using std::ostream;
 using std::cout;
 
 
+Planeta::Planeta(): centro(Punto()), eje(Direccion()), cref(Punto()),
+                    estacion{0.0f, 0.0f}, emision({0.0f,0.0f,0.0f}) {}
+
+
 Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
-                 const float& _inclinacion, const float& _azimut):
-                 centro(_centro), eje(_eje), cref(_cref), estacion{_inclinacion, _azimut} {
+                 const float& _inclinacion, const float& _azimut,
+                 array<float,3> _emision = {0.0f, 0.0f, 0.0f}):
+                 centro(_centro), eje(_eje), cref(_cref),
+                 estacion{_inclinacion, _azimut}, emision(_emision) {
     // Faltan comprobaciones rango de azimut e inclinación
     estacion[0] = _inclinacion;
     estacion[1] = _azimut;
@@ -50,13 +56,14 @@ void Planeta::calcularCoordLocEstacion(){
     coordLocEstac[2] = this->radio * cosIncl;
 }
 
-
+/*
 void Planeta::calcularVectoresCentroPlaneta() {
     // Base de la ciudad de referencia
     this->normal = normalizar(this->cref - this->centro);
     this->tangLong = normalizar(cross(this->normal, this->eje));
     this->tangLat = normalizar(this->eje);
 }
+*/
 
 
 Punto Planeta::estacionToUCS() const {
@@ -173,9 +180,10 @@ bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e, Punto& puntoInte
 ostream& operator<<(ostream& os, const Planeta& r)
 {
     os << "Centro: " << r.centro << ",\nEje: " << r.eje << ",\nCiudad ref: "
-       << r.cref << "\nRadio: " << r.radio << "\nNormal: " << r.normal
-       << "\nTangente longitud: " << r.tangLong
-       << "\nTangete latitud: " << r.tangLat << endl;
+       << r.cref << "\nRadio: " << r.radio << endl;
+       // << "\nNormal: "<< r.normal
+       // << "\nTangente longitud: " << r.tangLong
+       // << "\nTangete latitud: " << r.tangLat << endl;
 
     return os;
 }
