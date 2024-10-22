@@ -20,7 +20,7 @@ using init_list = std::initializer_list<T>;
 
 
 Matriz<4, 1> translate(const PuntoDireccion& pd, float x, float y, float z) {
-    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+    Matriz<4, 4> m = Matriz<4, 4>(
             init_list<init_list<float>>{
                 {1.0f, 0.0f, 0.0f, x},
                 {0.0f, 1.0f, 0.0f, y},
@@ -29,13 +29,13 @@ Matriz<4, 1> translate(const PuntoDireccion& pd, float x, float y, float z) {
             }
     );
 
-    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
-    return *m * *p;
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    return m * p;
 }
 
 
 Matriz<4, 1> scale(const PuntoDireccion& pd, float x, float y, float z) {
-    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+    Matriz<4, 4> m = Matriz<4, 4>(
             init_list<init_list<float>>{
                 {x, 0.0f, 0.0f, 0.0f},
                 {0.0f, y, 0.0f, 0.0f},
@@ -44,8 +44,8 @@ Matriz<4, 1> scale(const PuntoDireccion& pd, float x, float y, float z) {
             }
     );
 
-    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
-    return *m * *p;
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    return m * p;
 }
 
 
@@ -54,7 +54,7 @@ Matriz<4, 1> rotateX(const PuntoDireccion& pd, float d) {
     float cosD = static_cast<float>(cos(dRad));
     float sinD = static_cast<float>(sin(dRad));
 
-    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+    Matriz<4, 4> m = Matriz<4, 4>(
         init_list<init_list<float>>{
             {1.0f, 0.0f, 0.0f, 0.0f},
             {0.0f, cosD, -sinD, 0.0f},
@@ -63,8 +63,8 @@ Matriz<4, 1> rotateX(const PuntoDireccion& pd, float d) {
         }
     );
 
-    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
-    return *m * *p;
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    return m * p;
 }
 
 
@@ -73,7 +73,7 @@ Matriz<4, 1> rotateY(const PuntoDireccion& pd, float d) {
     float cosD = static_cast<float>(cos(dRad));
     float sinD = static_cast<float>(sin(dRad));
 
-    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+    Matriz<4, 4> m = Matriz<4, 4>(
         init_list<init_list<float>>{
             {cosD, 0.0f, sinD, 0.0f},
             {0.0f, 1.0f, 0.0f, 0.0f},
@@ -82,8 +82,8 @@ Matriz<4, 1> rotateY(const PuntoDireccion& pd, float d) {
         }
     );
 
-    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
-    return *m * *p;
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    return m * p;
 }
 
 
@@ -92,7 +92,7 @@ Matriz<4, 1> rotateZ(const PuntoDireccion& pd, float d) {
     float cosD = static_cast<float>(cos(dRad));
     float sinD = static_cast<float>(sin(dRad));
 
-    sh_ptr<Matriz<4, 4>> m = std::make_shared<Matriz<4, 4>>(
+    Matriz<4, 4> m = Matriz<4, 4>(
         init_list<init_list<float>>{
             {cosD, -sinD, 0.0f, 0.0f},
             {sinD, cosD, 0.0f, 0.0f},
@@ -101,13 +101,14 @@ Matriz<4, 1> rotateZ(const PuntoDireccion& pd, float d) {
         }
     );
 
-    sh_ptr<Matriz<4, 1>> p = std::make_shared<Matriz<4, 1>>(pd.getCoordHomo());
-    return *m * *p;
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    return m * p;
 }
 
 
 //Matriz<4, 1> cambioBase(const Punto& p, const Base& b, const Punto& o) {
-Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
+Punto cambioBase(const Punto& p, const Base& b, const Punto& o, const bool& invertir) {
+    Matriz<4, 1> res;
     Matriz<4, 4> m = Matriz<4, 4>(init_list<init_list<float>>{
             {b.base[0][0], b.base[1][0], b.base[2][0], o.coord[0]},
             {b.base[0][1], b.base[1][1], b.base[2][1], o.coord[1]},
@@ -116,15 +117,20 @@ Punto cambioBase(const Punto& p, const Base& b, const Punto& o) {
         }
     );
     
-    Matriz<4, 4> ucsToLocal = m.inversa();
-    Matriz<4, 1> res = Matriz<4, 1>((ucsToLocal * p.getCoordHomo()).matriz);
+    if (invertir) {
+        Matriz<4, 4> ucsToLocal = m.inversa();
+        res = Matriz<4, 1>((ucsToLocal * p.getCoordHomo()).matriz);
+    } else {
+        res = Matriz<4, 1>((m * p.getCoordHomo()).matriz);
+    }
     
     // std::cout << m << "\n" << ucsToLocal << std::endl;
     return Punto(res.matriz[0][0], res.matriz[1][0], res.matriz[2][0]);
 }
 
 
-Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o) {
+Direccion cambioBase(const Direccion& d, const Base& b, const Punto& o, const bool& invertir) {
+    Matriz<4, 1> res;
     Matriz<4, 4> m = Matriz<4, 4>(init_list<init_list<float>>{
             {b.base[0][0], b.base[1][0], b.base[2][0], o.coord[0]},
             {b.base[0][1], b.base[1][1], b.base[2][1], o.coord[1]},
@@ -133,9 +139,13 @@ Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o) {
         }
     );
     
-    Matriz<4, 4> ucsToLocal = m.inversa();
-    Matriz<4, 1> res = Matriz<4, 1>((ucsToLocal * p.getCoordHomo()).matriz);
-    
+    if (invertir) {
+        Matriz<4, 4> ucsToLocal = m.inversa();
+        res = Matriz<4, 1>((ucsToLocal * d.getCoordHomo()).matriz);
+    } else {
+        res = Matriz<4, 1>((m * d.getCoordHomo()).matriz);
+    }
+
     // std::cout << m << "\n" << ucsToLocal << std::endl;
     return Direccion(res.matriz[0][0], res.matriz[1][0], res.matriz[2][0]);
 }

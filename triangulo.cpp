@@ -14,9 +14,9 @@ using std::endl;
 Triangulo::Triangulo() : v0(Punto()), v1(Punto()), v2(Punto()),
                          emision({0.0f, 0.0f, 0.0f}) {}
 
-Triangulo::Triangulo(Punto& _v0, Punto& _v1, Punto& _v2,
-                     array<float, 3> _emision = {0.0f, 0.0f, 0.0f}):
-                     v0(_v0), v1(_v1), v2(_v2), emision(_emision) {}
+Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2,
+                     array<float, 3> _emision): v0(_v0), v1(_v1), v2(_v2),
+                                                emision(_emision) {}
 
 
 bool Triangulo::interseccionRayoTriangulo(Punto& origen, Direccion& direccion,

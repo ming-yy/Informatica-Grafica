@@ -18,7 +18,8 @@ public:
     array<float, 3> emision;
 
     Triangulo();
-    Triangulo(Punto& _v0, Punto& _v1, Punto& _v2, array<float, 3> _emision);
+    Triangulo(const Punto& _v0,const Punto& _v1, const Punto& _v2,
+              array<float, 3> _emision = {0.0f, 0.0f, 0.0f});
 
     // Método para calcular la intersección entre un rayo y el triángulo
     // Devuelve <True> si hay intersección y almacena el punto de intersección

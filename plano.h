@@ -19,7 +19,7 @@ public:
     array<float, 3> emision;     // (r,g,b)
     
     Plano();
-    Plano(Punto& _c, Direccion& _n, float _d, array<float,3> _emision);
+    Plano(Punto& _c, Direccion& _n, float _d, array<float,3> _emision = {0.0f, 0.0f, 0.0f});
     
     // Función que calcula la intersección entre un rayo (d) con origen
     // en p y el plano e. Devuelve <True> si y solo si se produce la

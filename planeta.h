@@ -38,7 +38,8 @@ public:
     
     Planeta();
     Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
-            const float& inclinacion, const float& azimut, array<float, 3> _emision);
+            const float& inclinacion, const float& azimut,
+            array<float, 3> _emision = {0.0f, 0.0f, 0.0f});
     
     // Método que devuelve las coordenadas de la estación en UCS
     Punto estacionToUCS() const;

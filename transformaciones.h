@@ -26,8 +26,8 @@ Matriz<4, 1> rotateY(const PuntoDireccion& pd, float d);
 
 Matriz<4, 1> rotateZ(const PuntoDireccion& pd, float d);
 
-// Función que cambia la punto <p> a la base <b> con origen <o> y devuelve el nuevo punto
-//Matriz<4, 1> cambioBase(const Punto& p, const Base& b, const Punto& o);
-Punto cambioBase(const Punto& p, const Base& b, const Punto& o);
+// Función que cambia el punto <p> a la base <b> con origen <o> y devuelve el nuevo punto
+Punto cambioBase(const Punto& p, const Base& b, const Punto& o, const bool& invertir = true);
 
-Direccion cambioBase(const Direccion& p, const Base& b, const Punto& o);
+// Función que cambia la direccion <d> a la base <b> con origen <o> y devuelve el nuevo punto
+Direccion cambioBase(const Direccion& d, const Base& b, const Punto& o);

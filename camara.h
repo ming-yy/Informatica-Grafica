@@ -8,6 +8,7 @@
 #pragma once
 #include "direccion.h"
 #include "punto.h"
+#include "rayo.h"
 #include <initializer_list>
 
 
@@ -24,20 +25,31 @@ public:
            init_list<float> _f);
     Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f);
 
-    // size = NxM píxeles,
-    /*
+    // Método que devuelve el rayo que va desde la cámara hasta el centro del pixel (ancho, alto)
+    Rayo obtenerRayoPixel(unsigned ancho, unsigned alto);
     
-    for ancho in N:
-        for alto in M:
-            dir, pto = obtenerDireccionCamPixel(ancho, alto, camara);
-            dir = normalizar(dir);
-            dirGlobal, ptoGlobal = cambioBaseLocalGlobal(dir, pto);
-            interseca, emision = calcInterseccion(escena, dirGlobal, ptoGlobal);
-            if Interseca {
-                pintar(ancho, alto, emision)
-            } else {
-                pintar(ancho, alto, color negro porque no interseca)
+    
+    /*  LA FUNCIÓN DEBERÍA SER EXACTAMENTE ESTO
+        Falta implementar obtenerRayoPixel, calcInterseccion (for por todas las primitivas y ejecutar interseca())
+     
+    void renderizarEscena(unsigned pxlAncho, unsigned pxlAlto, const Escena& escena) {
+        for (int ancho = 0; ancho < pxlAncho; ancho++) {
+            for (int alto = 0; alto < pxlAlto; alto++) {
+                rayo = obtenerRayoPixel(ancho, alto);
+                rayo.d = normalizar(rayo.d);
+                Base baseLocalToGlobal = Base(this->f, this->l, this->u);
+                rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
+                rayo.o = cambioBase(rayo.o, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
+                array<float, 3> emision;    // Array para que se cambie su contenido por referencia
+                bool interseca = escena.calcInterseccion(rayo, emision);
+                if (interseca) {
+                    this->pintar(ancho, alto, emision)
+                } else {
+                    this->pintar(ancho, alto, color negro porque no interseca)
+                }
             }
-    
+        }
+     }
+        
     */
 };

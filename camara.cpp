@@ -36,7 +36,17 @@ Camara::Camara(std::initializer_list<float> _o,
     }
 }
 
+
 Camara::Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f)
     : o(_o), l(_l), u(_u), f(_f) {}
 
 
+Rayo Camara::obtenerRayoPixel(unsigned ancho, unsigned alto) {
+    float i = modulo(this->f);
+    float j = 0.0f;    // L
+    float k = 0.0f;    // U
+    
+    // No me sé las fórmulas que acordamos
+    
+    return Rayo(Direccion(i, j, k), Punto(this->o));  // Falta completar la direccion y el punto
+}

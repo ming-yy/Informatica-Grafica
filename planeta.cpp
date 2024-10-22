@@ -23,9 +23,8 @@ Planeta::Planeta(): centro(Punto()), eje(Direccion()), cref(Punto()),
 
 Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
                  const float& _inclinacion, const float& _azimut,
-                 array<float,3> _emision = {0.0f, 0.0f, 0.0f}):
-                 centro(_centro), eje(_eje), cref(_cref),
-                 estacion{_inclinacion, _azimut}, emision(_emision) {
+                 array<float,3> _emision): centro(_centro), eje(_eje), cref(_cref),
+                                           estacion{_inclinacion, _azimut}, emision(_emision) {
     // Faltan comprobaciones rango de azimut e inclinación
     estacion[0] = _inclinacion;
     estacion[1] = _azimut;
@@ -108,7 +107,7 @@ bool Planeta::interconexion(Planeta& pDest, const Base& ucs, const Punto& o) {
     Direccion trayDest = normalizar(cambioBase(trayUCS, baseDest, pDest.estacionToUCS()));
     Direccion trayOrig = normalizar(cambioBase(trayUCS, baseOrig, this->estacionToUCS()));
     
-    // Cambiamos de sentido porque pDestino necesita saber de "dónde viene" el cohete
+    // Cambiamos de sentido porque pDestino necesita saber de "dónde viene" el cohete (MAL)
     //trayDest = trayDest * (-1);
     bool pDestEscape = pDest.impactoOrEscape(trayDest);
     bool pOrigEscape = this->impactoOrEscape(trayOrig);
