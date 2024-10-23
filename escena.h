@@ -6,10 +6,19 @@
 //*****************************************************************
 
 #pragma once
-#include <array>
+#include <vector>
 #include "primitiva.h"
 
 class Escena {
 public:
-    std::array<primitiva> primitivas;   // Array de los objetos de la escena
-}
+    std::vector<Primitiva> primitivas;   // Array de los objetos de la escena
+    
+    Escena();
+    Escena(std::vector<Primitiva> _primitivas);
+    
+    // Método que devuelve "True" si y solo si hay intersección entre el rayo <rayo> y algún
+    // objeto de la escena. En caso de haber intersección, la emisión del punto por el
+    // que interseca el rayo <rayo> con el primer objeto que se encuentre en la escena es
+    // devuelta en <resEmision>.
+    bool interseccion(const Rayo& rayo, std::array<float, 3>& resEmision) const;
+};

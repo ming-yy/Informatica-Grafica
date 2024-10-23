@@ -30,9 +30,9 @@ public:
     
     
     /*  LA FUNCIÓN DEBERÍA SER EXACTAMENTE ESTO
-        Falta implementar obtenerRayoPixel, calcInterseccion (for por todas las primitivas y ejecutar interseca())
+        Falta implementar obtenerRayoPixel y pintar()
      
-    void renderizarEscena(unsigned pxlAncho, unsigned pxlAlto, const Escena& escena) {
+    void renderizarEscena(unsigned pxlAncho, unsigned pxlAlto, const Escena& escena) const {
         for (int ancho = 0; ancho < pxlAncho; ancho++) {
             for (int alto = 0; alto < pxlAlto; alto++) {
                 rayo = obtenerRayoPixel(ancho, alto);
@@ -40,8 +40,8 @@ public:
                 Base baseLocalToGlobal = Base(this->f, this->l, this->u);
                 rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
                 rayo.o = cambioBase(rayo.o, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
-                array<float, 3> emision;    // Array para que se cambie su contenido por referencia
-                bool interseca = escena.calcInterseccion(rayo, emision);
+                std::array<float, 3> emision;    // Array para que se cambie su contenido por referencia
+                bool interseca = escena.interseccion(rayo, emision);
                 if (interseca) {
                     this->pintar(ancho, alto, emision)
                 } else {
