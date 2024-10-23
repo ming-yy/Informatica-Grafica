@@ -9,6 +9,7 @@
 #include <array>
 #include <iostream>
 #include <initializer_list>
+#include "direccion.h"
 
 template<typename T, std::size_t N>
 using array = std::array<T, N>;
@@ -28,6 +29,7 @@ public:
     Base(array<array<float, 3>, 3> valores);
     Base(const array<float, 3>& arr1, const array<float, 3>& arr2,
          const array<float, 3>& arr3);
+    Base(const Direccion& arr1, const Direccion& arr2, const Direccion& arr3);
     
     // Función para mostrar por pantalla la base <b>
     friend ostream& operator<<(ostream& os, const Base& b);

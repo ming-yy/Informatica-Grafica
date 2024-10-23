@@ -9,6 +9,7 @@
 #include "direccion.h"
 #include "punto.h"
 #include "rayo.h"
+#include "escena.h"
 #include <initializer_list>
 
 
@@ -26,30 +27,13 @@ public:
     Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f);
 
     // Método que devuelve el rayo que va desde la cámara hasta el centro del pixel (ancho, alto)
-    Rayo obtenerRayoPixel(unsigned ancho, unsigned alto);
+    Rayo obtenerRayoPixel(unsigned ancho, unsigned alto) const ;
     
-    
+    // Método que ...
+    void renderizarEscena(unsigned pxlAncho, unsigned pxlAlto, const Escena& escena) const;
     /*  LA FUNCIÓN DEBERÍA SER EXACTAMENTE ESTO
         Falta implementar obtenerRayoPixel y pintar()
      
-    void renderizarEscena(unsigned pxlAncho, unsigned pxlAlto, const Escena& escena) const {
-        for (int ancho = 0; ancho < pxlAncho; ancho++) {
-            for (int alto = 0; alto < pxlAlto; alto++) {
-                rayo = obtenerRayoPixel(ancho, alto);
-                rayo.d = normalizar(rayo.d);
-                Base baseLocalToGlobal = Base(this->f, this->l, this->u);
-                rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
-                rayo.o = cambioBase(rayo.o, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
-                std::array<float, 3> emision;    // Array para que se cambie su contenido por referencia
-                bool interseca = escena.interseccion(rayo, emision);
-                if (interseca) {
-                    this->pintar(ancho, alto, emision)
-                } else {
-                    this->pintar(ancho, alto, color negro porque no interseca)
-                }
-            }
-        }
-     }
         
     */
 };

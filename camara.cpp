@@ -6,6 +6,8 @@
 //*****************************************************************
 
 #include "camara.h"
+#include "base.h"
+#include "transformaciones.h"
 
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
@@ -41,7 +43,7 @@ Camara::Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f)
     : o(_o), l(_l), u(_u), f(_f) {}
 
 
-Rayo Camara::obtenerRayoPixel(unsigned ancho, unsigned alto) {
+Rayo Camara::obtenerRayoPixel(unsigned ancho, unsigned alto) const {
     float i = modulo(this->f);
     float j = 0.0f;    // L
     float k = 0.0f;    // U
@@ -50,3 +52,23 @@ Rayo Camara::obtenerRayoPixel(unsigned ancho, unsigned alto) {
     
     return Rayo(Direccion(i, j, k), Punto(this->o));  // Falta completar la direccion y el punto
 }
+
+
+void Camara::renderizarEscena(unsigned pxlAncho, unsigned pxlAlto, const Escena& escena) const {
+    for (int ancho = 0; ancho < pxlAncho; ancho++) {
+        for (int alto = 0; alto < pxlAlto; alto++) {
+            Rayo rayo = this->obtenerRayoPixel(ancho, alto);
+            rayo.d = normalizar(rayo.d);
+            Base baseLocalToGlobal = Base(this->f, this->l, this->u);
+            rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
+            rayo.o = cambioBase(rayo.o, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
+            std::array<float, 3> emision;
+            bool interseca = escena.interseccion(rayo, emision);
+            if (interseca) {
+                //this->pintar(ancho, alto, emision);
+            } else {
+                //this->pintar(ancho, alto, color negro porque no interseca);
+            }
+        }
+    }
+ }

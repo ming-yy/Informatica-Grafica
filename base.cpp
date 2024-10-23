@@ -77,6 +77,12 @@ Base::Base(const array<float, 3>& arr1, const array<float, 3>& arr2,
 }
 
 
+Base::Base(const Direccion& arr1, const Direccion& arr2, const Direccion& arr3) {
+    copy(arr1.coord.begin(), arr1.coord.end(), base[0].begin());
+    copy(arr2.coord.begin(), arr2.coord.end(), base[1].begin());
+    copy(arr3.coord.begin(), arr3.coord.end(), base[2].begin());
+}
+
 
 ostream& operator<<(ostream& os, const Base& m) {
     os << std::fixed << std::setprecision(3);  // Tres decimales para todos los números
