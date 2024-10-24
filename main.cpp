@@ -19,6 +19,8 @@
 #include "gestorPPM.h"
 #include "triangulo.h"
 #include "camara.h"
+#include "rayo.h"
+#include "esfera.h"
 
 
 template<typename T>
@@ -40,7 +42,7 @@ using std::string;
 
 
 int main() {
-    int test = 11;
+    int test = 10;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -329,21 +331,6 @@ int main() {
         bool resultado = interconexionPlanetaria(*planeta1, *planeta3, *ucs, *origenUCS);
         cout << "Interconexion planetaria exitosa? " << resultado << endl;
         
-        cout << endl << endl;
-        cout << "--- Pruebas interseccion Rayo Esfera ---" << endl;
-        sh_ptr<Direccion> rayo = std::make_shared<Direccion>(1,0,0);
-        sh_ptr<Punto> ptoIntersec = std::make_shared<Punto>();
-        interseccionRayoEsfera(*origenUCS, *rayo, *planeta3, *ptoIntersec);
-        
-        cout << endl << endl;
-        cout << "--- Pruebas interseccion Rayo Plano ---" << endl;
-        sh_ptr<Direccion> normalPlano = std::make_shared<Direccion>(1,0,0);
-        sh_ptr<Punto> centroPlano = std::make_shared<Punto>(5,0,0);
-        float distanciaPlano = -5.0f;   // El plano está a 5 unidades del origen UCS
-        sh_ptr<Plano> plano = std::make_shared<Plano>(*centroPlano, *normalPlano, distanciaPlano);
-        cout << *plano << endl;
-        interseccionRayoPlano(*origenUCS, *rayo, *plano, *ptoIntersec);
-        
     } else if (test == 7) {
         sh_ptr<Base> ejemplo_print = std::make_shared<Base>(
              init_list<init_list<float>>{
@@ -379,7 +366,58 @@ int main() {
         transformarFicheroPPM(nombreFichero, 5);
         
     } else if (test == 10) {
-        cout << endl << "PRUEBA 10 - INTERSECCION RAYO-TRIANGULO" << endl;
+        cout << endl << "PRUEBA 10 - INTERSECCIONES " << endl;
+
+        array<float,3> emision = {0.0f,0.0f,0.0f};
+        
+        cout << endl;
+        cout << "--- Pruebas interseccion Rayo Esfera ---" << endl;
+
+        // Cogido del test 6
+        sh_ptr<Punto> centro3 = std::make_shared<Punto>(5,0,0);
+        sh_ptr<Punto> cref3 = std::make_shared<Punto>(3,0,0);
+        sh_ptr<Direccion> eje3 = std::make_shared<Direccion>(0,4,0);
+        sh_ptr<Planeta> planeta = std::make_shared<Planeta>(*centro3, *eje3, *cref3, -45, 0);
+
+        sh_ptr<Direccion> dir = std::make_shared<Direccion>(1,0,0);
+        sh_ptr<Punto> pto = std::make_shared<Punto>(1,0,0);
+        vector<Punto> ptosIntersec;
+        sh_ptr<Esfera> esfera = std::make_shared<Esfera>(*planeta);
+        esfera->interseccion(Rayo(*dir, *pto), ptosIntersec, emision);
+
+        if (!ptosIntersec.empty()) {
+            for (Punto p : ptosIntersec) {
+                cout << "!Hay interseccion! El punto de interseccion es: " << p << endl;
+            }
+        } else {
+            cout << "No hay interseccion." << endl;
+        }
+
+        // ------------------------------------------------------
+        ptosIntersec.clear();
+
+        cout << endl << endl;
+        cout << "--- Pruebas interseccion Rayo Plano ---" << endl;
+        sh_ptr<Direccion> normalPlano = std::make_shared<Direccion>(1,0,0);
+        sh_ptr<Punto> centroPlano = std::make_shared<Punto>(5,0,0);
+        float distanciaPlano = -5.0f;   // El plano está a 5 unidades del origen UCS
+        sh_ptr<Plano> plano = std::make_shared<Plano>(*centroPlano, *normalPlano, distanciaPlano);
+        //cout << *plano << endl;
+        plano->interseccion(Rayo(dir, pto), ptosIntersec, emision);
+
+        if (!ptosIntersec.empty()) {
+            for (Punto p : ptosIntersec) {
+                cout << "!Hay interseccion! El punto de interseccion es: " << p << endl;
+            }
+        } else {
+            cout << "No hay interseccion." << endl;
+        }
+
+        // ------------------------------------------------------
+        ptosIntersec.clear();
+
+        cout << endl << endl;
+        cout << "--- Pruebas interseccion Rayo Triangulo ---" << endl;
 
         // Vértices del triángulo
         array<float, 3> arrV0 = {0.0f, 0.0f, 0.0f};
@@ -394,17 +432,20 @@ int main() {
         array<float, 3> arrOrigenRayo = {0.5f, 0.5f, -1.0f};
         array<float, 3> arrDireccionRayo = {0.0f, 0.0f, 1.0f};
 
+
         Punto origenRayo(arrOrigenRayo);
         Direccion direccionRayo(arrDireccionRayo);
-        Punto puntoInterseccion;
 
-        bool hayInterseccion = triangulo.interseccionRayoTriangulo(origenRayo, direccionRayo, puntoInterseccion);
+        triangulo.interseccion(Rayo(direccionRayo, origenRayo), ptosIntersec, emision);
 
-        if (hayInterseccion) {
-            cout << "¡Hay interseccion! El punto de interseccion es: " << puntoInterseccion << endl;
+        if (!ptosIntersec.empty()) {
+            for (Punto p : ptosIntersec) {
+                cout << "!Hay interseccion! El punto de interseccion es: " << p << endl;
+            }
         } else {
             cout << "No hay interseccion." << endl;
         }
+
     } else if (test == 11) {
         cout << endl << "PRUEBA 11 - CAMARA Y COSAS" << endl;
 

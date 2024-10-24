@@ -10,9 +10,11 @@
 #include "direccion.h"
 #include <iostream>
 #include <cmath>
+#include "primitiva.h"
+#include "rayo.h"
 
 
-class Triangulo {
+class Triangulo : public Primitiva {
 public:
     Punto v0, v1, v2;
     array<float, 3> emision;
@@ -25,5 +27,6 @@ public:
     // Devuelve <True> si hay intersección y almacena el punto de intersección
     // en la variable 'puntoInterseccion'
     // Algoritmo usado: Möller–Trumbore
-    bool interseccionRayoTriangulo(Punto& origen, Direccion& direccion, Punto& puntoInterseccion);
+    void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
+                         std::array<float, 3>& emision) const override;
 };

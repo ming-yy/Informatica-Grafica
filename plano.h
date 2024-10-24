@@ -9,9 +9,10 @@
 #include <iostream>
 #include "punto.h"
 #include "direccion.h"
+#include "primitiva.h"
 
 
-class Plano {
+class Plano : public Primitiva {
 public:
     Punto c;        // Centro del plano
     Direccion n;    // Normal respecto al plano
@@ -24,8 +25,8 @@ public:
     // Función que calcula la intersección entre un rayo (d) con origen
     // en p y el plano e. Devuelve <True> si y solo si se produce la
     // interseccion.
-    friend bool interseccionRayoPlano(Punto& p, Direccion& d, Plano& e,
-                                      Punto& puntoInterseccion);
+    void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
+                         std::array<float, 3>& emision) const override;
     
     // Función para mostrar por pantalla la información del plano
     friend ostream& operator<<(ostream& os, const Plano& p);

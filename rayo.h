@@ -8,6 +8,7 @@
 #pragma once
 #include "direccion.h"
 #include "punto.h"
+#include <memory>
 
 
 class Rayo {
@@ -18,6 +19,7 @@ public:
     
     Rayo();
     Rayo(const Direccion& dir, const Punto& origen);
+    Rayo(const std::shared_ptr<Direccion>& dirPtr, const std::shared_ptr<Punto>& origenPtr);
 
     // Método para mostrar la información del rayo
     void imprimir() const;

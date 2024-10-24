@@ -7,6 +7,7 @@
 
 #include "gestorPPM.h"
 #include "toneMapping.h"
+#include <algorithm>
 #include <iomanip>
 
 using std::string;

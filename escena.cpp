@@ -6,7 +6,7 @@
 //*****************************************************************
 
 #include "escena.h"
-
+#include <memory>
 
 Escena::Escena(): primitivas(std::vector<Primitiva>()) {}
 
