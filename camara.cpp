@@ -9,6 +9,7 @@
 #include "rgb.h"
 #include "base.h"
 #include "transformaciones.h"
+#include <random>
 
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
@@ -65,8 +66,25 @@ Rayo Camara::obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel,
                                     unsigned coordAlto, float altoPorPixel) const {
     
     Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
-    Direccion dirCentro = dirEsquina + Direccion(0, anchoPorPixel/2, altoPorPixel/2);
+    Direccion dirCentro = dirEsquina + Direccion(0, anchoPorPixel/2, - altoPorPixel/2);
     return Rayo(dirCentro, Punto(this->o));
+}
+
+Rayo Camara::obtenerRayoAleatorioPixel(unsigned coordAncho, float anchoPorPixel, 
+                                    unsigned coordAlto, float altoPorPixel) const {
+    std::random_device rd;  // Dispositivo para obtener una semilla (aleatoriedad real del hardware)
+    std::mt19937 gen(rd()); // Motor de generación Mersenne Twister con semilla
+    std::uniform_real_distribution<> distribucion(0.0, 1.0);  // Rango entre 0.0 y 1.0
+
+    Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
+    
+    // Multiplicamos el float aleatorio (0, 1) generado por el ancho/alto del pixel
+    // y se lo sumamos a la esquina para obtener las nuevas coordenadas aleatorias
+    float anchoRand = distribucion(gen) * anchoPorPixel;
+    float altoRand = distribucion(gen) * altoPorPixel;
+
+    Direccion dirRand = dirEsquina + Direccion(0, anchoRand, - altoRand);
+    return Rayo(dirRand, Punto(this->o));
 }
 
 float Camara::calcularAnchoPixel(unsigned numPixeles) const {
@@ -78,29 +96,28 @@ float Camara::calcularAltoPixel(unsigned numPixeles) const{
 }
 
 
-void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena) const {
+void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
+                              const Escena& escena, const std::string& nombreEscena) const {
     float anchoPorPixel = this->calcularAnchoPixel(numPxlsAncho);
     float altoPorPixel = this->calcularAltoPixel(numPxlsAlto);
-    /*
-    std:array<array<RGB, numPxlsAlto>, numPxlsAncho> coloresEscena;
-    for (auto& fila : coloresEscena) {      // Inicializamos con todo negro
-        fila.fill(255.0f);
-    }
-    */
+    std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto,
+                                                std::vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
 
-    for (int ancho = 0; ancho < numPxlsAncho; ancho++) {
-        for (int alto = 0; alto < numPxlsAlto; alto++) {
+    for (unsigned ancho = 0; ancho < numPxlsAncho; ancho++) {
+        for (unsigned alto = 0; alto < numPxlsAlto; alto++) {
             Rayo rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             rayo.d = normalizar(rayo.d);
-            Base baseLocalToGlobal = Base(this->f, this->l, this->u);
+            Base baseLocalToGlobal = Base(this->f, this->l, this->u);   // Pasamos rayo a UCS
             rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
             rayo.o = cambioBase(rayo.o, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
+
             RGB emision;
             bool interseca = escena.interseccion(rayo, emision);
-            if (interseca) {
-                // coloresEscena[alto][ancho] = emision;
+            
+            if (interseca) {    // Si el rayo interseca con un objeto de la escena
+                coloresEscena[alto][ancho] = emision;
             }
         }
-        // pintar();
     }
- }
+    escribirFicheroPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);
+}

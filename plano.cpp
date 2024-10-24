@@ -6,7 +6,6 @@
 //*****************************************************************
 
 #include "plano.h"
-#include <vector>
 
 using std::ostream;
 using std::cout;

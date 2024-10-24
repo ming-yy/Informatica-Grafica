@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "rgb.h"
 
 using std::string;
 using std::ifstream;
@@ -64,3 +65,11 @@ void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores,
 
 // Función principal que coordina el proceso
 int transformarFicheroPPM(const string& nombreFichero, const int idFuncion);
+
+/*
+// Función que dado una matriz de RGB's, genera el PPM correspondiente.
+void pintarEscenaEnPPM(const std::string& nombreArchivo,
+                        const float maxColorRes = 1.0f,
+                        const float c = 255.0f,
+                        const std::array<std::array<RGB, int>, int>& imagen);
+*/

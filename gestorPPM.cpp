@@ -132,7 +132,7 @@ void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero,
 
 
 void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
-                                const float maxColorRes, const int ancho, const int alto, const float c){
+                        const float maxColorRes, const int ancho, const int alto, const float c){
     int anchoTriple = ancho*3;
     if (valores.size() != anchoTriple * alto){
         cerr << "ERROR: El tamano (ancho x alto) del fichero de entrada es incorrecto" << endl;
@@ -162,7 +162,7 @@ string encontrarNombreFinalFichero(const string& ruta){
 }
 
 
-void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores,
+void escribirFicheroPPM(const string& nombreFich, const vector<float>& valores,
                             const float maxColorRes, const int ancho, const int alto,
                                 const float c, const string& nombreFuncion){
     string nombreFichRes = encontrarNombreFinalFichero(nombreFich);
@@ -248,4 +248,43 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
     }
 
     return 0;
+}
+
+
+void pintarEscenaEnPPM(const std::string& nombreArchivo, const float maxColorRes, const float c,
+                        const std::vector<std::vector<RGB>>& imagen) {
+    std::ofstream archivo(nombreArchivo);
+    if (!archivo) {
+        std::cerr << "Error al abrir el archivo " << nombreArchivo << std::endl;
+        return;
+    }
+
+    // Escribir el encabezado del archivo PPM
+    archivo << "P3\n"; // Formato PPM (ASCII)
+    archivo << numPxlsAncho << " " << numPxlsAlto << "\n"; // Ancho y Alto de la imagen
+    archivo << static_cast<int>(maxColorRes) << "\n"; // Valor máximo del color
+
+    // Escribir los píxeles
+    for (size_t y = 0; y < numPxlsAlto; y++) {
+        for (size_t x = 0; x < numPxlsAncho; x++) {
+            const RGB& pixel = imagen[x][y];
+
+            // Escalar los valores RGB usando el factor `c` y el valor máximo `maxColorRes`
+            float r = std::round(std::min(pixel.rgb[0] * c, maxColorRes));
+            float g = std::round(std::min(pixel.rgb[1] * c, maxColorRes));
+            float b = std::round(std::min(pixel.rgb[2] * c, maxColorRes));
+
+            // Asegurarse de que los valores están en el rango adecuado
+            archivo << r << " " << g << " " << b << "  ";
+        }
+        archivo << "\n"; // Nueva línea tras cada fila de píxeles
+    }
+
+    archivo.close();
+
+    if (!archivo) {
+        std::cerr << "Error al escribir el archivo " << nombreArchivo << std::endl;
+    } else {
+        std::cout << "Imagen PPM guardada en " << nombreArchivo << std::endl;
+    }
 }

@@ -7,9 +7,11 @@
 
 #pragma once
 #include <iostream>
+#include <vector>
 #include "punto.h"
 #include "direccion.h"
 #include "primitiva.h"
+#include "rgb.h"
 
 
 class Plano : public Primitiva {
@@ -17,10 +19,11 @@ public:
     Punto c;        // Centro del plano
     Direccion n;    // Normal respecto al plano
     float d;        // Distancia máxima admitida
-    array<float, 3> emision;     // (r,g,b)
+    RGB emision;     // (r,g,b)
     
     Plano();
-    Plano(Punto& _c, Direccion& _n, float _d, array<float,3> _emision = {0.0f, 0.0f, 0.0f});
+    Plano(Punto& _c, Direccion& _n, float _d,
+          const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
     
     // Función que calcula la intersección entre un rayo (d) con origen
     // en p y el plano e. Devuelve <True> si y solo si se produce la

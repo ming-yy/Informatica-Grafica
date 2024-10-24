@@ -44,8 +44,13 @@ public:
     // el centro del pixel (ancho, alto)
     Rayo obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const;
+    // Método que devuelve el rayo que va desde la cámara hasta
+    // un punto aleatorio del pixel (ancho, alto)
+    Rayo obtenerRayoAleatorioPixel(unsigned coordAncho, float anchoPorPixel, 
+                                    unsigned coordAlto, float altoPorPixel) const;
 
     // Método que ...
-    void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena) const;
+    void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
+                          const Escena& escena, const std::string& nombreEscena) const;
 
 };
