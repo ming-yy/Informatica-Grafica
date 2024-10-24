@@ -43,21 +43,41 @@ Camara::Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f)
     : o(_o), l(_l), u(_u), f(_f) {}
 
 
-Rayo Camara::obtenerRayoPixel(unsigned ancho, unsigned alto) const {
-    float i = modulo(this->f);
-    float j = 0.0f;    // L
-    float k = 0.0f;    // U
-    
-    // No me sé las fórmulas que acordamos
-    
-    return Rayo(Direccion(i, j, k), Punto(this->o));  // Falta completar la direccion y el punto
+
+Direccion Camara::obtenerDireccionEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
+                                    unsigned coordAlto, float altoPorPixel) const {
+    float x = modulo(this->f);  // F
+    float y = - modulo(this->l) + coordAncho * anchoPorPixel;   // L
+    float z = modulo(this->u) - coordAlto * altoPorPixel;       // U
+
+    return Direccion(x,y,z);
+}
+
+Rayo Camara::obtenerRayoEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
+                                    unsigned coordAlto, float altoPorPixel) const {
+
+    Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
+
+    return Rayo(dirEsquina, Punto(this->o));
 }
 
 
-void Camara::renderizarEscena(unsigned pxlAncho, unsigned pxlAlto, const Escena& escena) const {
-    for (int ancho = 0; ancho < pxlAncho; ancho++) {
-        for (int alto = 0; alto < pxlAlto; alto++) {
-            Rayo rayo = this->obtenerRayoPixel(ancho, alto);
+Rayo Camara::obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel, 
+                                    unsigned coordAlto, float altoPorPixel) const {
+    
+    Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
+    Direccion dirCentro = dirEsquina + Direccion(0, anchoPorPixel/2, altoPorPixel/2);
+
+    return Rayo(dirCentro, Punto(this->o));
+}
+
+void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena) const {
+    float anchoPorPixel = (modulo(this->l) * 2) / numPxlsAncho;
+    float altoPorPixel = (modulo(this->u) * 2) / numPxlsAlto;
+    
+    for (int ancho = 0; ancho < numPxlsAncho; ancho++) {
+        for (int alto = 0; alto < numPxlsAlto; alto++) {
+            Rayo rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             rayo.d = normalizar(rayo.d);
             Base baseLocalToGlobal = Base(this->f, this->l, this->u);
             rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);

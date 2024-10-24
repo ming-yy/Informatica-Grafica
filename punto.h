@@ -21,6 +21,8 @@ public:
     Punto(const Punto& p);
     Punto(float x, float y, float z);
     Punto(array<float, 3> _coord);
+    Punto(array<float, 3> _coord, array<float, 3> _o);
+    
     Matriz<4,1> getCoordHomo() const override;
     
     // Operación de suma de un punto con una dirección

@@ -448,9 +448,16 @@ int main() {
 
     } else if (test == 11) {
         cout << endl << "PRUEBA 11 - CAMARA Y COSAS" << endl;
-
+        /*
         Camara cam1 = Camara();
         cout << "Test camara1: " << modulo(cam1.f) << endl;
+        cout << "Test camara1: " << modulo(cam1.f) << endl;
+        */
+
+        Camara cam2 = Camara({0.0f, 0.0f, 0.0f},
+                             {2.0f, 0.0f, 0.0f},
+                             {0.0f, 2.0f, 0.0f},
+                             {0.0f, 0.0f, 10.0f});
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }

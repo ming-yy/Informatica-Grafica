@@ -21,6 +21,8 @@ Punto::Punto(float x, float y, float z) : PuntoDireccion(x, y, z), o{0.0f, 0.0f,
 
 Punto::Punto(array<float, 3> _coord) : PuntoDireccion(_coord), o{0.0f, 0.0f, 0.0f}{}
 
+Punto::Punto(array<float, 3> _coord, array<float, 3> _o) : PuntoDireccion(_coord), o(_o){}
+
 Matriz<4,1> Punto::getCoordHomo() const {
     array<array<float, 1>, 4> p = {coord[0], coord[1], coord[2], 1.0f};
 
