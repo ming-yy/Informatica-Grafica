@@ -27,10 +27,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     // DEBUG
     //cout << "a = " << a << "\nb = " << b << "\nc = " << c << endl;
     
-    emision = this->emision;
-    
-    // Cálculo del discriminante
-    float discriminante = b * b - 4 * a * c;
+    float discriminante = b * b - 4 * a * c;    // Cálculo del discriminante
     if (discriminante > 0) {    // Caso de soluciones reales
         float t1 = (-b + sqrt(discriminante)) / (2 * a);
         float t2 = (-b - sqrt(discriminante)) / (2 * a);
@@ -46,6 +43,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
             ptos.push_back(p2);
             ptos.push_back(p1);
         }
+        emision = this->emision;
  
         // DEBUG
         //cout << "Hay 2 puntos de interseccion: " << endl;
@@ -57,6 +55,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         float t = -b / (2 * a);
         Punto puntoInterseccion = rayo.o + rayo.d * t;
         ptos.push_back(puntoInterseccion);
+        emision = this->emision;
  
         // DEBUG
         //cout << "Hay 1 punto de interseccion (tngente): " << endl;

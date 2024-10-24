@@ -52,5 +52,4 @@ public:
     // Método que ...
     void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, const std::string& nombreEscena) const;
-
 };

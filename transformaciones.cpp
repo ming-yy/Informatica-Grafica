@@ -123,8 +123,7 @@ Punto cambioBase(const Punto& p, const Base& b, const Punto& o, const bool& inve
     } else {
         res = Matriz<4, 1>((m * p.getCoordHomo()).matriz);
     }
-    
-    // std::cout << m << "\n" << ucsToLocal << std::endl;
+
     return Punto(res.matriz[0][0], res.matriz[1][0], res.matriz[2][0]);
 }
 

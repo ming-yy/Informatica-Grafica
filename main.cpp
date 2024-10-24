@@ -14,12 +14,12 @@
 #include "direccion.h"
 #include "planeta.h"
 #include "matriz.h"
-#include "plano.h"
 #include "transformaciones.h"
 #include "gestorPPM.h"
-#include "triangulo.h"
 #include "camara.h"
 #include "rayo.h"
+#include "triangulo.h"
+#include "plano.h"
 #include "esfera.h"
 
 
@@ -40,9 +40,30 @@ using std::invalid_argument;
 using std::string;
 
 
+void cajaDeCornell(){
+    std::vector<Primitiva*> objetos;
+    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({255.0f, 0.0f, 0.0f})));
+    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 255.0f, 0.0f})));
+    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f})));
+    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f})));
+    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f})));
+    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({227.0f, 177.0f, 210.0f})));
+    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f})));
+    Escena cornell = Escena(objetos);
+    Camara cam = Camara({0.0f, 0.0f, -10.5f},
+                        {0.0f, 0.0f, 3.0f},
+                        {0.0f, 1.0f, 0.0f},
+                        {-1.0f, 0.0f, 0.0f});
+    cam.renderizarEscena(256, 256, cornell, "cornell");
+
+    for (auto& primitiva : objetos) {   // Liberamos memoria
+        delete primitiva;
+    }
+}
+
 
 int main() {
-    int test = 11;
+    int test = 12;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -398,9 +419,8 @@ int main() {
         cout << endl << endl;
         cout << "--- Pruebas interseccion Rayo Plano ---" << endl;
         sh_ptr<Direccion> normalPlano = std::make_shared<Direccion>(1,0,0);
-        sh_ptr<Punto> centroPlano = std::make_shared<Punto>(5,0,0);
         float distanciaPlano = -5.0f;   // El plano está a 5 unidades del origen UCS
-        sh_ptr<Plano> plano = std::make_shared<Plano>(*centroPlano, *normalPlano, distanciaPlano);
+        sh_ptr<Plano> plano = std::make_shared<Plano>(*normalPlano, distanciaPlano);
         //cout << *plano << endl;
         plano->interseccion(Rayo(*dir, *pto), ptosIntersec, emision);
 
@@ -447,11 +467,6 @@ int main() {
 
     } else if (test == 11) {
         cout << endl << "PRUEBA 11 - OBTENER RAYOS DE UN PIXEL" << endl << endl;
-        /*
-        Camara cam1 = Camara();
-        cout << "Test camara1: " << modulo(cam1.f) << endl;
-        cout << "Test camara1: " << modulo(cam1.f) << endl;
-        */
 
         Camara cam2 = Camara({0.0f, 0.0f, 0.0f},
                              {10.0f, 0.0f, 0.0f},
@@ -481,6 +496,8 @@ int main() {
         Rayo rayoCentro4 = cam2.obtenerRayoCentroPixel(3, anchoPorPixel2, 3, altoPorPixel2);
         cout << "Centro4 = " << rayoCentro4 << endl;
 
+        cout << endl;
+
         Rayo rayoRand1 = cam2.obtenerRayoAleatorioPixel(3, anchoPorPixel2, 3, altoPorPixel2);
         cout << "Rand1 = " << rayoRand1 << endl;
         Rayo rayoRand2 = cam2.obtenerRayoAleatorioPixel(3, anchoPorPixel2, 3, altoPorPixel2);
@@ -489,6 +506,10 @@ int main() {
         cout << "Rand3 = " << rayoRand3 << endl;
         Rayo rayoRand4 = cam2.obtenerRayoAleatorioPixel(3, anchoPorPixel2, 3, altoPorPixel2);
         cout << "Rand4 = " << rayoRand4 << endl;
+
+    } else if (test == 12){    
+
+        cajaDeCornell();
 
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");

@@ -13,12 +13,10 @@ using std::endl;
 using std::vector;
 
 
-Plano::Plano(): c(0.0f, 0.0f, 0.0f), n(0.0f, 0.0f, 0.0f), d(0.0f),
-                emision({0.0f, 0.0f, 0.0f}) {}
+Plano::Plano(): n(0.0f, 0.0f, 0.0f), d(0.0f), emision({0.0f, 0.0f, 0.0f}) {}
 
-Plano::Plano(Punto& _c, Direccion& _n, float _d,
-             const RGB& _emision):
-             c(_c), n(_n), d(_d), emision(_emision) {}
+Plano::Plano(const Direccion& _n, float _d, const RGB& _emision):
+             n(_n), d(_d), emision(_emision) {}
 
 void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                         RGB& emision) const {
@@ -37,18 +35,18 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     
     Punto aux = rayo.o + rayo.d * t;
     ptos.push_back(aux);
+    emision = this->emision;
+    
     // DEBUG
-    /*
-    cout << "Numerador: " << numerador << endl;
-    cout << "Denominador: " << denominador << endl;
-    cout << "t: " << t << endl;
-    cout << "Hay interseccion en el punto: " << aux << endl;
-    */
-    return;
+    // cout << "Numerador: " << numerador << endl;
+    // cout << "Denominador: " << denominador << endl;
+    // cout << "t: " << t << endl;
+    // cout << "Hay interseccion en el punto: " << aux << endl;
+    
 }
 
 ostream& operator<<(ostream& os, const Plano& r)
 {
-    os << "Centro: " << r.c << "\nNormal: " << r.n << "\nDistancia: " << r.d;
+    os << "\nNormal: " << r.n << "\nDistancia: " << r.d;
     return os;
 }

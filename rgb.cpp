@@ -11,6 +11,8 @@
 
 RGB::RGB() : rgb({255.0f, 255.0f, 255.0f}) {}
 
+RGB::RGB(const float& r, const float& g, const float& b): rgb({r, g, b}) {}
+
 RGB::RGB(std::initializer_list<float> _rgb) {
     if (_rgb.size() == 3) {
         auto it_rgb = _rgb.begin();

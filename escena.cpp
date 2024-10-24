@@ -8,9 +8,9 @@
 #include "escena.h"
 #include <memory>
 
-Escena::Escena(): primitivas(std::vector<Primitiva>()) {}
+Escena::Escena(): primitivas(std::vector<Primitiva*>()) {}
 
-Escena::Escena(std::vector<Primitiva> _primitivas): primitivas(_primitivas) {}
+Escena::Escena(std::vector<Primitiva*> _primitivas): primitivas(_primitivas) {}
 
 
 bool Escena::interseccion(const Rayo& rayo, RGB& resEmision) const {
@@ -18,11 +18,11 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision) const {
     bool primerIntersec = true;  // Flag: la primera intersección encontrada
     Punto ptoMasCerca;
 
-    for (const Primitiva& objeto : this->primitivas) {
+    for (const Primitiva* objeto : this->primitivas) {
         std::vector<Punto> intersec;
         RGB emision;
 
-        objeto.interseccion(rayo, intersec, emision);
+        objeto->interseccion(rayo, intersec, emision);
 
         if (!intersec.empty()) {    // Si hay intersecciones
             resVal = true;

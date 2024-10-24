@@ -9,65 +9,66 @@
 #include "rgb.h"
 #include "base.h"
 #include "transformaciones.h"
+#include "gestorPPM.h"
+#include <iostream>
 #include <random>
 
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    f(Direccion(-1.0f, 0.0f, 0.0f)),
-                   l(Direccion(0.0f, 1.0f, 0.0f)),
-                   u(Direccion(0.0f, 0.0f, 3.0f)) {}
+                   u(Direccion(0.0f, 0.0f, 3.0f)),
+                   l(Direccion(0.0f, 1.0f, 0.0f)) {}
 
 
 Camara::Camara(std::initializer_list<float> _o, 
                std::initializer_list<float> _f, 
-               std::initializer_list<float> _l, 
-               std::initializer_list<float> _u) {
+               std::initializer_list<float> _u, 
+               std::initializer_list<float> _l) {
     // Lista contiene 3 elementos (x, y, z)
     if (_o.size() == 3 && _l.size() == 3 && _u.size() == 3 && _f.size() == 3) {
         auto it_o = _o.begin();
         o = Punto(*(it_o), *(it_o + 1), *(it_o + 2));
-
-        auto it_l = _l.begin();
-        l = Direccion(*(it_l), *(it_l + 1), *(it_l + 2));
+        
+        auto it_f = _f.begin();
+        f = Direccion(*(it_f), *(it_f + 1), *(it_f + 2));
 
         auto it_u = _u.begin();
         u = Direccion(*(it_u), *(it_u + 1), *(it_u + 2));
+        
+        auto it_l = _l.begin();
+        l = Direccion(*(it_l), *(it_l + 1), *(it_l + 2));
 
-        auto it_f = _f.begin();
-        f = Direccion(*(it_f), *(it_f + 1), *(it_f + 2));
     } else {
         throw std::invalid_argument("Inicializadores deben contener 3 elementos cada uno.");
     }
 }
 
 
-Camara::Camara(Punto& _o, Direccion& _f, Direccion& _l, Direccion& _u)
+Camara::Camara(Punto& _o, Direccion& _f, Direccion& _u, Direccion& _l)
     : o(_o), l(_l), u(_u), f(_f) {}
 
 
 Direccion Camara::obtenerDireccionEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const {
     float x = modulo(this->f);
-    float y = - modulo(this->l) + coordAncho * anchoPorPixel;
-    float z = modulo(this->u) - coordAlto * altoPorPixel;
+    float y = modulo(this->u) - coordAlto * altoPorPixel;
+    float z = - modulo(this->l) + coordAncho * anchoPorPixel;
     return Direccion(x,y,z);
 }
 
 
 Rayo Camara::obtenerRayoEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const {
-
     Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
-    return Rayo(dirEsquina, Punto(this->o));
+    return Rayo(dirEsquina, Punto(0.0f, 0.0f, 0.0f));
 }
 
 
 Rayo Camara::obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const {
-    
     Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
-    Direccion dirCentro = dirEsquina + Direccion(0, anchoPorPixel/2, - altoPorPixel/2);
-    return Rayo(dirCentro, Punto(this->o));
+    Direccion dirCentro = dirEsquina + Direccion(0,  - altoPorPixel/2, anchoPorPixel/2);
+    return Rayo(dirCentro, Punto(0.0f, 0.0f, 0.0f));
 }
 
 Rayo Camara::obtenerRayoAleatorioPixel(unsigned coordAncho, float anchoPorPixel, 
@@ -96,6 +97,16 @@ float Camara::calcularAltoPixel(unsigned numPixeles) const{
 }
 
 
+
+void imprimirImagen(const std::vector<std::vector<RGB>>& imagen) {
+    for (const auto& fila : imagen) {
+        for (const auto& pixel : fila) {
+            std::cout << "(" << pixel.rgb[0] << ", " << pixel.rgb[1] << ", " << pixel.rgb[2] << ") ";
+        }
+        std::cout << std::endl; // Nueva línea para cada fila
+    }
+}
+
 void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena) const {
     float anchoPorPixel = this->calcularAnchoPixel(numPxlsAncho);
@@ -106,18 +117,34 @@ void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
     for (unsigned ancho = 0; ancho < numPxlsAncho; ancho++) {
         for (unsigned alto = 0; alto < numPxlsAlto; alto++) {
             Rayo rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+            //Rayo rayo = this->obtenerRayoEsquinaPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             rayo.d = normalizar(rayo.d);
-            Base baseLocalToGlobal = Base(this->f, this->l, this->u);   // Pasamos rayo a UCS
-            rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
-            rayo.o = cambioBase(rayo.o, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
+            Base baseLocalToGlobal = Base(this->f, this->u, this->l);   // Pasamos rayo a UCS
+            
+            // if(ancho == 128 && alto == 128) {
+            //     std::cout << rayo << endl;
+            //     std::cout << baseLocalToGlobal << endl;
+            // }
+
+            rayo.d = cambioBase(rayo.d, baseLocalToGlobal, this->o, false);
+            rayo.o = cambioBase(rayo.o, baseLocalToGlobal, this->o, false);
+
+            // if(ancho == 128 && alto == 128) {
+            //     std::cout << rayo << endl;
+            //     std::cout << baseLocalToGlobal << endl;
+            // }
+
+            rayo.d = normalizar(rayo.d);
 
             RGB emision;
             bool interseca = escena.interseccion(rayo, emision);
             
             if (interseca) {    // Si el rayo interseca con un objeto de la escena
+                //std::cout << "interseca" << endl;
                 coloresEscena[alto][ancho] = emision;
             }
         }
     }
-    escribirFicheroPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);
+    //imprimirImagen(coloresEscena);
+    pintarEscenaEnPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);
 }

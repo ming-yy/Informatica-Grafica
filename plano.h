@@ -22,8 +22,7 @@ public:
     RGB emision;     // (r,g,b)
     
     Plano();
-    Plano(Punto& _c, Direccion& _n, float _d,
-          const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
+    Plano(const Direccion& _n, float _d, const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
     
     // Función que calcula la intersección entre un rayo (d) con origen
     // en p y el plano e. Devuelve <True> si y solo si se produce la

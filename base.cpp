@@ -102,11 +102,11 @@ ostream& operator<<(ostream& os, const Base& m) {
 
     // Imprime la matriz alineada
     for (const auto& fila : m.base) {
-        os << "|";
+        os << "( ";
         for (const auto& valor : fila) {
             os << " " << std::setw(max_width) << valor;  // Alinea cada valor con el ancho máximo
         }
-        os << " |" << std::endl;
+        os << " )" << std::endl;
     }
 
     return os;

@@ -12,10 +12,10 @@
 
 class Escena {
 public:
-    std::vector<Primitiva> primitivas;   // Array de los objetos de la escena
+    std::vector<Primitiva*> primitivas;   // Array de los objetos de la escena
     
     Escena();
-    Escena(std::vector<Primitiva> _primitivas);
+    Escena(std::vector<Primitiva*> _primitivas);
     
     // Método que devuelve "True" si y solo si hay intersección entre el rayo <rayo> y algún
     // objeto de la escena. En caso de haber intersección, la emisión del punto por el

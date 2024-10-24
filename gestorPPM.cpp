@@ -253,37 +253,31 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
 
 void pintarEscenaEnPPM(const std::string& nombreArchivo, const float maxColorRes, const float c,
                         const std::vector<std::vector<RGB>>& imagen) {
-    std::ofstream archivo(nombreArchivo);
+    std::ofstream archivo(nombreArchivo + ".ppm");
     if (!archivo) {
         std::cerr << "Error al abrir el archivo " << nombreArchivo << std::endl;
         return;
     }
 
-    // Obtener las dimensiones de la imagen
     unsigned numPxlsAlto = imagen.size();
     unsigned numPxlsAncho = numPxlsAlto > 0 ? imagen[0].size() : 0;
 
-    // Escribir el encabezado del archivo PPM
-    archivo << "P3\n";  // Formato PPM (ASCII)
-    archivo << numPxlsAncho << " " << numPxlsAlto << "\n";  // Ancho y Alto de la imagen
+    // Encabezado del archivo PPM
+    archivo << "P3\n";
+    archivo << numPxlsAncho << " " << numPxlsAlto << "\n";
     archivo << static_cast<int>(maxColorRes) << "\n";  // Valor máximo del color
 
-    // Escribir los píxeles
+    // Píxeles de la imagen
     for (size_t y = 0; y < numPxlsAlto; y++) {
         for (size_t x = 0; x < numPxlsAncho; x++) {
-            const RGB& pixel = imagen[y][x];  // Acceso correcto al píxel (filas por columnas)
-
-            // Escalar los valores RGB usando el factor `c` y el valor máximo `maxColorRes`
+            const RGB& pixel = imagen[y][x];
             int r = std::round(std::min(pixel.rgb[0] * c, maxColorRes));
             int g = std::round(std::min(pixel.rgb[1] * c, maxColorRes));
             int b = std::round(std::min(pixel.rgb[2] * c, maxColorRes));
-
-            // Escribir los valores de los colores en el archivo PPM
             archivo << r << " " << g << " " << b << "  ";
         }
-        archivo << "\n";  // Nueva línea tras cada fila de píxeles
+        archivo << "\n";
     }
-
     archivo.close();
 
     if (!archivo) {
