@@ -85,7 +85,7 @@ Rayo Camara::obtenerRayoAleatorioPixel(unsigned coordAncho, float anchoPorPixel,
     float altoRand = distribucion(gen) * altoPorPixel;
 
     Direccion dirRand = dirEsquina + Direccion(0, anchoRand, - altoRand);
-    return Rayo(dirRand, Punto(this->o));
+    return Rayo(dirRand, Punto(0.0f, 0.0f, 0.0f));
 }
 
 float Camara::calcularAnchoPixel(unsigned numPixeles) const {
