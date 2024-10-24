@@ -13,6 +13,7 @@
 #include "base.h"
 #include "matriz.h"
 #include "transformaciones.h"
+#include "rgb.h"
 
 template<typename T, std::size_t N>
 using array = std::array<T, N>;
@@ -28,7 +29,7 @@ public:
     array<float, 2> estacion;  // [inclinacion, azimut] respecto a <cref>
                                // inclin = (0, pi)   azimut = (-pi, pi]
     array<float, 3> coordLocEstac; // Coord locales de estación respecto centro planeta
-    array<float, 3> emision;    // (r,g,b)
+    RGB emision;    // (r,g,b)
     
     // De momento NO SIRVE PARA NADA
     //Direccion normal;   // Respecto a la superficie de la estación y tiene módulo 1
@@ -39,7 +40,7 @@ public:
     Planeta();
     Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
             const float& inclinacion, const float& azimut,
-            array<float, 3> _emision = {0.0f, 0.0f, 0.0f});
+            const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
     
     // Método que devuelve las coordenadas de la estación en UCS
     Punto estacionToUCS() const;

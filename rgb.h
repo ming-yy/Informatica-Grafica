@@ -1,5 +1,5 @@
 //*****************************************************************
-// File:   rayo.h
+// File:   rgb.h
 // Author: Ming Tao, Ye   NIP: 839757, Puig Rubio, Manel Jorda  NIP: 839304
 // Date:   octubre 2024
 // Coms:   Práctica 3.2 de Informática Gráfica
@@ -8,21 +8,17 @@
 #pragma once
 #include "direccion.h"
 #include "punto.h"
-#include <memory>
+#include "rayo.h"
+#include "escena.h"
+#include <initializer_list>
 
 
-class Rayo {
+class RGB {
 public:
-    Direccion d;
-    Punto o;
+    std::array<float,3> rgb;
 
-    
-    Rayo();
-    Rayo(const Direccion& dir, const Punto& origen);
-
-    // Método para mostrar la información del rayo
-    void imprimir() const;
-
-    // Función para mostrar por pantalla el rayo
-    friend ostream& operator<<(ostream& os, const Rayo& pd);
+    RGB();
+    RGB(const float& r, const float& g, const float& b);
+    RGB(init_list<float> _rgb);
+    RGB(const std::array<float, 3>& _rgb);
 };

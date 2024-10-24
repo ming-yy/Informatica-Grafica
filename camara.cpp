@@ -6,20 +6,21 @@
 //*****************************************************************
 
 #include "camara.h"
+#include "rgb.h"
 #include "base.h"
 #include "transformaciones.h"
 
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
-                   l(Direccion(-1.0f, 0.0f, 0.0f)),
-                   u(Direccion(0.0f, 1.0f, 0.0f)),
-                   f(Direccion(0.0f, 0.0f, 3.0f)) {}
+                   f(Direccion(-1.0f, 0.0f, 0.0f)),
+                   l(Direccion(0.0f, 1.0f, 0.0f)),
+                   u(Direccion(0.0f, 0.0f, 3.0f)) {}
 
 
 Camara::Camara(std::initializer_list<float> _o, 
+               std::initializer_list<float> _f, 
                std::initializer_list<float> _l, 
-               std::initializer_list<float> _u, 
-               std::initializer_list<float> _f) {
+               std::initializer_list<float> _u) {
     // Lista contiene 3 elementos (x, y, z)
     if (_o.size() == 3 && _l.size() == 3 && _u.size() == 3 && _f.size() == 3) {
         auto it_o = _o.begin();
@@ -39,7 +40,7 @@ Camara::Camara(std::initializer_list<float> _o,
 }
 
 
-Camara::Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f)
+Camara::Camara(Punto& _o, Direccion& _f, Direccion& _l, Direccion& _u)
     : o(_o), l(_l), u(_u), f(_f) {}
 
 
@@ -68,11 +69,25 @@ Rayo Camara::obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel,
     return Rayo(dirCentro, Punto(this->o));
 }
 
+float Camara::calcularAnchoPixel(unsigned numPixeles) const {
+    return (modulo(this->l) * 2) / numPixeles;
+}
+
+float Camara::calcularAltoPixel(unsigned numPixeles) const{
+    return (modulo(this->u) * 2) / numPixeles;
+}
+
 
 void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena) const {
-    float anchoPorPixel = (modulo(this->l) * 2) / numPxlsAncho;
-    float altoPorPixel = (modulo(this->u) * 2) / numPxlsAlto;
-    
+    float anchoPorPixel = this->calcularAnchoPixel(numPxlsAncho);
+    float altoPorPixel = this->calcularAltoPixel(numPxlsAlto);
+    /*
+    std:array<array<RGB, numPxlsAlto>, numPxlsAncho> coloresEscena;
+    for (auto& fila : coloresEscena) {      // Inicializamos con todo negro
+        fila.fill(255.0f);
+    }
+    */
+
     for (int ancho = 0; ancho < numPxlsAncho; ancho++) {
         for (int alto = 0; alto < numPxlsAlto; alto++) {
             Rayo rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
@@ -80,13 +95,12 @@ void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const
             Base baseLocalToGlobal = Base(this->f, this->l, this->u);
             rayo.d = cambioBase(rayo.d, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
             rayo.o = cambioBase(rayo.o, baseLocalToGlobal, Punto(0.0f, 0.0f, 0.0f), false);
-            std::array<float, 3> emision;
+            RGB emision;
             bool interseca = escena.interseccion(rayo, emision);
             if (interseca) {
-                //this->pintar(ancho, alto, emision);
-            } else {
-                //this->pintar(ancho, alto, color negro porque no interseca);
+                // coloresEscena[alto][ancho] = emision;
             }
         }
+        // pintar();
     }
  }

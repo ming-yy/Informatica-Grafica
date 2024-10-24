@@ -16,15 +16,19 @@
 class Camara {
 public:
     Punto o;
+    Direccion f;
     Direccion l;
     Direccion u;
-    Direccion f;
 
     
     Camara();
-    Camara(init_list<float> _o, init_list<float> _l, init_list<float> _u,
-           init_list<float> _f);
-    Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f);
+    Camara(Punto& _o, Direccion& _f, Direccion& _l, Direccion& _u);
+    Camara(init_list<float> _o, init_list<float> _f, init_list<float> _l,
+           init_list<float> _u);
+
+    float calcularAnchoPixel(unsigned numPixeles) const;
+
+    float calcularAltoPixel(unsigned numPixeles) const;
 
     // Método que devuelve la direccion que hay hacia la esquina superior izquierda
     // en el plano de proyeccion del pixel (ancho, alto)
@@ -40,11 +44,8 @@ public:
     // el centro del pixel (ancho, alto)
     Rayo obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const;
+
     // Método que ...
     void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena) const;
-    /*  LA FUNCIÓN DEBERÍA SER EXACTAMENTE ESTO
-        Falta implementar obtenerRayoPixel y pintar()
-     
-        
-    */
+
 };

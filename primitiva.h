@@ -7,6 +7,7 @@
 #pragma once
 #include "punto.h"
 #include "rayo.h"
+#include "rgb.h"
 #include <vector>
 // Clase virtual que todas las primitivas geométricas deben heredar
 
@@ -19,5 +20,5 @@ public:
     // en el vector será el primer punto de intersección. También devuelve la emisión del
     // objeto en "emision".
     virtual void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                         std::array<float, 3>& emision) const;
+                              RGB& emision) const;
 };

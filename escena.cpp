@@ -13,14 +13,14 @@ Escena::Escena(): primitivas(std::vector<Primitiva>()) {}
 Escena::Escena(std::vector<Primitiva> _primitivas): primitivas(_primitivas) {}
 
 
-bool Escena::interseccion(const Rayo& rayo, std::array<float, 3>& resEmision) const {
+bool Escena::interseccion(const Rayo& rayo, RGB& resEmision) const {
     bool resVal = false;
     bool primerIntersec = true;  // Flag: la primera intersección encontrada
     Punto ptoMasCerca;
 
     for (const Primitiva& objeto : this->primitivas) {
         std::vector<Punto> intersec;
-        std::array<float, 3> emision;
+        RGB emision;
 
         objeto.interseccion(rayo, intersec, emision);
 

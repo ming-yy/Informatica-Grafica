@@ -18,12 +18,12 @@ using std::cout;
 
 
 Planeta::Planeta(): centro(Punto()), eje(Direccion()), cref(Punto()),
-                    estacion{0.0f, 0.0f}, emision({0.0f,0.0f,0.0f}) {}
+                    estacion{0.0f, 0.0f}, emision(RGB({0.0f,0.0f,0.0f})) {}
 
 
 Planeta::Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
                  const float& _inclinacion, const float& _azimut,
-                 array<float,3> _emision): centro(_centro), eje(_eje), cref(_cref),
+                 const RGB& _emision): centro(_centro), eje(_eje), cref(_cref),
                                            estacion{_inclinacion, _azimut}, emision(_emision) {
     // Faltan comprobaciones rango de azimut e inclinación
     estacion[0] = _inclinacion;

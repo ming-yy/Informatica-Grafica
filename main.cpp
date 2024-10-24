@@ -42,7 +42,7 @@ using std::string;
 
 
 int main() {
-    int test = 10;
+    int test = 11;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -367,8 +367,7 @@ int main() {
         
     } else if (test == 10) {
         cout << endl << "PRUEBA 10 - INTERSECCIONES " << endl;
-
-        array<float,3> emision = {0.0f,0.0f,0.0f};
+        RGB emision({0.0f,0.0f,0.0f});
         
         cout << endl;
         cout << "--- Pruebas interseccion Rayo Esfera ---" << endl;
@@ -403,7 +402,7 @@ int main() {
         float distanciaPlano = -5.0f;   // El plano está a 5 unidades del origen UCS
         sh_ptr<Plano> plano = std::make_shared<Plano>(*centroPlano, *normalPlano, distanciaPlano);
         //cout << *plano << endl;
-        plano->interseccion(Rayo(dir, pto), ptosIntersec, emision);
+        plano->interseccion(Rayo(*dir, *pto), ptosIntersec, emision);
 
         if (!ptosIntersec.empty()) {
             for (Punto p : ptosIntersec) {
@@ -455,9 +454,35 @@ int main() {
         */
 
         Camara cam2 = Camara({0.0f, 0.0f, 0.0f},
-                             {2.0f, 0.0f, 0.0f},
+                             {10.0f, 0.0f, 0.0f},
                              {0.0f, 2.0f, 0.0f},
-                             {0.0f, 0.0f, 10.0f});
+                             {0.0f, 0.0f, 2.0f});
+
+        float anchoPorPixel2 = cam2.calcularAnchoPixel(4);
+        float altoPorPixel2 = cam2.calcularAltoPixel(4);
+
+        Rayo rayoEsquina1 = cam2.obtenerRayoEsquinaPixel(0, anchoPorPixel2, 0, altoPorPixel2);
+        cout << "Esquina1 = " << rayoEsquina1 << endl;
+        Rayo rayoEsquina2 = cam2.obtenerRayoEsquinaPixel(4, anchoPorPixel2, 0, altoPorPixel2);
+        cout << "Esquina2 = " << rayoEsquina2 << endl;
+        Rayo rayoEsquina3 = cam2.obtenerRayoEsquinaPixel(0, anchoPorPixel2, 4, altoPorPixel2);
+        cout << "Esquina3 = " << rayoEsquina3 << endl;
+        Rayo rayoEsquina4 = cam2.obtenerRayoEsquinaPixel(4, anchoPorPixel2, 4, altoPorPixel2);
+        cout << "Esquina4 = " << rayoEsquina4 << endl;
+
+        cout << endl;
+
+        Rayo rayoCentro1 = cam2.obtenerRayoCentroPixel(0, anchoPorPixel2, 0, altoPorPixel2);
+        cout << "Centro1 = " << rayoCentro1 << endl;
+        Rayo rayoCentro2 = cam2.obtenerRayoCentroPixel(4, anchoPorPixel2, 0, altoPorPixel2);
+        cout << "Centro2 = " << rayoCentro2 << endl;
+        Rayo rayoCentro3 = cam2.obtenerRayoCentroPixel(0, anchoPorPixel2, 4, altoPorPixel2);
+        cout << "Centro3 = " << rayoCentro3 << endl;
+        Rayo rayoCentro4 = cam2.obtenerRayoCentroPixel(4, anchoPorPixel2, 4, altoPorPixel2);
+        cout << "Centro4 = " << rayoCentro4 << endl;
+
+
+
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }

@@ -7,22 +7,23 @@
 #pragma once
 #include "primitiva.h"
 #include "planeta.h"
+#include "rgb.h"
 
 
 class Esfera: public Primitiva {
 public:
     Punto centro;   // En UCS
     float radio;
-    array<float, 3> emision;    // (r,g,b)
+    RGB emision;    // (r,g,b)
     
     
-       Esfera();
-       Esfera(const Punto& _centro, const float& _radio,
-           array<float, 3> _emision = {0.0f, 0.0f, 0.0f});
+    Esfera();
+    Esfera(const Punto& _centro, const float& _radio,
+                    const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
 
-       Esfera(const Planeta& p);
+    Esfera(const Planeta& p);
 
     
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                      std::array<float, 3>& emision) const override;
+                      RGB& emision) const override;
 };

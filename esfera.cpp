@@ -10,14 +10,14 @@
 Esfera::Esfera(): centro(Punto()), radio(0.0f), emision({0.0f,0.0f,0.0f}) {}
 
 
-Esfera::Esfera(const Punto& _centro, const float& _radio, array<float,3> _emision):
+Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _emision) :
                centro(_centro), radio(_radio), emision(_emision) {}
 
 Esfera::Esfera(const Planeta& p) : centro(p.centro), radio(p.radio), 
-                                                        emision(p.emision){}
+                                                     emision(p.emision){}
 
 void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                  std::array<float, 3>& emision) const {
+                          RGB& emision) const {
     float a = modulo(rayo.d);
     a *= a;
     float b = 2 * dot(rayo.d, rayo.o - this->centro);

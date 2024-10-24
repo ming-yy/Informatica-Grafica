@@ -10,7 +10,13 @@
 
 Rayo::Rayo(const Direccion& dir, const Punto& origen) : d(dir), o(origen) {};
 
-
 void Rayo::imprimir() const {
-    std::cout << "Rayo - Dirección: " << d << ", Origen: " << o << std::endl;
+    std::cout << "Rayo - Direccion: " << d << ", Origen: " << o << std::endl;
+}
+
+ostream& operator<<(ostream& os, const Rayo& r)
+{
+    os << "Rayo - Direccion: " << r.d << ", Origen: " << r.o << std::endl;
+
+    return os;
 }

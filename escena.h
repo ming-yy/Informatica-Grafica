@@ -8,6 +8,7 @@
 #pragma once
 #include <vector>
 #include "primitiva.h"
+#include "rgb.h"
 
 class Escena {
 public:
@@ -20,5 +21,5 @@ public:
     // objeto de la escena. En caso de haber intersección, la emisión del punto por el
     // que interseca el rayo <rayo> con el primer objeto que se encuentre en la escena es
     // devuelta en <resEmision>.
-    bool interseccion(const Rayo& rayo, std::array<float, 3>& resEmision) const;
+    bool interseccion(const Rayo& rayo, RGB& resEmision) const;
 };

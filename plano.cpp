@@ -18,11 +18,11 @@ Plano::Plano(): c(0.0f, 0.0f, 0.0f), n(0.0f, 0.0f, 0.0f), d(0.0f),
                 emision({0.0f, 0.0f, 0.0f}) {}
 
 Plano::Plano(Punto& _c, Direccion& _n, float _d,
-             array<float, 3> _emision):
+             const RGB& _emision):
              c(_c), n(_n), d(_d), emision(_emision) {}
 
 void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                                std::array<float, 3>& emision) const {
+                        RGB& emision) const {
     float denominador = dot(rayo.d, n);
     if (fabs(denominador) < 1e-6f) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;

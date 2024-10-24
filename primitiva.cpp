@@ -10,5 +10,4 @@
 // Quizás también habría que hacer que intersección() sea virtual
 Primitiva::Primitiva() {}
 
-void Primitiva::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                         std::array<float, 3>& emision) const{}
+void Primitiva::interseccion(const Rayo& rayo, std::vector<Punto>& ptos, RGB& emision) const{}

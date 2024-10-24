@@ -26,7 +26,7 @@ public:
     // en p y el plano e. Devuelve <True> si y solo si se produce la
     // interseccion.
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                         std::array<float, 3>& emision) const override;
+                      RGB& emision) const override;
     
     // Función para mostrar por pantalla la información del plano
     friend ostream& operator<<(ostream& os, const Plano& p);
