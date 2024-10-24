@@ -50,7 +50,7 @@ void cajaDeCornell(){
     objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({227.0f, 177.0f, 210.0f})));
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f})));
     Escena cornell = Escena(objetos);
-    Camara cam = Camara({0.0f, 0.0f, -10.5f},
+    Camara cam = Camara({0.0f, 0.0f, -3.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});

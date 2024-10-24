@@ -119,7 +119,10 @@ void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
             Rayo rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             //Rayo rayo = this->obtenerRayoEsquinaPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             rayo.d = normalizar(rayo.d);
-            Base baseLocalToGlobal = Base(this->f, this->u, this->l);   // Pasamos rayo a UCS
+            //Base baseLocalToGlobal = Base(this->f, this->u, this->l);   // Pasamos rayo a UCS
+            Base baseLocalToGlobal = Base({{0.0f,0.0f,1.0f},
+                                            {0.0f,1.0f,0.0f},
+                                            {1.0f,0.0f,0.0f}});
             
             // if(ancho == 128 && alto == 128) {
             //     std::cout << rayo << endl;
