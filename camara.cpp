@@ -43,21 +43,19 @@ Camara::Camara(Punto& _o, Direccion& _l, Direccion& _u, Direccion& _f)
     : o(_o), l(_l), u(_u), f(_f) {}
 
 
-
 Direccion Camara::obtenerDireccionEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const {
-    float x = modulo(this->f);  // F
-    float y = - modulo(this->l) + coordAncho * anchoPorPixel;   // L
-    float z = modulo(this->u) - coordAlto * altoPorPixel;       // U
-
+    float x = modulo(this->f);
+    float y = - modulo(this->l) + coordAncho * anchoPorPixel;
+    float z = modulo(this->u) - coordAlto * altoPorPixel;
     return Direccion(x,y,z);
 }
+
 
 Rayo Camara::obtenerRayoEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const {
 
     Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
-
     return Rayo(dirEsquina, Punto(this->o));
 }
 
@@ -67,9 +65,9 @@ Rayo Camara::obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel,
     
     Direccion dirEsquina = obtenerDireccionEsquinaPixel(coordAncho, anchoPorPixel, coordAlto, altoPorPixel);
     Direccion dirCentro = dirEsquina + Direccion(0, anchoPorPixel/2, altoPorPixel/2);
-
     return Rayo(dirCentro, Punto(this->o));
 }
+
 
 void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena) const {
     float anchoPorPixel = (modulo(this->l) * 2) / numPxlsAncho;

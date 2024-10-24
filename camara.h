@@ -28,17 +28,17 @@ public:
 
     // Método que devuelve la direccion que hay hacia la esquina superior izquierda
     // en el plano de proyeccion del pixel (ancho, alto)
-    Direccion Camara::obtenerDireccionEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
+    Direccion obtenerDireccionEsquinaPixel(unsigned coordAncho, float anchoPorPixel,
                                     unsigned coordAlto, float altoPorPixel) const;
 
     // Método que devuelve el rayo que va desde la cámara hasta 
     // la esquina superior izquierda del pixel (ancho, alto)
-    Rayo Camara::obtenerRayoEsquinaPixel(unsigned coordAncho, float anchoPorPixel,
+    Rayo obtenerRayoEsquinaPixel(unsigned coordAncho, float anchoPorPixel,
                                     unsigned coordAlto, float altoPorPixel) const;
 
     // Método que devuelve el rayo que va desde la cámara hasta
     // el centro del pixel (ancho, alto)
-    Rayo Camara::obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel, 
+    Rayo obtenerRayoCentroPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const;
     // Método que ...
     void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena) const;
