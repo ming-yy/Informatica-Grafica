@@ -88,6 +88,21 @@ Rayo Camara::obtenerRayoAleatorioPixel(unsigned coordAncho, float anchoPorPixel,
     return Rayo(dirRand, Punto(0.0f, 0.0f, 0.0f));
 }
 
+Rayo Camara::obtenerRppRayosAleatoriosPixel(unsigned coordAncho, float anchoPorPixel, 
+                                    unsigned coordAlto, float altoPorPixel, unsigned rpp) const {
+    Rayo rayoMedio(Direccion(0.0f, 0.0f, 0.0f), Punto());
+
+    for(int i = 0; i < rpp; i++){
+        rayoMedio = Rayo(rayoMedio.d + obtenerRayoAleatorioPixel(coordAncho, anchoPorPixel, 
+                                                                    coordAlto, altoPorPixel).d,
+                            Punto(0.0f, 0.0f, 0.0f));
+    }
+
+    rayoMedio = Rayo(rayoMedio.d / rpp, Punto(0.0f, 0.0f, 0.0f));
+
+    return rayoMedio;
+}
+
 float Camara::calcularAnchoPixel(unsigned numPixeles) const {
     return (modulo(this->l) * 2) / numPixeles;
 }
@@ -108,15 +123,29 @@ void imprimirImagen(const std::vector<std::vector<RGB>>& imagen) {
 }
 
 void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                              const Escena& escena, const std::string& nombreEscena) const {
+                              const Escena& escena, const std::string& nombreEscena, unsigned rpp = 1) const {
+    if (rpp < 1) {
+        std::cout << "RPP tiene que ser mayor que 0" << endl;
+        return;
+    }
+
     float anchoPorPixel = this->calcularAnchoPixel(numPxlsAncho);
     float altoPorPixel = this->calcularAltoPixel(numPxlsAlto);
+
     std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto,
                                                 std::vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
 
+    bool useCenterRay = (rpp == 1);
+
     for (unsigned ancho = 0; ancho < numPxlsAncho; ancho++) {
         for (unsigned alto = 0; alto < numPxlsAlto; alto++) {
-            Rayo rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
+
+            if(useCenterRay){
+                rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+            } else {
+                rayo = this->obtenerRppRayosAleatoriosPixel(ancho, anchoPorPixel, alto, altoPorPixel, rpp);
+            }
             //Rayo rayo = this->obtenerRayoEsquinaPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             rayo.d = normalizar(rayo.d);
             //Base baseLocalToGlobal = Base(this->f, this->u, this->l);   // Pasamos rayo a UCS

@@ -49,7 +49,10 @@ public:
     Rayo obtenerRayoAleatorioPixel(unsigned coordAncho, float anchoPorPixel, 
                                     unsigned coordAlto, float altoPorPixel) const;
 
+       Rayo obtenerRppRayosAleatoriosPixel(unsigned coordAncho, float anchoPorPixel, 
+              unsigned coordAlto, float altoPorPixel, unsigned rpp) const;
+
     // Método que ...
     void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                          const Escena& escena, const std::string& nombreEscena) const;
+                              const Escena& escena, const std::string& nombreEscena, unsigned rpp) const;
 };
