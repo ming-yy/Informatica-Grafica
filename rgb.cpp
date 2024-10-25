@@ -24,3 +24,30 @@ RGB::RGB(std::initializer_list<float> _rgb) {
 
 RGB::RGB(const std::array<float, 3>& _rgb): rgb(_rgb) {}
 
+
+RGB RGB::operator+(const RGB& d) const {
+    return RGB(rgb[0] + d.rgb[0], rgb[1] + d.rgb[1], rgb[2] + d.rgb[2]);
+}
+
+RGB RGB::operator-(const RGB& d) const {
+    return RGB(rgb[0] - d.rgb[0], rgb[1] - d.rgb[1], rgb[2] - d.rgb[2]);
+}
+
+RGB RGB::operator*(const float escalar) const {
+    return RGB(rgb[0] * escalar, rgb[1] * escalar, rgb[2] * escalar);
+}
+
+RGB RGB::operator/(const float escalar) const {
+    if (escalar == 0) {
+        throw std::invalid_argument("Error: Division por cero no permitida.");
+    }
+    
+    return RGB(rgb[0] / escalar, rgb[1] / escalar, rgb[2] / escalar);
+}
+
+RGB& RGB::operator=(const RGB& r) {
+    if (this != &r) {  // Evitar auto-asignación
+        rgb = r.rgb;  // Asigna las coordenadas
+    }
+    return *this;
+}

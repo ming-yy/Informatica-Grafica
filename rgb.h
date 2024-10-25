@@ -18,4 +18,19 @@ public:
     RGB(const float& r, const float& g, const float& b);
     RGB(std::initializer_list<float> _rgb);
     RGB(const std::array<float, 3>& _rgb);
+
+    // Operación de suma de dos RGB
+    RGB operator+(const RGB& d) const;
+    
+    // Operación de resta de dos RGB
+    RGB operator-(const RGB& d) const;
+    
+    // Operación de multiplicación entre un escalar y el RGB
+    RGB operator*(const float escalar) const;
+    
+    // Operación de división entre un escalar y el RGB
+    RGB operator/(const float escalar) const;
+
+    // Operador de asignación
+    RGB& operator=(const RGB& d);
 };
