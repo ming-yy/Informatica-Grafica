@@ -54,7 +54,7 @@ void cajaDeCornell(){
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
-    cam.renderizarEscena(256, 256, cornell, "cornell", 64);
+    cam.renderizarEscena(256, 256, cornell, "cornell", 1);
 
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;

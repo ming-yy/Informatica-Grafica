@@ -63,3 +63,8 @@ public:
                               float anchoPorPixel, float altoPorPixel, 
                               std::vector<std::vector<RGB>>& coloresEscena, unsigned rpp) const;
 };
+
+
+// Función que calcula ...
+void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
+                               const Direccion& l);

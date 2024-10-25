@@ -107,17 +107,16 @@ void imprimirImagen(const std::vector<std::vector<RGB>>& imagen) {
     }
 }
 
-void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o){
+void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
+                               const Direccion& l) {
     //Rayo rayo = this->obtenerRayoEsquinaPixel(ancho, anchoPorPixel, alto, altoPorPixel);
     rayo.d = normalizar(rayo.d);
-
-    Base baseLocalToGlobal = Base({{0.0f,0.0f,1.0f},
-                                    {0.0f,1.0f,0.0f},
-                                    {1.0f,0.0f,0.0f}});
-
+    Base baseLocalToGlobal = Base(abs(f / modulo(f)),
+                                  abs(u / modulo(u)),
+                                  abs(l / modulo(l)));
+    
     rayo.d = cambioBase(rayo.d, baseLocalToGlobal, o, false);
     rayo.o = cambioBase(rayo.o, baseLocalToGlobal, o, false);
-
     rayo.d = normalizar(rayo.d);
 }
 
@@ -132,7 +131,7 @@ void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxls
             RGB emision;
 
             rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
-            globalizarYNormalizarRayo(rayo, this->o);
+            globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
         
             if (escena.interseccion(rayo, emision)) {    // Si el rayo interseca con un objeto de la escena, se pinta
                 coloresEscena[alto][ancho] = emision;
@@ -140,6 +139,7 @@ void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxls
         }
     }
 }
+
 
 void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena,
@@ -155,7 +155,7 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
                 Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
 
                 rayo = this->obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
-                globalizarYNormalizarRayo(rayo, this->o);
+                globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
             
                 if (escena.interseccion(rayo, emisionActual)) {    // Si el rayo interseca con un objeto de la escena, se pinta
                     emisionMedia = emisionMedia + emisionActual;
@@ -177,7 +177,6 @@ void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
 
     float anchoPorPixel = this->calcularAnchoPixel(numPxlsAncho);
     float altoPorPixel = this->calcularAltoPixel(numPxlsAlto);
-
     std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto,
                                                 std::vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
 
@@ -188,7 +187,6 @@ void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
         renderizarEscenaConAntialising(numPxlsAncho, numPxlsAlto, escena,
                                         nombreEscena, anchoPorPixel, altoPorPixel,coloresEscena, rpp);
     }
-    
     //imprimirImagen(coloresEscena);
     pintarEscenaEnPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);
 }

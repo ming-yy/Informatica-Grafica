@@ -86,3 +86,12 @@ Direccion& Direccion::operator=(const Direccion& d) {
     }
     return *this;
 }
+
+Direccion Direccion::absoluto() const {
+    return Direccion(std::abs(this->coord[0]), std::abs(this->coord[1]),
+                     std::abs(this->coord[2]));
+}
+
+Direccion abs(const Direccion& d) {
+    return Direccion(d.absoluto());
+}

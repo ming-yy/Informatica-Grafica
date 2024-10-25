@@ -47,6 +47,9 @@ public:
     // Función global para producto vectorial entre dos direcciones
     friend Direccion cross(const Direccion& d1, const Direccion& d2);
     
+    // Función global para devolver la dirección con componentes absolutas
+    friend Direccion abs(const Direccion& d);
+    
 private:
     // Método privado para calcular el módulo de la dirección
     float modulo() const;
@@ -56,4 +59,8 @@ private:
     
     // Método privado para producto vectorial con otra dirección
     Direccion productoVectorial(const Direccion& d) const;
+    
+    // Método privado para obtener Direccion correspondiente de hacer el absoluto de
+    // cada coordenada
+    Direccion absoluto() const;
 };
