@@ -4,3 +4,4 @@
 /ppms
 .vscode
 .DS_Store
+*.ppm
