@@ -3,3 +3,4 @@
 *.exe
 /ppms
 .vscode
+.DS_Store
