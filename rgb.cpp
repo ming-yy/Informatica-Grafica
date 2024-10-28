@@ -9,7 +9,7 @@
 #include <stdexcept>
 
 
-RGB::RGB() : rgb({255.0f, 255.0f, 255.0f}) {}
+RGB::RGB() : rgb({0.0f, 0.0f, 0.0f}) {}
 
 RGB::RGB(const float& r, const float& g, const float& b): rgb({r, g, b}) {}
 
