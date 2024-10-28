@@ -1,0 +1,14 @@
+//*****************************************************************
+// File:   luzpuntual.cpp
+// Author: Ming Tao, Ye   NIP: 839757, Puig Rubio, Manel Jorda  NIP: 839304
+// Date:   octubre 2024
+// Coms:   Práctica 4 de Informática Gráfica
+//*****************************************************************
+
+#pragma once
+#include "luzpuntual.h"
+
+
+LuzPuntual::LuzPuntual(): centro(0.0f, 0.0f, 0.0f), potencia(1.0f, 1.0f, 1.0f) {}
+
+LuzPuntual::LuzPuntual(Punto _centro, Direccion _potencia): centro(_centro), potencia(_potencia) {}

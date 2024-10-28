@@ -13,7 +13,12 @@
 // Clase virtual que todas las primitivas geométricas deben heredar
 class Primitiva {
 public:
-    Primitiva();
+    Primitiva() = default;
+    
+    // Destructor virtual para asegurar que los destructores de las clases derivadas
+    // se llamen correctamente.
+    virtual ~Primitiva() = default;
+    
     // Devuelve en <ptos> un vector con los puntos de intersección en UCS del rayo <rayo>
     // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
     // en el vector será el primer punto de intersección. También devuelve la emisión del

@@ -10,7 +10,8 @@
 
 Escena::Escena(): primitivas(std::vector<Primitiva*>()) {}
 
-Escena::Escena(std::vector<Primitiva*> _primitivas): primitivas(_primitivas) {}
+Escena::Escena(std::vector<Primitiva*> _primitivas, std::vector<LuzPuntual> _luces):
+                primitivas(_primitivas), luces(_luces) {}
 
 
 bool Escena::interseccion(const Rayo& rayo, RGB& resEmision) const {

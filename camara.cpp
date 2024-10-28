@@ -170,8 +170,12 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
 
 void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena, unsigned rpp = 1) const {
+    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
+    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
+    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
+    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
     if (rpp < 1) {
-        std::cout << "RPP tiene que ser mayor que 0" << endl;
+        std::cout << "ERROR: RPP tiene que ser mayor que 0" << endl;
         return;
     }
 

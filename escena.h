@@ -9,13 +9,15 @@
 #include <vector>
 #include "primitiva.h"
 #include "rgb.h"
+#include "luzpuntual.h"
 
 class Escena {
 public:
     std::vector<Primitiva*> primitivas;   // Array de los objetos de la escena
+    std::vector<LuzPuntual> luces;   // Array de los objetos de la escena
     
     Escena();
-    Escena(std::vector<Primitiva*> _primitivas);
+    Escena(std::vector<Primitiva*> _primitivas, std::vector<LuzPuntual> _luces);
     
     // Método que devuelve "True" si y solo si hay intersección entre el rayo <rayo> y algún
     // objeto de la escena. En caso de haber intersección, la emisión del punto por el
