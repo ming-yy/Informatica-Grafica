@@ -44,7 +44,7 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca,
 bool Escena::puntoIluminado(const Punto& p0) const {
     bool iluminar = true;
     for(const LuzPuntual& luz : this->luces) {
-        Direccion d = luz.c - p0;
+        Direccion d = normalizar(luz.c - p0);
         Punto ptoMasCerca;
         RGB rgb;
         Direccion ignorar;
