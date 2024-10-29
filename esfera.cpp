@@ -33,17 +33,22 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         float t2 = (-b - sqrt(discriminante)) / (2 * a);
         Punto p1 = rayo.o + rayo.d * t1;
         Punto p2 = rayo.o + rayo.d * t2;
-        Punto puntoInterseccion = (modulo(rayo.o - p1) < modulo(rayo.o - p2) ? p1 : p2);
-        if (modulo(rayo.o - p1) < modulo(rayo.o - p2)) {    // Primero interseca con p1
-            puntoInterseccion = p1;
+        if (t1 > 0 && t2 > 0) {
+            if (modulo(rayo.o - p1) < modulo(rayo.o - p2)) {    // Primero interseca con p1
+                ptos.push_back(p1);
+                ptos.push_back(p2);
+            } else {             // Primero interseca con p2
+                ptos.push_back(p2);
+                ptos.push_back(p1);
+            }
+            emision = this->emision;
+        } else if (t1 > 0) {
             ptos.push_back(p1);
+            emision = this->emision;
+        } else if (t2 > 0) {
             ptos.push_back(p2);
-        } else {             // Primero interseca con p2
-            puntoInterseccion = p2;
-            ptos.push_back(p2);
-            ptos.push_back(p1);
+            emision = this->emision;
         }
-        emision = this->emision;
  
         // DEBUG
         //cout << "Hay 2 puntos de interseccion: " << endl;
@@ -54,9 +59,10 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     } else if (discriminante == 0) {  // Caso de una solución única
         float t = -b / (2 * a);
         Punto puntoInterseccion = rayo.o + rayo.d * t;
-        ptos.push_back(puntoInterseccion);
-        emision = this->emision;
- 
+        if (t > 0) {
+            ptos.push_back(puntoInterseccion);
+            emision = this->emision;
+        }
         // DEBUG
         //cout << "Hay 1 punto de interseccion (tngente): " << endl;
         //cout << "t = " << t << " --> " << puntoInterseccion << endl;

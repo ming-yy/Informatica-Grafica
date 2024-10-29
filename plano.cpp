@@ -16,7 +16,7 @@ using std::vector;
 Plano::Plano(): n(0.0f, 0.0f, 0.0f), d(0.0f), emision({0.0f, 0.0f, 0.0f}) {}
 
 Plano::Plano(const Direccion& _n, float _d, const RGB& _emision):
-             n(_n), d(_d), emision(_emision) {}
+             n(normalizar(_n)), d(_d), emision(_emision) {}
 
 void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                         RGB& emision) const {
@@ -28,7 +28,7 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     
     float numerador = (-1) * (d + dot(rayo.o, n));
     float t = numerador / denominador;
-    if (t < 0) {
+    if (t <= 0) {
         //cout << "No hay intersección en la dirección positiva del rayo." << endl;
         return;
     }
@@ -46,7 +46,7 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
 }
 
 Direccion Plano::getNormal(const Punto& punto) const {
-    return normalizar(n);
+    return this->n;
 }
 
 ostream& operator<<(ostream& os, const Plano& r)

@@ -23,6 +23,7 @@ public:
     // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
     // en el vector será el primer punto de intersección. También devuelve la emisión del
     // objeto en "emision".
+    // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     virtual void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                               RGB& emision) const = 0;
     
