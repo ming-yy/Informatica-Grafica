@@ -45,6 +45,10 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     
 }
 
+Direccion Plano::getNormal(const Punto& punto) const {
+    return normalizar(n);
+}
+
 ostream& operator<<(ostream& os, const Plano& r)
 {
     os << "\nNormal: " << r.n << "\nDistancia: " << r.d;

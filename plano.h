@@ -30,6 +30,8 @@ public:
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                       RGB& emision) const override;
     
+    Direccion getNormal(const Punto& punto) const override;
+
     // Función para mostrar por pantalla la información del plano
     friend ostream& operator<<(ostream& os, const Plano& p);
 };

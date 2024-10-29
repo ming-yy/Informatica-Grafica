@@ -55,3 +55,10 @@ void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         return ; // No hay intersección en la dirección del rayo
     }
 }
+
+Direccion Triangulo::getNormal(const Punto& punto) const {
+    Direccion d1 = v0 - v1;
+    Direccion d2 = v1 - v2;
+    return normalizar(cross(d1, d2));
+}
+
