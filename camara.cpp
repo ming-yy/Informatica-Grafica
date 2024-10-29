@@ -12,6 +12,7 @@
 #include "gestorPPM.h"
 #include <iostream>
 #include <random>
+// #include <cmath>     // permite usar número pi
 
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
@@ -120,6 +121,47 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
     rayo.d = normalizar(rayo.d);
 }
 
+/*
+// Devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto p0
+bool Camara::radiancia(const Punto& p0, const Escena& escena, const float coefDifuso, RGB* radiancia) {
+    bool iluminar = escena.puntoIluminado(p0);
+    if (!iluminar) return false;
+    
+    RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
+    for (LuzPuntual& luz : this->luces) {
+        Distancia CMenosX = luz.c - p0;
+        Distancia normal = ...   ;      // Habrá que sacarlo de alguna forma, igual desde escena.interseccion()
+        float termino3 = modulo(dot(normal, CMenosX / modulo(CMenosX)));
+        float termino2 = coefDifuso / M_PI;     // M_PI que se encuentra en <cmath>
+        Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
+        radFinal = radFinal + termino1 * (termino2 * termino3);
+    }
+    radiancia = radFinal;
+    return true;
+}
+*/
+/*
+// Método que devuelve True si y solo si al punto <p0> lo ilumina una fuente de luz.
+// En caso contrario, devuelve False.
+bool Escena::puntoIluminado(const Punto& p0) {
+    bool iluminar = true;
+    for(LuzPuntual& luz : this->luces) {
+        Direccion d = luz.centro - p0;
+        Punto ptoMasCerca;
+        RGB rgb;
+        bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca);
+        
+        if (chocaObjeto) {
+            iluminar = modulo(d) <= modulo(ptoMasCerca - p0);   // Si la fuente de luz está dentro de un objeto, también iluminamos
+        }
+        
+        if (iluminar) break;
+        }
+    }
+    return iluminar;
+}
+*/
+
 void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena,
                               float anchoPorPixel, float altoPorPixel, 
@@ -129,11 +171,20 @@ void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxls
         for (unsigned alto = 0; alto < numPxlsAlto; alto++) {
             Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
             RGB emision;
+            Punto ptoIntersec;
 
             rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
         
-            if (escena.interseccion(rayo, emision)) {    // Si el rayo interseca con un objeto de la escena, se pinta
+            if (escena.interseccion(rayo, emision, ptoIntersec)) {  // Si el rayo interseca con un objeto de la escena, se pinta
+                // RGB radiancia;
+                // iluminar = radiancia(ptoIntersec, escena, 0.5, radiancia);
+                // if (!iluminar) {
+                //     emision.rgb = {0.0f, 0.0f 0.0f};     Pintamos de negro
+                // } else {
+                //      emision = emision + radiancia;
+                //      emision = toneMapping(emision);
+                // }
                 coloresEscena[alto][ancho] = emision;
             }
         }
@@ -151,13 +202,14 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
             RGB emisionMedia;
 
             for(unsigned i = 0; i < rpp; i++){
-                RGB emisionActual;
                 Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
+                RGB emisionActual;
+                Punto ptoIntersec;
 
                 rayo = this->obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
                 globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
             
-                if (escena.interseccion(rayo, emisionActual)) {    // Si el rayo interseca con un objeto de la escena, se pinta
+                if (escena.interseccion(rayo, emisionActual, ptoIntersec)) {    // Si el rayo interseca con un objeto de la escena, se pinta
                     emisionMedia = emisionMedia + emisionActual;
                 }
             }
@@ -169,7 +221,7 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
 }
 
 void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                              const Escena& escena, const std::string& nombreEscena, unsigned rpp = 1) const {
+                              const Escena& escena, const std::string& nombreEscena, unsigned rpp) const {
     // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
     // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
     // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
@@ -181,8 +233,10 @@ void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
 
     float anchoPorPixel = this->calcularAnchoPixel(numPxlsAncho);
     float altoPorPixel = this->calcularAltoPixel(numPxlsAlto);
-    std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto,
-                                                std::vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
+   
+    // Inicializado todo a color negro
+    std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto, std::vector<RGB>(numPxlsAncho,
+                                                                              {0.0f, 0.0f, 0.0f}));
 
     if(rpp == 1){
         renderizarEscenaCentroPixel(numPxlsAncho, numPxlsAlto, escena,

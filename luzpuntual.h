@@ -12,10 +12,10 @@
 
 class LuzPuntual {
 public:
-    Punto centro;
-    Direccion potencia;
+    Punto c;
+    Direccion p;
     
     
     LuzPuntual();
-    LuzPuntual(Punto _centro, Direccion _potencia = {1.0f, 1.0f, 1.0f});
+    LuzPuntual(Punto _c, Direccion _p = {1.0f, 1.0f, 1.0f});
 };

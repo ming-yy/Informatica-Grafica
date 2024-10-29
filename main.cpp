@@ -49,12 +49,12 @@ void cajaDeCornell(){
     objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f})));
     objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({227.0f, 177.0f, 210.0f})));
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f})));
-    Escena cornell = Escena(objetos);
+    Escena cornell = Escena(objetos, {});
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
-    cam.renderizarEscena(256, 256, cornell, "cornell", 5);
+    cam.renderizarEscena(256, 256, cornell, "cornell", 1);
 
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;
@@ -404,6 +404,19 @@ int main() {
         vector<Punto> ptosIntersec;
         sh_ptr<Esfera> esfera = std::make_shared<Esfera>(*planeta);
         esfera->interseccion(Rayo(*dir, *pto), ptosIntersec, emision);
+
+        if (!ptosIntersec.empty()) {
+            for (Punto p : ptosIntersec) {
+                cout << "!Hay interseccion! El punto de interseccion es: " << p << endl;
+            }
+        } else {
+            cout << "No hay interseccion." << endl;
+        }
+        
+        cout << "---" << endl;
+        ptosIntersec.clear();
+        Esfera esfera2 = Esfera(Punto(0,0,0), 1, RGB());
+        esfera2.interseccion(Rayo(Direccion(1,0,0), Punto(1,0,0)), ptosIntersec, emision);
 
         if (!ptosIntersec.empty()) {
             for (Punto p : ptosIntersec) {

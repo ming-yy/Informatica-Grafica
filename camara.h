@@ -51,7 +51,7 @@ public:
 
     // Método que ...
     void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                          const Escena& escena, const std::string& nombreEscena, unsigned rpp) const;
+                          const Escena& escena, const std::string& nombreEscena, unsigned rpp = 1) const;
     
     // Método que ...
     void renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxlsAlto,

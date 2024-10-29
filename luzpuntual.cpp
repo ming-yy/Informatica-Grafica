@@ -9,6 +9,6 @@
 #include "luzpuntual.h"
 
 
-LuzPuntual::LuzPuntual(): centro(0.0f, 0.0f, 0.0f), potencia(1.0f, 1.0f, 1.0f) {}
+LuzPuntual::LuzPuntual(): c(0.0f, 0.0f, 0.0f), p(1.0f, 1.0f, 1.0f) {}
 
-LuzPuntual::LuzPuntual(Punto _centro, Direccion _potencia): centro(_centro), potencia(_potencia) {}
+LuzPuntual::LuzPuntual(Punto _c, Direccion _p): c(_c), p(_p) {}

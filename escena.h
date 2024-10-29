@@ -22,6 +22,6 @@ public:
     // Método que devuelve "True" si y solo si hay intersección entre el rayo <rayo> y algún
     // objeto de la escena. En caso de haber intersección, la emisión del punto por el
     // que interseca el rayo <rayo> con el primer objeto que se encuentre en la escena es
-    // devuelta en <resEmision>.
-    bool interseccion(const Rayo& rayo, RGB& resEmision) const;
+    // devuelta en <resEmision> y el punto es devuelto en <ptoMasCerca>
+    bool interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca) const;
 };
