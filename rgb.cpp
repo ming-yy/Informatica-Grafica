@@ -37,6 +37,10 @@ RGB RGB::operator*(const float escalar) const {
     return RGB(rgb[0] * escalar, rgb[1] * escalar, rgb[2] * escalar);
 }
 
+RGB RGB::operator*(const RGB& d) const {
+    return RGB(rgb[0] * d.rgb[0], rgb[1] * d.rgb[1], rgb[2] * d.rgb[2]);
+}
+
 RGB RGB::operator/(const float escalar) const {
     if (escalar == 0) {
         throw std::invalid_argument("Error: Division por cero no permitida.");
@@ -50,4 +54,9 @@ RGB& RGB::operator=(const RGB& r) {
         rgb = r.rgb;  // Asigna las coordenadas
     }
     return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, const RGB& r){
+    os << "[r=" << r.rgb[0] << ", g=" << r.rgb[1] << ", b=" << r.rgb[2] << "]";
+    return os;
 }

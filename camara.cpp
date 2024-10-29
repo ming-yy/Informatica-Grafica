@@ -12,8 +12,9 @@
 #include "gestorPPM.h"
 #include <iostream>
 #include <random>
-// #include <cmath>     // permite usar número pi
+//#include <cmath>     // permite usar número pi
 
+const double PI = 3.14159265358979323846;
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    f(Direccion(-1.0f, 0.0f, 0.0f)),
@@ -131,7 +132,7 @@ bool Camara::iluminar(const Punto& p0, const Direccion& normal, const Escena& es
     for (LuzPuntual luz : escena.luces) {
         Direccion CMenosX = luz.c - p0;
         float termino3 = abs(dot(normal, CMenosX / modulo(CMenosX)));
-        float termino2 = coefDifuso / M_PI;     // M_PI que se encuentra en <cmath>
+        float termino2 = coefDifuso / PI;     // M_PI que se encuentra en <cmath>
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
         termino1 = termino1 * (termino2 * termino3);
         for (int i = 0; i < 3; ++i) {
@@ -162,8 +163,9 @@ void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxls
                 if (!(this->iluminar(ptoIntersec, normal, escena, 0.5, radiancia))) {
                     emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
                 } else {
-                     emision = emision + radiancia;
-                     //emision = toneMapping(emision);
+                    //std::cout << radiancia << std::endl;
+                    emision = emision * radiancia;
+                    //emision = toneMapping(emision);
                 }
                 coloresEscena[alto][ancho] = emision;
             }
@@ -191,12 +193,16 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
                 globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
             
                 if (escena.interseccion(rayo, emisionActual, ptoIntersec, normal)) {    // Si el rayo interseca con un objeto de la escena, se pinta
-                    emisionMedia = emisionMedia + emisionActual;
+                    RGB radiancia;
+                    if (this->iluminar(ptoIntersec, normal, escena, 0.5, radiancia)) {
+                        emisionMedia = emisionMedia + emisionActual;
+                        emisionMedia = emisionMedia + radiancia;
+                    } // Si no se ilumina, no le sumamos nada (el rgb es 0,0,0)
                 }
             }
+            
             emisionMedia = emisionMedia / rpp;
             coloresEscena[alto][ancho] = emisionMedia;
-
         }
     }                  
 }

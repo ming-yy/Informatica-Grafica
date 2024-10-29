@@ -264,6 +264,7 @@ void pintarEscenaEnPPM(const std::string& nombreArchivo, const float maxColorRes
 
     // Encabezado del archivo PPM
     archivo << "P3\n";
+    archivo << "#MAX=255\n";
     archivo << numPxlsAncho << " " << numPxlsAlto << "\n";
     archivo << static_cast<int>(maxColorRes) << "\n";  // Valor máximo del color
 

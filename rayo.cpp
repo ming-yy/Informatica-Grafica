@@ -14,7 +14,7 @@ void Rayo::imprimir() const {
     std::cout << "Rayo - Direccion: " << d << ", Origen: " << o << std::endl;
 }
 
-ostream& operator<<(ostream& os, const Rayo& r)
+std::ostream& operator<<(std::ostream& os, const Rayo& r)
 {
     os << "Rayo - Direccion: " << r.d << ", Origen: " << r.o;
     return os;

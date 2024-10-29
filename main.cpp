@@ -62,6 +62,12 @@ void cajaDeCornell(){
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;
     }
+
+    transformarFicheroPPM("./cornell.ppm", 1);
+    transformarFicheroPPM("./cornell.ppm", 2);
+    transformarFicheroPPM("./cornell.ppm", 3);
+    transformarFicheroPPM("./cornell.ppm", 4);
+    transformarFicheroPPM("./cornell.ppm", 5);
 }
 
 

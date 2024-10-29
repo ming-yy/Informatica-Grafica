@@ -8,7 +8,7 @@
 #pragma once
 #include <array>
 #include <initializer_list>
-
+#include <iostream>
 
 class RGB {
 public:
@@ -27,10 +27,14 @@ public:
     
     // Operación de multiplicación entre un escalar y el RGB
     RGB operator*(const float escalar) const;
+
+    RGB operator*(const RGB& d) const;
     
     // Operación de división entre un escalar y el RGB
     RGB operator/(const float escalar) const;
 
     // Operador de asignación
     RGB& operator=(const RGB& d);
+
+    friend std::ostream& operator<<(std::ostream& os, const RGB& r);
 };
