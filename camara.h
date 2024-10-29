@@ -64,6 +64,10 @@ public:
                               const Escena& escena, const std::string& nombreEscena,
                               float anchoPorPixel, float altoPorPixel,
                               std::vector<std::vector<RGB>>& coloresEscena, unsigned rpp) const;
+    
+    // Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto p0
+    bool radiancia(const Punto& p0, const Direccion* normal, const Escena& escena,
+                   const float coefDifuso, RGB* radiancia);
 };
 
 

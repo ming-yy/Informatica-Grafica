@@ -121,16 +121,15 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
     rayo.d = normalizar(rayo.d);
 }
 
-/*
-// Devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto p0
-bool Camara::radiancia(const Punto& p0, const Escena& escena, const float coefDifuso, RGB* radiancia) {
+
+bool Camara::radiancia(const Punto& p0, const Direccion* normal, const Escena& escena,
+                        const float coefDifuso, RGB* radiancia) {
     bool iluminar = escena.puntoIluminado(p0);
     if (!iluminar) return false;
     
     RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
-    for (LuzPuntual& luz : this->luces) {
-        Distancia CMenosX = luz.c - p0;
-        Distancia normal = ...   ;      // Habrá que sacarlo de alguna forma, igual desde escena.interseccion()
+    for (LuzPuntual luz : escena.luces) {
+        Direccion CMenosX = luz.c - p0;
         float termino3 = modulo(dot(normal, CMenosX / modulo(CMenosX)));
         float termino2 = coefDifuso / M_PI;     // M_PI que se encuentra en <cmath>
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
@@ -139,28 +138,6 @@ bool Camara::radiancia(const Punto& p0, const Escena& escena, const float coefDi
     radiancia = radFinal;
     return true;
 }
-*/
-/*
-// Método que devuelve True si y solo si al punto <p0> lo ilumina una fuente de luz.
-// En caso contrario, devuelve False.
-bool Escena::puntoIluminado(const Punto& p0) {
-    bool iluminar = true;
-    for(LuzPuntual& luz : this->luces) {
-        Direccion d = luz.centro - p0;
-        Punto ptoMasCerca;
-        RGB rgb;
-        bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca);
-        
-        if (chocaObjeto) {
-            iluminar = modulo(d) <= modulo(ptoMasCerca - p0);   // Si la fuente de luz está dentro de un objeto, también iluminamos
-        }
-        
-        if (iluminar) break;
-        }
-    }
-    return iluminar;
-}
-*/
 
 void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena,
@@ -172,19 +149,20 @@ void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxls
             Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
             RGB emision;
             Punto ptoIntersec;
+            Direccion normal;
 
             rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
         
-            if (escena.interseccion(rayo, emision, ptoIntersec)) {  // Si el rayo interseca con un objeto de la escena, se pinta
-                // RGB radiancia;
-                // iluminar = radiancia(ptoIntersec, escena, 0.5, radiancia);
-                // if (!iluminar) {
-                //     emision.rgb = {0.0f, 0.0f 0.0f};     Pintamos de negro
-                // } else {
-                //      emision = emision + radiancia;
-                //      emision = toneMapping(emision);
-                // }
+            if (escena.interseccion(rayo, emision, ptoIntersec, normal)) {  // Si el rayo interseca con un objeto de la escena, se pinta
+                RGB radiancia;
+                bool iluminar = this->radiancia(ptoIntersec, normal, escena, 0.5, radiancia);
+                if (!iluminar) {
+                    emision.rgb = {0.0f, 0.0f 0.0f};     // Pintamos de negro
+                } else {
+                     emision = emision + radiancia;
+                     emision = toneMapping(emision);
+                }
                 coloresEscena[alto][ancho] = emision;
             }
         }

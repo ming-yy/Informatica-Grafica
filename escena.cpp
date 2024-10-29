@@ -14,7 +14,7 @@ Escena::Escena(std::vector<Primitiva*> _primitivas, std::vector<LuzPuntual> _luc
                 primitivas(_primitivas), luces(_luces) {}
 
 
-bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca) const {
+bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca, Direccion& normal) const {
     bool resVal = false;
     bool primerIntersec = true;  // Flag: la primera intersección encontrada
 
@@ -30,6 +30,7 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca)
             // El intersec[0] es el punto más cercano al origen del rayo en este objeto
             if (primerIntersec || modulo(rayo.o - intersec[0]) < modulo(rayo.o - ptoMasCerca)) {
                 ptoMasCerca = intersec[0];
+                normal = objeto->getNormal(ptoMasCerca);
                 resEmision = emision;
                 primerIntersec = false;  // Marcamos que ya se encontró una intersección
             }
@@ -37,4 +38,23 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca)
     }
 
     return resVal;
+}
+
+
+bool Escena::puntoIluminado(const Punto& p0) const {
+    bool iluminar = true;
+    for(const LuzPuntual& luz : this->luces) {
+        Direccion d = luz.c - p0;
+        Punto ptoMasCerca;
+        RGB rgb;
+        Direccion ignorar;
+        bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, ignorar);
+        
+        if (chocaObjeto) {
+            iluminar = modulo(d) <= modulo(ptoMasCerca - p0);   // Si la fuente de luz está dentro de un objeto, también iluminamos
+        }
+        
+        if (iluminar) break;
+    }
+    return iluminar;
 }

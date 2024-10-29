@@ -25,4 +25,6 @@ public:
     // objeto en "emision".
     virtual void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                               RGB& emision) const = 0;
+    
+    virtual Direccion getNormal(const Punto& punto) const = 0;
 };

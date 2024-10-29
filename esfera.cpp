@@ -66,3 +66,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         //resVal = false;
     }
 }
+
+Direccion Esfera::getNormal(const Punto& punto) const {
+    return normalizar(punto - centro);
+}
