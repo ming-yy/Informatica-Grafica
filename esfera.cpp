@@ -7,6 +7,8 @@
 
 #include "esfera.h"
 
+#define MARGEN_ERROR 10e-6
+
 Esfera::Esfera(): centro(Punto()), radio(0.0f), emision({0.0f,0.0f,0.0f}) {}
 
 
@@ -33,7 +35,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         float t2 = (-b - sqrt(discriminante)) / (2 * a);
         Punto p1 = rayo.o + rayo.d * t1;
         Punto p2 = rayo.o + rayo.d * t2;
-        if (t1 > 0 && t2 > 0) {
+        if (t1 > MARGEN_ERROR && t2 > MARGEN_ERROR) {
             if (modulo(rayo.o - p1) < modulo(rayo.o - p2)) {    // Primero interseca con p1
                 ptos.push_back(p1);
                 ptos.push_back(p2);
@@ -42,10 +44,10 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                 ptos.push_back(p1);
             }
             emision = this->emision;
-        } else if (t1 > 0) {
+        } else if (t1 > MARGEN_ERROR) {
             ptos.push_back(p1);
             emision = this->emision;
-        } else if (t2 > 0) {
+        } else if (t2 > MARGEN_ERROR) {
             ptos.push_back(p2);
             emision = this->emision;
         }
