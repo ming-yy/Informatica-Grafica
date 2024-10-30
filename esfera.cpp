@@ -61,18 +61,19 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     } else if (discriminante == 0) {  // Caso de una solución única
         float t = -b / (2 * a);
         Punto puntoInterseccion = rayo.o + rayo.d * t;
-        if (t > 0) {
+        if (t > MARGEN_ERROR) {
             ptos.push_back(puntoInterseccion);
             emision = this->emision;
         }
         // DEBUG
         //cout << "Hay 1 punto de interseccion (tngente): " << endl;
         //cout << "t = " << t << " --> " << puntoInterseccion << endl;
-    } else {  // Caso no hay solución real (soluciones complejas)
+    }
+    //else {  // Caso no hay solución real (soluciones complejas)
         // DEBUG
         //cout << "No hay puntos de intersección!" << endl;
         //resVal = false;
-    }
+    //}
 }
 
 Direccion Esfera::getNormal(const Punto& punto) const {

@@ -49,23 +49,30 @@ public:
     Rayo obtenerRayoAleatorioPixel(unsigned coordAncho, float anchoPorPixel,
                                       unsigned coordAlto, float altoPorPixel) const;
 
-    // Método que ...
-    void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                          const Escena& escena, const std::string& nombreEscena, unsigned rpp = 1) const;
+    // Método que genera el ppm <nombreEscena> con la escena <escena> renderizada y que tendrá
+    // <rpp> rayos por pixel.
+    void renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
+                          const std::string& nombreEscena, unsigned rpp = 1, const float kd = 0.5f) const;
     
-    // Método que ...
+    // Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
+    // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
+    // son de 1 rayo por pixel.
     void renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxlsAlto,
                                   const Escena& escena, const std::string& nombreEscena,
-                                  float anchoPorPixel, float altoPorPixel,
+                                  float anchoPorPixel, float altoPorPixel, const float kd,
                                   std::vector<std::vector<RGB>>& coloresEscena) const;
     
-    // Método que ...
+    // Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
+    // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
+    // son de <rpp> rayos por pixel (rpp > 1).
     void renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena,
-                              float anchoPorPixel, float altoPorPixel,
+                              float anchoPorPixel, float altoPorPixel, const float kd,
                               std::vector<std::vector<RGB>>& coloresEscena, unsigned rpp) const;
     
-    // Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto p0
+    // Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto <p0>.
+    // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
+    // al punto <p0>
     bool iluminar(const Punto& p0, const Direccion& normal, const Escena& escena,
                    const float coefDifuso, RGB& radiancia) const;
 };

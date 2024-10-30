@@ -122,7 +122,6 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
     rayo.d = normalizar(rayo.d);
 }
 
-
 bool Camara::iluminar(const Punto& p0, const Direccion& normal, const Escena& escena,
                         const float coefDifuso, RGB& radiancia) const {
     bool iluminar = escena.puntoIluminado(p0);
@@ -145,7 +144,7 @@ bool Camara::iluminar(const Punto& p0, const Direccion& normal, const Escena& es
 
 void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena,
-                              float anchoPorPixel, float altoPorPixel, 
+                              float anchoPorPixel, float altoPorPixel, const float kd,
                               std::vector<std::vector<RGB>>& coloresEscena) const {
 
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
@@ -157,15 +156,12 @@ void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxls
 
             rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
-        
-            if (escena.interseccion(rayo, emision, ptoIntersec, normal)) {  // Si el rayo interseca con un objeto de la escena, se pinta
+            if (escena.interseccion(rayo, emision, ptoIntersec, normal)) {
                 RGB radiancia;
-                if (!(this->iluminar(ptoIntersec, normal, escena, 0.5, radiancia))) {
+                if (!(this->iluminar(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
                     emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
                 } else {
-                    //std::cout << radiancia << std::endl;
                     emision = emision * radiancia;
-                    //emision = toneMapping(emision);
                 }
                 coloresEscena[alto][ancho] = emision;
             }
@@ -176,7 +172,7 @@ void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxls
 
 void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, const std::string& nombreEscena,
-                              float anchoPorPixel, float altoPorPixel, 
+                              float anchoPorPixel, float altoPorPixel, const float kd,
                               std::vector<std::vector<RGB>>& coloresEscena, unsigned rpp) const {
 
     for (unsigned ancho = 0; ancho < numPxlsAncho; ancho++) {   
@@ -191,30 +187,24 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
 
                 rayo = this->obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
                 globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
-            
-                if (escena.interseccion(rayo, emisionActual, ptoIntersec, normal)) {    // Si el rayo interseca con un objeto de la escena, se pinta
+                if (escena.interseccion(rayo, emisionActual, ptoIntersec, normal)) {
                     RGB radiancia;
-                    if (this->iluminar(ptoIntersec, normal, escena, 0.5, radiancia)) {
+                    if (this->iluminar(ptoIntersec, normal, escena, kd, radiancia)) {
                         emisionActual = emisionActual * radiancia;
                         emisionMedia = emisionMedia + emisionActual;
                     } // Si no se ilumina, no le sumamos nada (el rgb es 0,0,0)
                 }
             }
-            
             emisionMedia = emisionMedia / rpp;
             coloresEscena[alto][ancho] = emisionMedia;
         }
     }                  
 }
 
-void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                              const Escena& escena, const std::string& nombreEscena, unsigned rpp) const {
-    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
-    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
-    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
-    // ESTO DEBERÍA SER LA EXCEPCIÓN ESA DE ARGUMENTO INVÁLIDO
+void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
+                              const std::string& nombreEscena, unsigned rpp, const float kd) const {
     if (rpp < 1) {
-        std::cout << "ERROR: RPP tiene que ser mayor que 0" << endl;
+        throw std::invalid_argument("Error: Division por cero no permitida.");
         return;
     }
 
@@ -224,13 +214,12 @@ void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto,
     // Inicializado todo a color negro
     std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto, std::vector<RGB>(numPxlsAncho,
                                                                               {0.0f, 0.0f, 0.0f}));
-
     if(rpp == 1){
-        renderizarEscenaCentroPixel(numPxlsAncho, numPxlsAlto, escena,
-                                        nombreEscena, anchoPorPixel, altoPorPixel, coloresEscena);
+        renderizarEscenaCentroPixel(numPxlsAncho, numPxlsAlto, escena, nombreEscena, anchoPorPixel,
+                                    altoPorPixel, kd, coloresEscena);
     } else {
-        renderizarEscenaConAntialising(numPxlsAncho, numPxlsAlto, escena,
-                                        nombreEscena, anchoPorPixel, altoPorPixel,coloresEscena, rpp);
+        renderizarEscenaConAntialising(numPxlsAncho, numPxlsAlto, escena, nombreEscena, anchoPorPixel,
+                                       altoPorPixel, kd, coloresEscena, rpp);
     }
     //imprimirImagen(coloresEscena);
     pintarEscenaEnPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);

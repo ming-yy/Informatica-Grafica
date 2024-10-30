@@ -23,7 +23,6 @@ Direccion::Direccion(array<float,3> _coord) : PuntoDireccion(_coord) {}
 
 Matriz<4,1> Direccion::getCoordHomo() const {
     array<array<float, 1>, 4> d = {coord[0], coord[1], coord[2], 0.0f};
-
     return d;
 }
 
@@ -56,7 +55,7 @@ float modulo(const Direccion& d) {
 }
 
 Direccion Direccion::normalizar() const {
-    float longitud = modulo();
+    float longitud = this->modulo();
     if (longitud == 0) {
         throw invalid_argument(
             "Error: No se puede calcular porque direccion tiene modulo cero.");

@@ -20,7 +20,6 @@ public:
     Esfera();
     Esfera(const Punto& _centro, const float& _radio,
                     const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
-
     Esfera(const Planeta& p);
 
     

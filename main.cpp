@@ -52,13 +52,15 @@ void cajaDeCornell(){
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f})));
     std::vector<LuzPuntual> luces;
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}));
+    luces.push_back(LuzPuntual({0.0f, -0.5f, -1.0f}));
     Escena cornell = Escena(objetos, luces);
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
-    cam.renderizarEscena(256, 256, cornell, "cornell", 1);
-
+    const float kd = 0.8f;
+    cam.renderizarEscena(256, 256, cornell, "cornell", 16, kd);
+    
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;
     }
