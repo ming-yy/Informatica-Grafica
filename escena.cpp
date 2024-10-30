@@ -47,11 +47,11 @@ bool Escena::puntoIluminado(const Punto& p0) const {
         Direccion d = normalizar(luz.c - p0);
         Punto ptoMasCerca;
         RGB rgb;
-        Direccion ignorar;
-        bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, ignorar);
+        Direccion normal;
+        bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, normal);
         
         if (chocaObjeto) {
-            iluminar = modulo(d) <= modulo(ptoMasCerca - p0);   // Si la fuente de luz está dentro de un objeto, también iluminamos
+            iluminar = modulo(luz.c - p0) <= modulo(ptoMasCerca - p0);   // Si la fuente de luz está dentro de un objeto, también iluminamos
         }
         
         if (iluminar) break;
