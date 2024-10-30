@@ -195,8 +195,8 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
                 if (escena.interseccion(rayo, emisionActual, ptoIntersec, normal)) {    // Si el rayo interseca con un objeto de la escena, se pinta
                     RGB radiancia;
                     if (this->iluminar(ptoIntersec, normal, escena, 0.5, radiancia)) {
+                        emisionActual = emisionActual * radiancia;
                         emisionMedia = emisionMedia + emisionActual;
-                        emisionMedia = emisionMedia + radiancia;
                     } // Si no se ilumina, no le sumamos nada (el rgb es 0,0,0)
                 }
             }
