@@ -12,9 +12,9 @@
 #include "gestorPPM.h"
 #include <iostream>
 #include <random>
-//#include <cmath>     // permite usar número pi
+#include <cmath>     // permite usar número pi
 
-const double PI = 3.14159265358979323846;
+//const double M_PI = 3.14159265358979323846;
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    f(Direccion(-1.0f, 0.0f, 0.0f)),
@@ -131,7 +131,7 @@ bool Camara::iluminar(const Punto& p0, const Direccion& normal, const Escena& es
     for (LuzPuntual luz : escena.luces) {
         Direccion CMenosX = luz.c - p0;
         float termino3 = abs(dot(normal, CMenosX / modulo(CMenosX)));
-        float termino2 = coefDifuso / PI;     // M_PI que se encuentra en <cmath>
+        float termino2 = coefDifuso / M_PI;     // BRDF
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
         termino1 = termino1 * (termino2 * termino3);
         for (int i = 0; i < 3; ++i) {
@@ -174,7 +174,6 @@ void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numP
                               const Escena& escena, const std::string& nombreEscena,
                               float anchoPorPixel, float altoPorPixel, const float kd,
                               std::vector<std::vector<RGB>>& coloresEscena, unsigned rpp) const {
-
     for (unsigned ancho = 0; ancho < numPxlsAncho; ancho++) {   
         for (unsigned alto = 0; alto < numPxlsAlto; alto++) {
             RGB emisionMedia;
