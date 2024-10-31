@@ -20,5 +20,5 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
                                 float& x, float& y, float& z);
 
 
-// Función que ....
+// Función que devuelve una dirección normalizada que tiene como centro
 Direccion generarCaminoAleatorio(const Punto& o);
