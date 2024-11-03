@@ -13,16 +13,15 @@
 #define GRAD_A_RAD 3.1415926535898f/180
 
 
-void construirbaseOrtonormal(const Direccion& normal, Direccion& tangent, Direccion& bitangent) {
+void construirBaseOrtonormal(const Direccion& normal, Direccion& tangente, Direccion& bitangente) {
     if (fabs(normal.coord[0]) > fabs(normal.coord[2])) {
-        tangent = Direccion(-normal.coord[1], normal.coord[0], 0);
+        tangente = Direccion(-normal.coord[1], normal.coord[0], 0);
     } else {
-        tangent = Direccion(0, -normal.coord[2], normal.coord[1]);
+        tangente = Direccion(0, -normal.coord[2], normal.coord[1]);
     }
-    tangent = normalizar(tangent);
-    bitangent = cross(normal, tangent);
+    tangente = normalizar(tangente);
+    bitangente = cross(normal, tangente);
 }
-
 
 void generarAzimutInclinacion(float& azimut, float& inclinacion) {
     std::random_device rd;
@@ -31,7 +30,6 @@ void generarAzimutInclinacion(float& azimut, float& inclinacion) {
     inclinacion = acos(sqrt(1-dis(gen)));
     azimut = 2 * M_PI * dis(gen);
 }
-
 
 void getCoordenadasCartesianas(const float azimut, const float inclinacion,
                                 float& x, float& y, float& z) {
@@ -44,7 +42,6 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
     z = cosIncl;
 }
 
-
 Direccion generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
     float inclinacion, azimut;
     float x, y, z;
@@ -52,7 +49,11 @@ Direccion generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
     generarAzimutInclinacion(azimut, inclinacion);
     getCoordenadasCartesianas(azimut, inclinacion, x, y, z);
     Direccion wi_local = normalizar(Direccion(x, y, z));      // Inclinacion positiva, hemisferio norte asegurado
-    return // normalizar(wi_local.coord[0] * tangent +
-                        //wi_local.coord[1] * bitangent +
-                        //wi_local.coord[2] * normal)
+    
+    Direccion tangente;
+    Direccion bitangente;
+    construirBaseOrtonormal(normal, tangente, bitangente);
+    return normalizar(tangente * wi_local.coord[0] +
+                      bitangente * wi_local.coord[1] +
+                      normal * wi_local.coord[2]);
 }

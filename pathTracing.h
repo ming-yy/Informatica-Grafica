@@ -10,10 +10,13 @@
 #include "transformaciones.h"
 
 
+// Función que dado el vector <normal>, devuelve los vectores <tangente> y <bitangente>. Estos 3
+// vectores constituyen una base ortonormal conformada por <normal>, <tangente>, <bitangente>
+void construirBaseOrtonormal(const Direccion& normal, Direccion& tangente, Direccion& bitangente);
+
 // Función que devuelve un valor aleatorio para azimut y otro para inclinación
 // para muestreo uniforme de ángulo sólido.
 void generarAzimutInclinacion(float& azimut, float& inclinacion);
-
 
 // Función que devuelve las coordenadas cartesianas correspondientes de (azimut, inclinacion)
 void getCoordenadasCartesianas(const float azimut, const float inclinacion,
