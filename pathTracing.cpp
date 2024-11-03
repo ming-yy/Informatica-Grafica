@@ -1,11 +1,12 @@
 //*****************************************************************
 // File:   pathTracing.cpp
 // Author: Ming Tao, Ye   NIP: 839757, Puig Rubio, Manel Jorda  NIP: 839304
-// Date:   octubre 2024
-// Coms:   Práctica 3.2 de Informática Gráfica
+// Date:   noviembre 2024
+// Coms:   Práctica 4 de Informática Gráfica
 //*****************************************************************
 
 #include "pathTracing.h"
+#include "rayo.h"
 #include <cmath>
 #include <random>
 
@@ -42,7 +43,7 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
     z = cosIncl;
 }
 
-Direccion generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
+Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
     float inclinacion, azimut;
     float x, y, z;
 
@@ -53,7 +54,56 @@ Direccion generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
     Direccion tangente;
     Direccion bitangente;
     construirBaseOrtonormal(normal, tangente, bitangente);
-    return normalizar(tangente * wi_local.coord[0] +
-                      bitangente * wi_local.coord[1] +
-                      normal * wi_local.coord[2]);
+    // Cambio de base manual de <wi_local> de coord. locales a coord. globales
+    Direccion nuevaDir = normalizar(tangente * wi_local.coord[0] +
+                                    bitangente * wi_local.coord[1] +
+                                    normal * wi_local.coord[2]);
+    return Rayo(nuevaDir, o);
 }
+
+
+
+/*
+ 
+funcion renderizarEscenaConLuzIndirecta (...) {
+    ...
+    emision, origen, normal = renderizarEscenaAntialiasing / renderizarEscenaCentroPixel (...)
+    // emision = ... lo que sea, asumimos que con esto obtenemos la emisión L0
+    // normal = ... la que sea que hayamos obtenido
+    // origen = el punto que sea que hayamos obtenido
+    recursividadLuzIndirecta(emision, origen, normal)
+}
+
+ 
+RGB recursividadLuzIndirecta(RGB emision, const Punto& origen, const Direccion& normal,
+                                 const Escena& escena, const int kd, int iter_left) {
+    Rayo wi = generarCaminoAleatorio(origen, normal);
+    RGB emision;
+    Punto ptoIntersec;
+    Direccion new_normal;
+ 
+    if (escena.interseccion(wi, emision, ptoIntersec, new_normal)) {
+        RGB radiancia;
+        if (!(this->iluminar(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
+            emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
+        } else {
+            emision = emision * radiancia;
+        }
+    } else {        // Rayo no choca contra nada --> Condición terminal
+        iter_left = 0;
+    }
+ 
+    ///
+    ///  FALTA COMPROBAR TERMINATION CONDITION:
+    ///  1. Rayo choca contra fuente de luz de área (falta implementar las fuentes de luz de área)
+    ///
+    
+    emision = [ Las operaciones de multiplicacion que sean ];
+ 
+    if (iter_left == 0) {
+        return emision;
+    } else {
+        return recursividadLuzIndirecta(emision, ptoIntersec, normal, escena, kd, iter_left - 1);
+    }
+}
+*/
