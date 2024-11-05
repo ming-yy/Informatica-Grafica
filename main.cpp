@@ -59,7 +59,7 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
     const float kd = 0.8f;
-    renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd);
+    renderizarEscenaConLuzIndirecta(cam, 256, 256, cornell, "cornell", 1, kd);
     
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;

@@ -62,3 +62,17 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
 // del rayo es una aleatoria pero está contenida en el hipotético hemisferio superior que tiene
 // como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
 Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
+
+
+
+RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Direccion& normal,
+                                 const Escena& escena, const int kd, int iter_left, int &rebotes);
+
+
+void renderizarEscenaCentroPixelConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+                              const Escena& escena, float anchoPorPixel, float altoPorPixel,
+                              const float kd, std::vector<std::vector<RGB>>& coloresEscena);
+
+
+void renderizarEscenaConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
+                              const std::string& nombreEscena, unsigned rpp, const float kd);
