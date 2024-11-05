@@ -18,6 +18,8 @@ public:
     RGB(const float& r, const float& g, const float& b);
     RGB(std::initializer_list<float> _rgb);
     RGB(const std::array<float, 3>& _rgb);
+    RGB(const RGB& other) = default; // constructor de copia
+
 
     // Operación de suma de dos RGB
     RGB operator+(const RGB& d) const;
@@ -35,6 +37,8 @@ public:
 
     // Operador de asignación
     RGB& operator=(const RGB& d);
+
+    
 
     friend std::ostream& operator<<(std::ostream& os, const RGB& r);
 };

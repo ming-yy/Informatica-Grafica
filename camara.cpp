@@ -6,15 +6,11 @@
 //*****************************************************************
 
 #include "camara.h"
-#include "rgb.h"
-#include "base.h"
-#include "transformaciones.h"
-#include "gestorPPM.h"
 #include <iostream>
 #include <random>
 #include <cmath>     // permite usar número pi
 
-//const double M_PI = 3.14159265358979323846;
+const double M_PI = 3.14159265358979323846;
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    f(Direccion(-1.0f, 0.0f, 0.0f)),
@@ -47,7 +43,7 @@ Camara::Camara(std::initializer_list<float> _o,
 
 
 Camara::Camara(Punto& _o, Direccion& _f, Direccion& _u, Direccion& _l)
-    : o(_o), l(_l), u(_u), f(_f) {}
+    : o(_o), f(_f), u(_u), l(_l) {}
 
 
 Direccion Camara::obtenerDireccionEsquinaPixel(unsigned coordAncho, float anchoPorPixel, 
@@ -99,127 +95,3 @@ float Camara::calcularAltoPixel(unsigned numPixeles) const{
 }
 
 
-
-void imprimirImagen(const std::vector<std::vector<RGB>>& imagen) {
-    for (const auto& fila : imagen) {
-        for (const auto& pixel : fila) {
-            std::cout << "(" << pixel.rgb[0] << ", " << pixel.rgb[1] << ", " << pixel.rgb[2] << ") ";
-        }
-        std::cout << std::endl; // Nueva línea para cada fila
-    }
-}
-
-void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
-                               const Direccion& l) {
-    //Rayo rayo = this->obtenerRayoEsquinaPixel(ancho, anchoPorPixel, alto, altoPorPixel);
-    rayo.d = normalizar(rayo.d);
-    Base baseLocalToGlobal = Base(abs(f / modulo(f)),
-                                  abs(u / modulo(u)),
-                                  abs(l / modulo(l)));
-    
-    rayo.d = cambioBase(rayo.d, baseLocalToGlobal, o, false);
-    rayo.o = cambioBase(rayo.o, baseLocalToGlobal, o, false);
-    rayo.d = normalizar(rayo.d);
-}
-
-bool Camara::iluminar(const Punto& p0, const Direccion& normal, const Escena& escena,
-                        const float coefDifuso, RGB& radiancia) const {
-    bool iluminar = escena.puntoIluminado(p0);
-    if (!iluminar) return false;
-    
-    RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
-    for (LuzPuntual luz : escena.luces) {
-        Direccion CMenosX = luz.c - p0;
-        float termino3 = abs(dot(normal, CMenosX / modulo(CMenosX)));
-        float termino2 = coefDifuso / M_PI;     // BRDF
-        Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
-        termino1 = termino1 * (termino2 * termino3);
-        for (int i = 0; i < 3; ++i) {
-            radFinal.rgb[i] += termino1.coord[i];
-        }
-    }
-    radiancia = radFinal;
-    return true;
-}
-
-void Camara::renderizarEscenaCentroPixel(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                              const Escena& escena, const std::string& nombreEscena,
-                              float anchoPorPixel, float altoPorPixel, const float kd,
-                              std::vector<std::vector<RGB>>& coloresEscena) const {
-
-    for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
-        for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
-            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
-            RGB emision;
-            Punto ptoIntersec;
-            Direccion normal;
-
-            rayo = this->obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
-            globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
-            if (escena.interseccion(rayo, emision, ptoIntersec, normal)) {
-                RGB radiancia;
-                if (!(this->iluminar(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
-                    emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
-                } else {
-                    emision = emision * radiancia;
-                }
-                coloresEscena[alto][ancho] = emision;
-            }
-        }
-    }
-}
-
-
-void Camara::renderizarEscenaConAntialising(unsigned numPxlsAncho, unsigned numPxlsAlto,
-                              const Escena& escena, const std::string& nombreEscena,
-                              float anchoPorPixel, float altoPorPixel, const float kd,
-                              std::vector<std::vector<RGB>>& coloresEscena, unsigned rpp) const {
-    for (unsigned ancho = 0; ancho < numPxlsAncho; ancho++) {   
-        for (unsigned alto = 0; alto < numPxlsAlto; alto++) {
-            RGB emisionMedia;
-
-            for(unsigned i = 0; i < rpp; i++){
-                Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
-                RGB emisionActual;
-                Punto ptoIntersec;
-                Direccion normal;
-
-                rayo = this->obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
-                globalizarYNormalizarRayo(rayo, this->o, this->f, this->u, this->l);
-                if (escena.interseccion(rayo, emisionActual, ptoIntersec, normal)) {
-                    RGB radiancia;
-                    if (this->iluminar(ptoIntersec, normal, escena, kd, radiancia)) {
-                        emisionActual = emisionActual * radiancia;
-                        emisionMedia = emisionMedia + emisionActual;
-                    } // Si no se ilumina, no le sumamos nada (el rgb es 0,0,0)
-                }
-            }
-            emisionMedia = emisionMedia / rpp;
-            coloresEscena[alto][ancho] = emisionMedia;
-        }
-    }                  
-}
-
-void Camara::renderizarEscena(unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
-                              const std::string& nombreEscena, unsigned rpp, const float kd) const {
-    if (rpp < 1) {
-        throw std::invalid_argument("Error: Division por cero no permitida.");
-        return;
-    }
-
-    float anchoPorPixel = this->calcularAnchoPixel(numPxlsAncho);
-    float altoPorPixel = this->calcularAltoPixel(numPxlsAlto);
-   
-    // Inicializado todo a color negro
-    std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto, std::vector<RGB>(numPxlsAncho,
-                                                                              {0.0f, 0.0f, 0.0f}));
-    if(rpp == 1){
-        renderizarEscenaCentroPixel(numPxlsAncho, numPxlsAlto, escena, nombreEscena, anchoPorPixel,
-                                    altoPorPixel, kd, coloresEscena);
-    } else {
-        renderizarEscenaConAntialising(numPxlsAncho, numPxlsAlto, escena, nombreEscena, anchoPorPixel,
-                                       altoPorPixel, kd, coloresEscena, rpp);
-    }
-    //imprimirImagen(coloresEscena);
-    pintarEscenaEnPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);
-}

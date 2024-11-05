@@ -50,6 +50,7 @@ void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     float t = f * dot(edge2, q);
     if (t > EPSILON) {
         ptos.push_back(Punto(rayo.o + rayo.d * t)); // Calcular el punto de intersección
+        emision = this->emision;
         return;
     } else {
         return ; // No hay intersección en la dirección del rayo

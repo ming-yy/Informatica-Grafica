@@ -46,22 +46,24 @@ void imprimir_resultados(const vector<float>& valores, float maxColorRes, int al
 
 // Función que extrae los metadatos y los valores del fichero
 bool leerFicheroPPM(const string&nombreFich, vector<float>& valores, 
-                            float& max, int& ancho, int& alto, float& c);
+                            float& max, size_t& ancho, size_t& alto, float& c);
 
 // Escribe los metadatos del fichero PPM resultado
 void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero, 
-        const float maxColorRes, const int ancho, const int alto, const float c);
+        const float maxColorRes, const size_t ancho, const size_t alto, const float c);
 
 // Escribe los valores de los pixeles (r,g,b) en el fichero PPM resultado
 void escribirValoresPPM(ofstream& fichero, const vector<float>& valores, 
-                                const float maxColorRes, const int ancho, const int alto, const float c);
+                                const float maxColorRes, const size_t ancho, const size_t alto, const float c);
 
 // Recorta la ruta "nnn/mmm/fichero.ppm" para quedarse solo con fichero.ppm
 string encontrarNombreFinalFichero(const string&ruta);
 
 // Escribe todo el contenido del fichero PPM resultado
 void escribirFicheroPPM(const string&nombreFich, const vector<float>& valores, 
-                        const float maxColorRes, const int ancho, const int alto, const float c);
+                        const float maxColorRes, const size_t ancho, const size_t alto, const float c);
+
+string transformarValores(vector<float>& valores, const int tipoTransform, const float maxValue);
 
 // Función principal que coordina el proceso
 int transformarFicheroPPM(const string& nombreFichero, const int idFuncion);

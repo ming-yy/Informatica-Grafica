@@ -51,7 +51,7 @@ bool validar_formato(ifstream& fichero) {
 }
 
 
-void leer_dimensiones(int& ancho, int& alto, string& linea) {
+void leer_dimensiones(size_t& ancho, size_t& alto, string& linea) {
     istringstream ss(linea);
     ss >> ancho >> alto;
 }
@@ -63,7 +63,7 @@ float leer_resolucion(ifstream& fichero, float& c) {
 }
 
 
-void leer_cabecera(ifstream& fichero, float& maxColorRes, int& ancho, int& alto, float& c) {
+void leer_cabecera(ifstream& fichero, float& maxColorRes, size_t& ancho, size_t& alto, float& c) {
     string linea;
     while (getline(fichero, linea)) {
         if (linea[0] == '#') {
@@ -90,7 +90,7 @@ void leer_valores(ifstream& fichero, float maxColorRes, float c, vector<float>& 
 }
 
 
-void imprimir_resultados(const vector<float>& valores, float maxColorRes, int alto, int ancho, float c) {
+void imprimir_resultados(const vector<float>& valores, float maxColorRes, size_t alto, size_t ancho, float c) {
     /*
     // DEBUG
     cout << "Valores resultantes:" << endl;
@@ -99,7 +99,7 @@ void imprimir_resultados(const vector<float>& valores, float maxColorRes, int al
     }
     cout << endl;
     */
-
+    cout << "Num valores: " << valores.size() << endl;
     cout << "Max Value: " << maxColorRes << endl;
     cout << "Alto: " << alto << ", Ancho: " << ancho << endl;
     cout << "Resolucion maxima de color: " << c << endl;
@@ -107,7 +107,7 @@ void imprimir_resultados(const vector<float>& valores, float maxColorRes, int al
 
 
 bool leerFicheroPPM(const string&nombreFich, vector<float>& valores,
-                            float& maxColorRes, int& ancho, int& alto, float& c) {
+                            float& maxColorRes, size_t& ancho, size_t& alto, float& c) {
     ifstream fichero = abrir_fichero(nombreFich);
     if (!validar_formato(fichero)) {
         return false;
@@ -122,7 +122,7 @@ bool leerFicheroPPM(const string&nombreFich, vector<float>& valores,
 
 
 void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero, 
-        const float maxColorRes, const int ancho, const int alto, const float c){
+        const float maxColorRes, const size_t ancho, const size_t alto, const float c){
     fichero << "P3" << "\n";
     fichero << "#MAX=" << fixed << setprecision(0) << maxColorRes << "\n";
     fichero << "# " << nombreFichero << "\n";
@@ -132,15 +132,15 @@ void escribirCabeceraPPM(ofstream& fichero, const string nombreFichero,
 
 
 void escribirValoresPPM(ofstream& fichero, const vector<float>& valores,
-                        const float maxColorRes, const int ancho, const int alto, const float c){
-    int anchoTriple = ancho*3;
+                        const float maxColorRes, const size_t ancho, const size_t alto, const float c){
+    size_t anchoTriple = ancho*3;
     if (valores.size() != anchoTriple * alto){
         cerr << "ERROR: El tamano (ancho x alto) del fichero de entrada es incorrecto" << endl;
         return;
     }
     int indice = 0;
-    for (int h = 0; h < alto; ++h) {
-        for (int w = 0; w < anchoTriple; w+=3) {
+    for (size_t h = 0; h < alto; ++h) {
+        for (size_t w = 0; w < anchoTriple; w+=3) {
             indice = h*anchoTriple + w;
             fichero << ((valores.at(indice)*c)/maxColorRes) << " " 
                     << ((valores.at(indice + 1)*c)/maxColorRes) << " "
@@ -210,7 +210,7 @@ string transformarValores(vector<float>& valores, const int tipoTransform, const
 
     case 5:     // FUNCION GAMMA+EQUALIZATION
         res = "5_Gamma+Equalization";
-        gammaAndClamp(valores, maxValue/2);
+        gammaAndClamp(valores, maxValue/5);
         break;
 
     default:    // ERROR
@@ -226,7 +226,7 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
     vector<float> valores;
 
     float maxColorRes = 1.0f;
-    int ancho, alto;
+    size_t ancho, alto;
     float c;
     string nombreFuncion = "";
     

@@ -13,7 +13,7 @@ using std::pow;
 
 // GAMMA puede ser otro, pero 2.2 es un valor común
 // utilizado para la corrección gamma en monitores estándar.
-#define GAMMA 0.6
+#define GAMMA 2.2
 
 
 void clamp(vector<float>& valores){
@@ -28,7 +28,7 @@ void equalize(vector<float>& valores, const float maxValue){
 }
 
 void clampAndEqualize(vector<float>& valores, const float threshold){
-    for(int i = 0; i < valores.size(); i++){
+    for(size_t i = 0; i < valores.size(); i++){
         if(valores[i] <= threshold){
             valores[i] /= threshold; // Clamping
         } else {
@@ -38,14 +38,14 @@ void clampAndEqualize(vector<float>& valores, const float threshold){
 }
 
 void gamma(vector<float>& valores, const float maxValue){
-    gammaAndClamp(valores, maxValue);   // Igual que la función gamma+clamp si todos 
+    gammaAndClamp(valores, maxValue/2);   // Igual que la función gamma+clamp si todos 
                                         // los valores caen por debajo del threshold
                                         // (threshold = máximo valor)
 }
 
 void gammaAndClamp(vector<float>& valores, const float threshold){
-    int size = valores.size();
-    for(int i = 0; i < size; i++){
+    size_t size = valores.size();
+    for(size_t i = 0; i < size; i++){
         if(valores[i] <= threshold){
             valores[i] /= threshold; // Ecualization
             valores[i] = pow(valores[i], GAMMA); // Gamma

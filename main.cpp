@@ -22,7 +22,7 @@
 #include "plano.h"
 #include "esfera.h"
 #include "luzpuntual.h"
-
+#include "pathTracing.h"
 
 template<typename T>
 using sh_ptr = std::shared_ptr<T>;
@@ -59,16 +59,16 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
     const float kd = 0.8f;
-    cam.renderizarEscena(256, 256, cornell, "cornell", 16, kd);
+    renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd);
     
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;
     }
 
-    transformarFicheroPPM("./cornell.ppm", 1);
-    transformarFicheroPPM("./cornell.ppm", 2);
-    transformarFicheroPPM("./cornell.ppm", 3);
-    transformarFicheroPPM("./cornell.ppm", 4);
+    //transformarFicheroPPM("./cornell.ppm", 1);
+    //transformarFicheroPPM("./cornell.ppm", 2);
+    //transformarFicheroPPM("./cornell.ppm", 3);
+    //transformarFicheroPPM("./cornell.ppm", 4);
     transformarFicheroPPM("./cornell.ppm", 5);
 }
 
@@ -329,13 +329,6 @@ int main() {
         sh_ptr<Punto> cref1 = std::make_shared<Punto>(1,0,0);
         sh_ptr<Direccion> eje1 = std::make_shared<Direccion>(0,2,0);
         sh_ptr<Direccion> eje2 = std::make_shared<Direccion>(0,4,0);
-        sh_ptr<Base> ucs = std::make_shared<Base>(
-             init_list<init_list<float>>{
-                 {1.0f, 0.0f, 0.0f},
-                 {0.0f, 1.0f, 0.0f},
-                 {0.0f, 0.0f, 1.0f},
-             }
-        );
         sh_ptr<Punto> origenUCS = std::make_shared<Punto>(0,0,0);
         
         cout << "--- Pruebas planetas ---" << endl;
@@ -360,7 +353,7 @@ int main() {
         
         
         cout << "--- Pruebas interconexion planetaria ---" << endl;
-        bool resultado = interconexionPlanetaria(*planeta1, *planeta3, *ucs, *origenUCS);
+        bool resultado = interconexionPlanetaria(*planeta1, *planeta3);
         cout << "Interconexion planetaria exitosa? " << resultado << endl;
         
     } else if (test == 7) {

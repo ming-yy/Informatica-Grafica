@@ -5,7 +5,6 @@
 // Coms:   Práctica 4 de Informática Gráfica
 //*****************************************************************
 
-#pragma once
 #include "luzpuntual.h"
 
 

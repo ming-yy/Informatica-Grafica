@@ -93,7 +93,7 @@ bool Planeta::impactoOrEscape(const Direccion& trayectoria) {
 }
 
 
-bool Planeta::interconexion(Planeta& pDest, const Base& ucs, const Punto& o) {
+bool Planeta::interconexion(Planeta& pDest) {
     Direccion trayUCS = Direccion(this->getTrayectoria(pDest));
     Base baseDest = pDest.getBaseEstacion();
     Base baseOrig = this->getBaseEstacion();
@@ -125,9 +125,8 @@ bool Planeta::interconexion(Planeta& pDest, const Base& ucs, const Punto& o) {
 }
 
 
-bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest, const Base& ucs,
-                             const Punto& o) {
-    return pOrig.interconexion(pDest, ucs, o);
+bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest) {
+    return pOrig.interconexion(pDest);
 }
 
 

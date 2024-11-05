@@ -62,8 +62,7 @@ public:
     // Método que dados el planeta origen, planeta destino, la base UCS y el punto
     // de origen UCS, devuelve <True> si y solo si la interconexión entre nuestro
     // planeta y el planeta destino ha sido exitosa.
-    friend bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest,
-                                        const Base& ucs, const Punto& o);
+    friend bool interconexionPlanetaria(Planeta& pOrig, Planeta& pDest);
     
     friend bool interseccionRayoEsfera(Punto& p, Direccion& d, Planeta& e,
                                        Punto& puntoInterseccion);
@@ -80,9 +79,9 @@ private:
     // Obtiene los 3 vectores respecto al CENTRO DEL PLANETA
     // void calcularVectoresCentroPlaneta();
     
-    // Método AUXILIAR que dados el planeta destino, la base UCS y el punto de origen
+    // Método AUXILIAR que dados el planeta destino y el punto de origen
     // UCS, devuelve <True> si y solo si la interconexión entre nuestro planeta y el
     // planeta destino ha sido exitosa.
-    bool interconexion(Planeta& pDest, const Base& ucs, const Punto& o);
+    bool interconexion(Planeta& pDest);
 
 };
