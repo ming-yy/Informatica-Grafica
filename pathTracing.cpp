@@ -40,7 +40,7 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
     rayo.d = normalizar(rayo.d);
 }
 
-bool iluminar(const Punto& p0, const Direccion& normal, const Escena& escena,
+bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                         const float coefDifuso, RGB& radiancia) {
     bool iluminar = escena.puntoIluminado(p0);
     if (!iluminar) return false;
@@ -71,11 +71,11 @@ void renderizarEscenaCentroPixel(Camara& camara, unsigned numPxlsAncho, unsigned
             Punto ptoIntersec;
             Direccion normal;
 
-            rayo = camara.obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+            rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
             if (escena.interseccion(rayo, emision, ptoIntersec, normal)) {
                 RGB radiancia;
-                if (!(iluminar(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
+                if (!(nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
                     emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
                 } else {
                     emision = emision * radiancia;
@@ -105,7 +105,7 @@ void renderizarEscenaConAntialising(Camara& camara, unsigned numPxlsAncho, unsig
                 globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
                 if (escena.interseccion(rayo, emisionActual, ptoIntersec, normal)) {
                     RGB radiancia;
-                    if (iluminar(ptoIntersec, normal, escena, kd, radiancia)) {
+                    if (nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia)) {
                         emisionActual = emisionActual * radiancia;
                         emisionMedia = emisionMedia + emisionActual;
                     } // Si no se ilumina, no le sumamos nada (el rgb es 0,0,0)
@@ -194,6 +194,104 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
 
 
 
+RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Direccion& normal,
+                                 const Escena& escena, const int kd, int iter_left, int &rebotes) {
+    Rayo wi = generarCaminoAleatorio(origen, normal);
+    RGB emisionActual;
+    Punto ptoIntersec;
+    Direccion new_normal;
+
+    bool terminar = false;
+ 
+    if (escena.interseccion(wi, emisionActual, ptoIntersec, new_normal)) {
+        rebotes += 1;
+        RGB radiancia;
+        if (!(nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
+            emisionActual.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
+        } else {
+            emisionActual = emisionActual * radiancia;
+            emisionAcumulada = emisionAcumulada + emisionActual;
+        }
+    } else {        // Rayo no choca contra nada --> Condición terminal
+        terminar = true;
+    }
+ 
+    
+    if (iter_left == 0){
+        terminar = true;
+    } // else if ...
+    ///  FALTA COMPROBAR TERMINATION CONDITION:
+    ///  1. Rayo choca contra fuente de luz de área (falta implementar las fuentes de luz de área)
+    ///
+    
+ 
+    if (terminar) {
+        return emisionAcumulada;
+    } else {
+        return recursividadLuzIndirecta(emisionAcumulada, ptoIntersec, normal, escena, kd, iter_left - 1, rebotes);
+    }
+}
+
+
+
+void renderizarEscenaCentroPixelConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+                              const Escena& escena, float anchoPorPixel, float altoPorPixel,
+                              const float kd, std::vector<std::vector<RGB>>& coloresEscena) {
+
+    for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
+        for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
+            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
+            RGB emision;
+            Punto ptoIntersec;
+            Direccion normal;
+
+            rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+            globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
+            if (escena.interseccion(rayo, emision, ptoIntersec, normal)) {
+                // RGB radiancia;
+                // if (!(nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
+                //     emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
+                // } else {
+                //     emision = emision * radiancia;
+                // }
+                // coloresEscena[alto][ancho] = emision;
+                int rebotes = 0;
+                RGB radianciaTotal = recursividadLuzIndirecta(emision, ptoIntersec,
+                                                                    normal, escena, kd, 5, rebotes);
+                coloresEscena[alto][ancho] = radianciaTotal / rebotes;
+            }
+        }
+    }
+}
+
+
+void renderizarEscenaConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
+                              const std::string& nombreEscena, unsigned rpp, const float kd) {
+    if (rpp < 1) {
+        throw std::invalid_argument("Error: Division por cero no permitida.");
+        return;
+    }
+
+    float anchoPorPixel = camara.calcularAnchoPixel(numPxlsAncho);
+    float altoPorPixel = camara.calcularAltoPixel(numPxlsAlto);
+   
+    // Inicializado todo a color negro
+    std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto, std::vector<RGB>(numPxlsAncho,
+                                                                              {0.0f, 0.0f, 0.0f}));
+    if(rpp == 1){
+        renderizarEscenaCentroPixelConLuzIndirecta(camara, numPxlsAncho, numPxlsAlto,
+                        escena, anchoPorPixel, altoPorPixel, kd, coloresEscena);
+    } else {
+        //renderizarEscenaConAntialisingConLuzIndirecta(camara, numPxlsAncho, numPxlsAlto,
+        //                escena, anchoPorPixel, altoPorPixel, kd, coloresEscena, rpp);
+    }
+    
+    //imprimirImagen(coloresEscena);
+    pintarEscenaEnPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);
+}
+
+
+
 /*
  
 funcion renderizarEscenaConLuzIndirecta (...) {
@@ -204,37 +302,6 @@ funcion renderizarEscenaConLuzIndirecta (...) {
     // origen = el punto que sea que hayamos obtenido
     recursividadLuzIndirecta(emision, origen, normal)
 }
-
- 
-RGB recursividadLuzIndirecta(RGB emision, const Punto& origen, const Direccion& normal,
-                                 const Escena& escena, const int kd, int iter_left) {
-    Rayo wi = generarCaminoAleatorio(origen, normal);
-    RGB emision;
-    Punto ptoIntersec;
-    Direccion new_normal;
- 
-    if (escena.interseccion(wi, emision, ptoIntersec, new_normal)) {
-        RGB radiancia;
-        if (!(this->iluminar(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
-            emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
-        } else {
-            emision = emision * radiancia;
-        }
-    } else {        // Rayo no choca contra nada --> Condición terminal
-        iter_left = 0;
-    }
- 
-    ///
-    ///  FALTA COMPROBAR TERMINATION CONDITION:
-    ///  1. Rayo choca contra fuente de luz de área (falta implementar las fuentes de luz de área)
-    ///
-    
-    emision = [ Las operaciones de multiplicacion que sean ];
- 
-    if (iter_left == 0) {
-        return emision;
-    } else {
-        return recursividadLuzIndirecta(emision, ptoIntersec, normal, escena, kd, iter_left - 1);
-    }
-}
 */
+ 
+
