@@ -195,37 +195,29 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
 
 RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Direccion& normal,
                                  const Escena& escena, const int kd, const int iter_left, int &rebotes) {
+    // Condición terminal: alcanzado max iteraciones
+    if (iter_left == 0) return emisionAcumulada;
+    
     Rayo wi = generarCaminoAleatorio(origen, normal);
     RGB emisionActual;
     Punto ptoIntersec;
     Direccion new_normal;
-    bool terminar = false;
- 
-    if (escena.interseccion(wi, emisionActual, ptoIntersec, new_normal)) {
+    bool choqueConLuz = false;
+    bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, new_normal);
+    
+    // Condición terminal: 1) rayo no choca contra nada
+    //                     2) Rayo choca contra fuente de luz de área (falta implementar las fuentes de luz de área)
+    if (!hayIntersec || (hayIntersec && choqueConLuz)) {
+        return emisionAcumulada;
+    } else {
         rebotes += 1;
         RGB radiancia;
         nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia);
         emisionAcumulada = emisionAcumulada + emisionActual * radiancia;
-    } else {        // Rayo no choca contra nada --> Condición terminal
-        terminar = true;
     }
- 
     
-    if (iter_left == 0){
-        terminar = true;
-    } // else if ...
-    //  FALTA COMPROBAR TERMINATION CONDITION:
-    //  1. Rayo choca contra fuente de luz de área (falta implementar las fuentes de luz de área)
-    //
-    
- 
-    if (terminar) {
-        return emisionAcumulada;
-    } else {
-        return recursividadLuzIndirecta(emisionAcumulada, ptoIntersec, normal, escena, kd, iter_left - 1, rebotes);
-    }
+    return recursividadLuzIndirecta(emisionAcumulada, ptoIntersec, normal, escena, kd, iter_left - 1, rebotes);
 }
-
 
 
 void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
