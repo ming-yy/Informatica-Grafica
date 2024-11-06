@@ -37,6 +37,9 @@ public:
 
     // Operador de asignación
     RGB& operator=(const RGB& d);
+    
+    // Operación de asignación de array
+    RGB& operator=(const std::initializer_list<float>& r);
 
     
 

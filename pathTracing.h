@@ -15,9 +15,10 @@
 
 
 
- // Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto <p0>.
+// Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto <p0>.
+// Además, si devuelve False, la radiancia devuelta será 0.
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
-// al punto <p0>
+// al punto <p0>.
 bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                    const float coefDifuso, RGB& radiancia);
 
@@ -38,12 +39,12 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
 void renderizarEscenaConAntialising(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, float anchoPorPixel, float altoPorPixel, 
                               const float kd, std::vector<std::vector<RGB>>& coloresEscena,
-                              unsigned rpp);
+                              const unsigned rpp);
 
 // Método que genera el ppm <nombreEscena> con la escena <escena> renderizada y que tendrá
 // <rpp> rayos por pixel.
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
-                        const std::string& nombreEscena, unsigned rpp = 1, const float kd = 0.5f);
+                        const std::string& nombreEscena, const unsigned rpp = 1, const float kd = 0.5f);
 
 // Función que dado el vector <normal>, devuelve los vectores <tangente> y <bitangente>. Estos 3
 // vectores constituyen una base ortonormal conformada por <normal>, <tangente>, <bitangente>
@@ -62,16 +63,17 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
 // como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
 Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
+// Función que ...
+RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
+                             std::vector<RGB>& brdf_coseno, const int kd, const unsigned rebotesRestantes);
 
-
-RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Direccion& normal,
-                                 const Escena& escena, const int kd, const int iter_left, int &rebotes);
-
-
+// Función que ...
 void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
-                              const Escena& escena, float anchoPorPixel, float altoPorPixel,
-                              const float kd, const int numIter, std::vector<std::vector<RGB>>& coloresEscena);
+                                      const Escena& escena, float anchoPorPixel, float altoPorPixel,
+                                      const float kd, const unsigned maxRebotes,
+                                      std::vector<std::vector<RGB>>& coloresEscena);
 
-
-void renderizarEscenaLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
-                              const std::string& nombreEscena, unsigned rpp, const float kd, const int numIter);
+// Función que ...
+void renderizarEscenaLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+                                  const Escena& escena, const std::string& nombreEscena, const unsigned rpp,
+                                  const float kd, const unsigned maxRebotes);

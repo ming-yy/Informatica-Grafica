@@ -51,7 +51,17 @@ RGB RGB::operator/(const float escalar) const {
 
 RGB& RGB::operator=(const RGB& r) {
     if (this != &r) {  // Evitar auto-asignación
-        rgb = r.rgb;  // Asigna las coordenadas
+        this->rgb = r.rgb;  // Asigna las coordenadas
+    }
+    return *this;
+}
+
+RGB& RGB::operator=(const std::initializer_list<float>& r) {
+    if (r.size() == 3) {
+        auto it_r = r.begin();
+        this->rgb = {*(it_r), *(it_r + 1), *(it_r + 2)};
+    } else {
+        throw std::invalid_argument("La tripleta RGB debe tener 3 elementos.");
     }
     return *this;
 }
