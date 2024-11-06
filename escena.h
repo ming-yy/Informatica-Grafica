@@ -26,6 +26,9 @@ public:
     // la normal del punto más cercano respecto del objeto al que pertenece.
     bool interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca, Direccion& normal) const;
     
+    // Método que devuelve True si y solo si el punto p0 es iluminado por la fuente de luz <luz>
+    bool luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const;
+    
     // Método que devuelve True si y solo si al punto <p0> lo ilumina una fuente de luz.
     // En caso contrario, devuelve False.
     bool puntoIluminado(const Punto& p0) const;

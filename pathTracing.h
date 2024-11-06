@@ -18,7 +18,7 @@
  // Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto <p0>.
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
 // al punto <p0>
-bool iluminar(const Punto& p0, const Direccion& normal, const Escena& escena,
+bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                    const float coefDifuso, RGB& radiancia);
 
 // Función que calcula ...
@@ -28,7 +28,7 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
 // Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
 // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
 // son de 1 rayo por pixel.
-void renderizarEscenaCentroPixel(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, float anchoPorPixel, float altoPorPixel,
                               const float kd, std::vector<std::vector<RGB>>& coloresEscena);
 
@@ -57,7 +57,6 @@ void generarAzimutInclinacion(float& azimut, float& inclinacion);
 void getCoordenadasCartesianas(const float azimut, const float inclinacion,
                                 float& x, float& y, float& z);
 
-
 // Función que devuelve un rayo generado aleatoriamente. El origen del rayo es <o> y la dirección
 // del rayo es una aleatoria pero está contenida en el hipotético hemisferio superior que tiene
 // como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
@@ -66,13 +65,13 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
 
 RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Direccion& normal,
-                                 const Escena& escena, const int kd, int iter_left, int &rebotes);
+                                 const Escena& escena, const int kd, const int iter_left, int &rebotes);
 
 
-void renderizarEscenaCentroPixelConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, float anchoPorPixel, float altoPorPixel,
-                              const float kd, std::vector<std::vector<RGB>>& coloresEscena);
+                              const float kd, const int numIter, std::vector<std::vector<RGB>>& coloresEscena);
 
 
-void renderizarEscenaConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
-                              const std::string& nombreEscena, unsigned rpp, const float kd);
+void renderizarEscenaLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
+                              const std::string& nombreEscena, unsigned rpp, const float kd, const int numIter);

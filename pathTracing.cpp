@@ -13,7 +13,7 @@
 #include <cmath>
 #include <random>
 
-const double M_PI = 3.14159265358979323846;   // Por si no va cmath
+//const double M_PI = 3.14159265358979323846;   // Por si no va cmath
 #define GRAD_A_RAD 3.1415926535898f/180
 
 
@@ -42,14 +42,16 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
 
 bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                         const float coefDifuso, RGB& radiancia) {
-    bool iluminar = escena.puntoIluminado(p0);
-    if (!iluminar) return false;
+    // SOLO TIENE ESNTIDO EN LUZ DIRECTA
+    //bool iluminar = escena.puntoIluminado(p0);
+    //if (!iluminar) return false;
     
     RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
     for (LuzPuntual luz : escena.luces) {
+        if (!escena.luzIluminaPunto(p0, luz)) continue;     // Si el punto no está iluminado, nos saltamos la iteración
         Direccion CMenosX = luz.c - p0;
         float termino3 = abs(dot(normal, CMenosX / modulo(CMenosX)));
-        float termino2 = coefDifuso / M_PI;     // BRDF
+        float termino2 = coefDifuso / M_PI;
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
         termino1 = termino1 * (termino2 * termino3);
         for (int i = 0; i < 3; ++i) {
@@ -60,7 +62,7 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
     return true;
 }
 
-void renderizarEscenaCentroPixel(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, float anchoPorPixel, float altoPorPixel,
                               const float kd, std::vector<std::vector<RGB>>& coloresEscena) {
 
@@ -131,7 +133,7 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
     std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto, std::vector<RGB>(numPxlsAncho,
                                                                               {0.0f, 0.0f, 0.0f}));
     if(rpp == 1){
-        renderizarEscenaCentroPixel(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
+        renderizarEscena1RPP(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
                                     altoPorPixel, kd, coloresEscena);
     } else {
         renderizarEscenaConAntialising(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
@@ -191,27 +193,19 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
 }
 
 
-
-
-
 RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Direccion& normal,
-                                 const Escena& escena, const int kd, int iter_left, int &rebotes) {
+                                 const Escena& escena, const int kd, const int iter_left, int &rebotes) {
     Rayo wi = generarCaminoAleatorio(origen, normal);
     RGB emisionActual;
     Punto ptoIntersec;
     Direccion new_normal;
-
     bool terminar = false;
  
     if (escena.interseccion(wi, emisionActual, ptoIntersec, new_normal)) {
         rebotes += 1;
         RGB radiancia;
-        if (!(nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
-            emisionActual.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
-        } else {
-            emisionActual = emisionActual * radiancia;
-            emisionAcumulada = emisionAcumulada + emisionActual;
-        }
+        nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia);
+        emisionAcumulada = emisionAcumulada + emisionActual * radiancia;
     } else {        // Rayo no choca contra nada --> Condición terminal
         terminar = true;
     }
@@ -220,9 +214,9 @@ RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Di
     if (iter_left == 0){
         terminar = true;
     } // else if ...
-    ///  FALTA COMPROBAR TERMINATION CONDITION:
-    ///  1. Rayo choca contra fuente de luz de área (falta implementar las fuentes de luz de área)
-    ///
+    //  FALTA COMPROBAR TERMINATION CONDITION:
+    //  1. Rayo choca contra fuente de luz de área (falta implementar las fuentes de luz de área)
+    //
     
  
     if (terminar) {
@@ -234,10 +228,9 @@ RGB recursividadLuzIndirecta(RGB emisionAcumulada, const Punto& origen, const Di
 
 
 
-void renderizarEscenaCentroPixelConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                               const Escena& escena, float anchoPorPixel, float altoPorPixel,
-                              const float kd, std::vector<std::vector<RGB>>& coloresEscena) {
-
+                              const float kd, const int numIter, std::vector<std::vector<RGB>>& coloresEscena) {
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
             Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
@@ -248,16 +241,9 @@ void renderizarEscenaCentroPixelConLuzIndirecta(Camara& camara, unsigned numPxls
             rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
             if (escena.interseccion(rayo, emision, ptoIntersec, normal)) {
-                // RGB radiancia;
-                // if (!(nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia))) {   // Si no hay luz directa allí
-                //     emision.rgb = {0.0f, 0.0f, 0.0f};     // Pintamos de negro
-                // } else {
-                //     emision = emision * radiancia;
-                // }
-                // coloresEscena[alto][ancho] = emision;
                 int rebotes = 0;
                 RGB radianciaTotal = recursividadLuzIndirecta(emision, ptoIntersec,
-                                                                    normal, escena, kd, 5, rebotes);
+                                                                    normal, escena, kd, numIter, rebotes);
                 coloresEscena[alto][ancho] = radianciaTotal / rebotes;
             }
         }
@@ -265,8 +251,8 @@ void renderizarEscenaCentroPixelConLuzIndirecta(Camara& camara, unsigned numPxls
 }
 
 
-void renderizarEscenaConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
-                              const std::string& nombreEscena, unsigned rpp, const float kd) {
+void renderizarEscenaLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
+                              const std::string& nombreEscena, unsigned rpp, const float kd, const int numIter) {
     if (rpp < 1) {
         throw std::invalid_argument("Error: Division por cero no permitida.");
         return;
@@ -279,10 +265,10 @@ void renderizarEscenaConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsi
     std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto, std::vector<RGB>(numPxlsAncho,
                                                                               {0.0f, 0.0f, 0.0f}));
     if(rpp == 1){
-        renderizarEscenaCentroPixelConLuzIndirecta(camara, numPxlsAncho, numPxlsAlto,
-                        escena, anchoPorPixel, altoPorPixel, kd, coloresEscena);
+        renderizarEscena1RPPLuzIndirecta(camara, numPxlsAncho, numPxlsAlto,
+                        escena, anchoPorPixel, altoPorPixel, kd, numIter, coloresEscena);
     } else {
-        //renderizarEscenaConAntialisingConLuzIndirecta(camara, numPxlsAncho, numPxlsAlto,
+        //renderizarEscenaAntialisingLuzIndirecta(camara, numPxlsAncho, numPxlsAlto,
         //                escena, anchoPorPixel, altoPorPixel, kd, coloresEscena, rpp);
     }
     
@@ -293,8 +279,7 @@ void renderizarEscenaConLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsi
 
 
 /*
- 
-funcion renderizarEscenaConLuzIndirecta (...) {
+funcion renderizarEscenaLuzIndirecta (...) {
     ...
     emision, origen, normal = renderizarEscenaAntialiasing / renderizarEscenaCentroPixel (...)
     // emision = ... lo que sea, asumimos que con esto obtenemos la emisión L0

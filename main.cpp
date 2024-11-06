@@ -59,7 +59,9 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
     const float kd = 0.8f;
-    renderizarEscenaConLuzIndirecta(cam, 256, 256, cornell, "cornell", 1, kd);
+    const int numIter = 5;
+    //renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd);
+    renderizarEscenaLuzIndirecta(cam, 256, 256, cornell, "cornell", 1, kd, numIter);
     
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;
@@ -68,7 +70,7 @@ void cajaDeCornell(){
     //transformarFicheroPPM("./cornell.ppm", 1);
     //transformarFicheroPPM("./cornell.ppm", 2);
     //transformarFicheroPPM("./cornell.ppm", 3);
-    //transformarFicheroPPM("./cornell.ppm", 4);
+    transformarFicheroPPM("./cornell.ppm", 4);
     transformarFicheroPPM("./cornell.ppm", 5);
 }
 

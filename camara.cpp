@@ -10,7 +10,7 @@
 #include <random>
 #include <cmath>     // permite usar número pi
 
-const double M_PI = 3.14159265358979323846;
+//const double M_PI = 3.14159265358979323846;
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    f(Direccion(-1.0f, 0.0f, 0.0f)),
