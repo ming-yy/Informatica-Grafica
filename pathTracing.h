@@ -64,16 +64,16 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
 Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
 // Función que ...
-RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
-                             std::vector<RGB>& brdf_coseno, const int kd, const unsigned rebotesRestantes);
+void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
+                                                    const int kd, const unsigned rebotesRestantes, RGB& emisionAcumulada);
 
 // Función que ...
 void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                                       const Escena& escena, float anchoPorPixel, float altoPorPixel,
-                                      const float kd, const unsigned maxRebotes,
+                                      const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                                       std::vector<std::vector<RGB>>& coloresEscena);
 
 // Función que ...
 void renderizarEscenaLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                                   const Escena& escena, const std::string& nombreEscena, const unsigned rpp,
-                                  const float kd, const unsigned maxRebotes);
+                                  const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo);
