@@ -23,6 +23,8 @@
 #include "esfera.h"
 #include "luzpuntual.h"
 #include "pathTracing.h"
+#include <chrono>
+
 
 template<typename T>
 using sh_ptr = std::shared_ptr<T>;
@@ -61,9 +63,18 @@ void cajaDeCornell(){
     const float kd = 0.5f;
     const unsigned maxRebotes = 5;
     const unsigned numRayosMontecarlo = 128;
+    auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd);
     renderizarEscenaLuzIndirecta(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
-    
+    auto fin = std::chrono::high_resolution_clock::now();
+    auto duracion = std::chrono::duration_cast<std::chrono::seconds>(fin - inicio);
+    int mins = duracion.count() / 60;
+    int segs = duracion.count() % 60;
+    cout << endl << endl << "=========================================" << endl;
+    cout << "TIEMPO DE EJECUCIÓN: " << mins << "min " << segs << "s" << endl;
+    cout << endl << "=========================================" << endl << endl;
+
+
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;
     }
