@@ -60,7 +60,7 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     const float kd = 0.5f;
     const unsigned maxRebotes = 5;
-    const unsigned numRayosMontecarlo = 10;
+    const unsigned numRayosMontecarlo = 128;
     //renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd);
     renderizarEscenaLuzIndirecta(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
     

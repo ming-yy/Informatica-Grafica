@@ -286,6 +286,10 @@ void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, uns
                                       const Escena& escena, float anchoPorPixel, float altoPorPixel,
                                       const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                                       std::vector<std::vector<RGB>>& coloresEscena) {
+    unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
+    cout << "Procesando pixeles..." << endl;
+    cout << "0 pixeles de " << totalPixeles << endl;
+
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
             Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
@@ -293,6 +297,10 @@ void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, uns
             Punto ptoIntersec;
             Direccion normal;
 
+            unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
+            if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {
+                cout << pixelActual << " pixeles de " << totalPixeles << endl;
+            }
             
 
              
