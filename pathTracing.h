@@ -20,7 +20,7 @@
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
 // al punto <p0>.
 bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                   const float coefDifuso, RGB& radiancia);
+                   const float coefDifuso, RGB& radiancia, bool debug);
 
 // Función que calcula ...
 void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
@@ -61,11 +61,11 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
 // Función que devuelve un rayo generado aleatoriamente. El origen del rayo es <o> y la dirección
 // del rayo es una aleatoria pero está contenida en el hipotético hemisferio superior que tiene
 // como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
-Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
+Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, bool debug);
 
 // Función que ...
 void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
-                                                    const int kd, const unsigned rebotesRestantes, RGB& emisionAcumulada);
+                                                    const float kd, const unsigned rebotesRestantes, RGB& emisionAcumulada, bool debug);
 
 // Función que ...
 void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,

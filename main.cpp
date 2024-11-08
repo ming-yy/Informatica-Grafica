@@ -43,13 +43,13 @@ using std::string;
 
 void cajaDeCornell(){
     std::vector<Primitiva*> objetos;
-    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({255.0f, 0.0f, 0.0f})));
-    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 255.0f, 0.0f})));
-    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f})));
-    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f})));
-    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f})));
-    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({227.0f, 177.0f, 210.0f})));
-    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f})));
+    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({255.0f, 0.0f, 0.0f}))); // plano izquierdo, rojo
+    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 255.0f, 0.0f}))); // plano derecho, verde
+    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f}))); // plano suelo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f}))); // plano techo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f}))); // plano fondo, blanco
+    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({227.0f, 177.0f, 210.0f}))); // esfera izquierda, rosa
+    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f}))); // esfera derecha, azul
     std::vector<LuzPuntual> luces;
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}));
     //luces.push_back(LuzPuntual({0.0f, -0.5f, -1.0f}));
