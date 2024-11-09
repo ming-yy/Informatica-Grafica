@@ -71,11 +71,10 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
     const float kd = 0.7f;
-    const unsigned maxRebotes = 5;
+    const unsigned maxRebotes = 0;
     const unsigned numRayosMontecarlo = 10;
     auto inicio = std::chrono::high_resolution_clock::now();
-    //renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd);
-    renderizarEscenaLuzIndirecta(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
+    renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
     auto fin = std::chrono::high_resolution_clock::now();
     
     printTiempo(inicio, fin);
