@@ -13,13 +13,14 @@
 #include "rgb.h"
 #include "camara.h"
 
-// Método que devuelve el coeficiente de difusión dividido por pi (fr, termino 2)
-float evaluacionBRDFdifusa(const float coefDifuso);
+// Función que calcula la reflectancia difusa de Lambert.
+float calcBrdfDifusa(const float kd);
 
-// Método que devuelve el coseno entre la direccion y la normal pasadas (n * d/mod(d), termino 3)
-float evaluacionCosenoDirNormal(const Direccion& d, const Direccion& n);
+// Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
+// por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
+float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 
-// Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto <p0>.
+// Función que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto <p0>.
 // Además, si devuelve False, la radiancia devuelta será 0.
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
 // al punto <p0>.
@@ -30,7 +31,7 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
 void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
                                const Direccion& l);
 
-// Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
+// Función que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
 // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
 // son de 1 rayo por pixel.
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
@@ -45,14 +46,10 @@ void renderizarEscenaConAntialising(Camara& camara, unsigned numPxlsAncho, unsig
                               const float kd, std::vector<std::vector<RGB>>& coloresEscena,
                               const unsigned rpp);
 
-// Método que genera el ppm <nombreEscena> con la escena <escena> renderizada y que tendrá
+// Función que genera el ppm <nombreEscena> con la escena <escena> renderizada y que tendrá
 // <rpp> rayos por pixel.
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto, const Escena& escena,
                         const std::string& nombreEscena, const unsigned rpp = 1, const float kd = 0.5f);
-
-// Función que dado el vector <normal>, devuelve los vectores <tangente> y <bitangente>. Estos 3
-// vectores constituyen una base ortonormal conformada por <normal>, <tangente>, <bitangente>
-void construirBaseOrtonormal(const Direccion& normal, Direccion& tangente, Direccion& bitangente);
 
 // Función que devuelve un valor aleatorio para azimut y otro para inclinación
 // para muestreo uniforme de ángulo sólido.

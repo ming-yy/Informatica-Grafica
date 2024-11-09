@@ -111,3 +111,13 @@ ostream& operator<<(ostream& os, const Base& m) {
 
     return os;
 }
+
+void construirBaseOrtonormal(const Direccion& normal, Direccion& tangente, Direccion& bitangente) {
+    if (fabs(normal.coord[0]) > fabs(normal.coord[2])) {
+        tangente = Direccion(-normal.coord[1], normal.coord[0], 0);
+    } else {
+        tangente = Direccion(0, -normal.coord[2], normal.coord[1]);
+    }
+    tangente = normalizar(tangente);
+    bitangente = cross(normal, tangente);
+}

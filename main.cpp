@@ -43,6 +43,17 @@ using std::invalid_argument;
 using std::string;
 
 
+void printTiempo(auto inicio, auto fin) {
+    auto duracion_total = std::chrono::duration_cast<std::chrono::seconds>(fin - inicio);
+    auto mins = std::chrono::duration_cast<std::chrono::minutes>(duracion_total);
+    auto segs = duracion_total - mins;
+
+    cout << endl << endl << "=========================================" << endl;
+    cout << "TIEMPO DE EJECUCION: " << mins.count() << "min " << segs.count() << "s" << endl;
+    cout << "=========================================" << endl << endl;
+}
+
+
 void cajaDeCornell(){
     std::vector<Primitiva*> objetos;
     objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({255.0f, 0.0f, 0.0f}))); // plano izquierdo, rojo
@@ -54,7 +65,6 @@ void cajaDeCornell(){
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f}))); // esfera derecha, azul
     std::vector<LuzPuntual> luces;
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}));
-    //luces.push_back(LuzPuntual({0.0f, -0.5f, -1.0f}));
     Escena cornell = Escena(objetos, luces);
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
                         {0.0f, 0.0f, 3.0f},
@@ -62,26 +72,22 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     const float kd = 0.7f;
     const unsigned maxRebotes = 5;
-    const unsigned numRayosMontecarlo = 128;
+    const unsigned numRayosMontecarlo = 10;
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd);
     renderizarEscenaLuzIndirecta(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
     auto fin = std::chrono::high_resolution_clock::now();
-    auto duracion = std::chrono::duration_cast<std::chrono::seconds>(fin - inicio);
-    int mins = duracion.count() / 60;
-    int segs = duracion.count() % 60;
-    cout << endl << endl << "=========================================" << endl;
-    cout << "TIEMPO DE EJECUCION: " << mins << "min " << segs << "s" << endl;
-    cout << "=========================================" << endl << endl;
+    
+    printTiempo(inicio, fin);
 
 
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;
     }
 
-    //transformarFicheroPPM("./cornell.ppm", 1);
-    //transformarFicheroPPM("./cornell.ppm", 2);
-    //transformarFicheroPPM("./cornell.ppm", 3);
+    transformarFicheroPPM("./cornell.ppm", 1);
+    transformarFicheroPPM("./cornell.ppm", 2);
+    transformarFicheroPPM("./cornell.ppm", 3);
     transformarFicheroPPM("./cornell.ppm", 4);
     transformarFicheroPPM("./cornell.ppm", 5);
 }

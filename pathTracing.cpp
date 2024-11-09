@@ -13,7 +13,7 @@
 #include <cmath>
 #include <random>
 
-const double m_PI = 3.14159265358979323846;   // Por si no va cmath
+//const double M_PI = 3.14159265358979323846;   // Por si no va cmath
 #define GRAD_A_RAD 3.1415926535898f/180
 
 using std::cout;
@@ -42,22 +42,12 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
     rayo.d = normalizar(rayo.d);
 }
 
-void construirBaseOrtonormal(const Direccion& normal, Direccion& tangente, Direccion& bitangente) {
-    if (fabs(normal.coord[0]) > fabs(normal.coord[2])) {
-        tangente = Direccion(-normal.coord[1], normal.coord[0], 0);
-    } else {
-        tangente = Direccion(0, -normal.coord[2], normal.coord[1]);
-    }
-    tangente = normalizar(tangente);
-    bitangente = cross(normal, tangente);
-}
-
 void generarAzimutInclinacion(float& azimut, float& inclinacion) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0, 1.0);
     inclinacion = acos(sqrt(1-dis(gen)));
-    azimut = 2 * m_PI * dis(gen);
+    azimut = 2 * M_PI * dis(gen);
 }
 
 void getCoordenadasCartesianas(const float azimut, const float inclinacion,
@@ -103,19 +93,16 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, bool debug)
     return Rayo(nuevaDir, o);
 }
 
-float evaluacionBRDFdifusa(const float coefDifuso){
-    return coefDifuso / m_PI;
+float calcBrdfDifusa(const float kd){
+    return kd / M_PI;
 }
 
-float evaluacionCosenoDirNormal(const Direccion& d, const Direccion& n){
+float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
     return abs(dot(n, d / modulo(d)));
 }
 
 bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                          const float coefDifuso, RGB& radiancia, bool debug) {
-    // SOLO TIENE SENTIDO EN LUZ DIRECTA
-    //bool iluminar = escena.puntoIluminado(p0);
-    //if (!iluminar) return false;
     int n = 0;
     RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
     for (LuzPuntual luz : escena.luces) {
@@ -130,8 +117,8 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
             continue;     // Si el punto no está iluminado, nos saltamos la iteración
         }
         Direccion CMenosX = luz.c - p0;
-        float termino3 = evaluacionCosenoDirNormal(CMenosX, normal);
-        float termino2 = evaluacionBRDFdifusa(coefDifuso);
+        float termino3 = calcCosenoAnguloIncidencia(CMenosX, normal);
+        float termino2 = calcBrdfDifusa(coefDifuso);
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
         if(debug){
             cout << "(( luz.c: " << luz.c << " )) " << endl;
@@ -202,7 +189,7 @@ void renderizarEscenaConAntialising(Camara& camara, unsigned numPxlsAncho, unsig
                     if (nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia, false)) {
                         emisionActual = emisionActual * radiancia;
                         emisionMedia = emisionMedia + emisionActual;
-                    } // Si no se ilumina, no le sumamos nada (el rgb es 0,0,0)
+                    } // Si no se ilumina, no le sumamos nada (el rgb default es {0,0,0})
                 }
             }
             emisionMedia = emisionMedia / rpp;
@@ -263,15 +250,14 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
         }
         return;
     } else {
-        // Calcula la emision del rebote
         RGB radianciaActual;
         nextEventEstimation(ptoIntersec, new_normal, escena, kd, radianciaActual, debug);
         if (debug) {
             cout << "RADIANCIA ACTUAL = " << radianciaActual << endl;
         }
         
-        brdfCosenoAcumulado = brdfCosenoAcumulado * 
-                                    evaluacionBRDFdifusa(kd) * evaluacionCosenoDirNormal(origen - ptoIntersec, normal);
+        brdfCosenoAcumulado = brdfCosenoAcumulado * calcBrdfDifusa(kd) *
+                              calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
         emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual * brdfCosenoAcumulado;
     }
     
@@ -282,7 +268,9 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
         cout << "Nueva normal: " << new_normal << endl;
         cout << "==============================" << endl << endl;
     }
-    recursividadLuzIndirecta(ptoIntersec, new_normal, escena, kd, rebotesRestantes - 1, emisionAcumulada, brdfCosenoAcumulado, debug);
+    
+    recursividadLuzIndirecta(ptoIntersec, new_normal, escena, kd, rebotesRestantes - 1,
+                             emisionAcumulada, brdfCosenoAcumulado, debug);
 }
 
 
@@ -290,9 +278,11 @@ void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, uns
                                       const Escena& escena, float anchoPorPixel, float altoPorPixel,
                                       const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                                       std::vector<std::vector<RGB>>& coloresEscena) {
-    unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
-    cout << "Procesando pixeles..." << endl;
-    cout << "0 pixeles de " << totalPixeles << endl;
+    
+    
+    // unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
+    // cout << "Procesando pixeles..." << endl;
+    // cout << "0 pixeles de " << totalPixeles << endl;
 
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
@@ -300,39 +290,37 @@ void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, uns
             RGB emisionDirecta;
             Punto ptoIntersec;
             Direccion normal;
-
-            unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
-            if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {
-                cout << pixelActual << " pixeles de " << totalPixeles << endl;
-            }
             
-
-             
+            
+            //unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
+            //if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {
+            //    cout << pixelActual << " pixeles de " << totalPixeles << endl;
+            //}
+            
             rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
             if (escena.interseccion(rayo, emisionDirecta, ptoIntersec, normal)) {
                 RGB radiancia;
-                //bool debug = (ancho == 20 && alto == 50);
+
+                
                 bool debug = false;
+                
+                
                 nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia, debug);   // Si no hay luz directa allí
                 emisionDirecta = emisionDirecta * radiancia;
 
-                // Calculamos la emisión media de N rayos de sampleo Montecarlo
                 RGB emisionIndirecta;
-                for(unsigned i = 0; i < numRayosMontecarlo; i++){
-                    // Luz indirecta
-                    //std::vector<RGB> brdf_coseno;
-                    //brdf_coseno.push_back(radiancia);
+                for(unsigned i = 0; i < numRayosMontecarlo; ++i){   // Emisión media de N rayos por Montecarlo
                     RGB emisionAcumulada;
                     float brdfCosenoAcumulado = 1;
                     if(debug){
                         cout << endl << endl << endl << "    --- RAYO " << i+1 << endl << endl;
                     }
-                    recursividadLuzIndirecta(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada, brdfCosenoAcumulado, debug);
+                    recursividadLuzIndirecta(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada,
+                                             brdfCosenoAcumulado, debug);
                     emisionIndirecta = emisionIndirecta + emisionAcumulada;
                 }
-
-                emisionIndirecta = emisionIndirecta / numRayosMontecarlo; // la media de todos
+                emisionIndirecta = emisionIndirecta / numRayosMontecarlo;
                 coloresEscena[alto][ancho] = emisionDirecta + emisionIndirecta;
             }
         }
@@ -360,18 +348,4 @@ void renderizarEscenaLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigne
     //imprimirImagen(coloresEscena);
     pintarEscenaEnPPM(nombreEscena, 255.0f, 1.0f, coloresEscena);
 }
-
-
-
-/*
-funcion renderizarEscenaLuzIndirecta (...) {
-    ...
-    emision, origen, normal = renderizarEscenaAntialiasing / renderizarEscenaCentroPixel (...)
-    // emision = ... lo que sea, asumimos que con esto obtenemos la emisión L0
-    // normal = ... la que sea que hayamos obtenido
-    // origen = el punto que sea que hayamos obtenido
-    recursividadLuzIndirecta(emision, origen, normal)
-}
-*/
- 
 
