@@ -44,10 +44,16 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
 // como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
 Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
+
+// Función que ...
+void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalInicial,
+                           const Escena& escena, const float kd, const unsigned maxRebotes,
+                           RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug);
+
 // Función que ...
 void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
-                                                    const float kd, const unsigned rebotesRestantes, 
-                                                    RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug);
+                              const float kd, const unsigned rebotesRestantes, RGB& emisionAcumulada,
+                              float& brdfCosenoAcumulado, bool debug);
 
 // Función que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
 // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones

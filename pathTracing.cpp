@@ -12,6 +12,7 @@
 #include "gestorPPM.h"
 #include <cmath>
 #include <random>
+#include <stack>
 
 //const double M_PI = 3.14159265358979323846;   // Por si no va cmath
 #define GRAD_A_RAD 3.1415926535898f/180
@@ -127,6 +128,76 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
     return true;
 }
 
+void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalInicial,
+                           const Escena& escena, const float kd, const unsigned maxRebotes,
+                           RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug) {
+    struct EstadoRebote {       // Estructura para almacenar el estado de cada rebote
+        Punto origen;
+        Direccion normal;
+        unsigned rebotesRestantes;
+        RGB emisionActual;
+        float brdfCosenoActual;
+    };
+
+    std::stack<EstadoRebote> pila;      // Inicializar la pila con el primer estado
+    pila.push({origenInicial, normalInicial, maxRebotes, RGB(0, 0, 0), 1.0f});
+
+    while (!pila.empty()) {
+        EstadoRebote estado = pila.top();
+        pila.pop();
+
+        if (debug) {
+            cout << "==============================" << endl;
+            cout << "REBOTES RESTANTES: " << estado.rebotesRestantes << endl;
+            cout << "Emision acumulada antes: " << emisionAcumulada << endl;
+        }
+
+        // Condición de terminación si no quedan rebotes
+        if (estado.rebotesRestantes == 0) continue;
+
+        Punto ptoIntersec;
+        Direccion new_normal;
+        RGB emisionActual;
+        Rayo wi = generarCaminoAleatorio(estado.origen, estado.normal);
+
+        bool choqueConLuz = false;
+        bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, new_normal);
+
+        // Condición terminal si no hay intersección o el rayo choca con una fuente de luz
+        if (!hayIntersec || (hayIntersec && choqueConLuz)) {
+            if (debug) {
+                cout << "Condición terminal, parando" << endl;
+            }
+            continue;
+        }
+
+        // Calcular radiancia y actualizar acumuladores
+        RGB radianciaActual;
+        nextEventEstimation(ptoIntersec, new_normal, escena, kd, radianciaActual, debug);
+        
+        if (debug) {
+            cout << "RADIANCIA ACTUAL = " << radianciaActual << endl;
+        }
+
+        float nuevoBrdfCoseno = estado.brdfCosenoActual * calcBrdfDifusa(kd) *
+                                calcCosenoAnguloIncidencia(estado.origen - ptoIntersec, estado.normal);
+        emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual * nuevoBrdfCoseno;
+
+        if (debug) {
+            cout << "Emision acumulada despues: " << emisionAcumulada << endl;
+            cout << "BrdfCoseno acumulado despues: " << nuevoBrdfCoseno << endl;
+            cout << "Punto intersección: " << ptoIntersec << endl;
+            cout << "Nueva normal: " << new_normal << endl;
+            cout << "==============================" << endl << endl;
+        }
+
+        // Apilar el siguiente estado de rebote si hay más rebotes restantes
+        if (estado.rebotesRestantes > 1) {
+            pila.push({ptoIntersec, new_normal, estado.rebotesRestantes - 1, emisionActual, nuevoBrdfCoseno});
+        }
+    }
+}
+
 void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                              const Escena& escena, const float kd, const unsigned rebotesRestantes,
                              RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug) {
@@ -220,7 +291,7 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
                         if(debug){
                             cout << endl << endl << endl << "    --- RAYO " << i+1 << endl << endl;
                         }
-                        recursividadLuzIndirecta(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada,
+                        luzIndirectaIterativa(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada,
                                                  brdfCosenoAcumulado, debug);
                         emisionIndirecta = emisionIndirecta + emisionAcumulada;
                     }
