@@ -72,7 +72,7 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     const float kd = 0.7f;
     const unsigned maxRebotes = 5;
-    const unsigned numRayosMontecarlo = 128;
+    const unsigned numRayosMontecarlo = 16;
     auto inicio = std::chrono::high_resolution_clock::now();
     renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
     auto fin = std::chrono::high_resolution_clock::now();
@@ -426,7 +426,8 @@ int main() {
         sh_ptr<Punto> pto = std::make_shared<Punto>(1,0,0);
         vector<Punto> ptosIntersec;
         sh_ptr<Esfera> esfera = std::make_shared<Esfera>(*planeta);
-        esfera->interseccion(Rayo(*dir, *pto), ptosIntersec, emision);
+        bool choqueConLuz = false;
+        esfera->interseccion(Rayo(*dir, *pto), ptosIntersec, emision, choqueConLuz);
 
         if (!ptosIntersec.empty()) {
             for (Punto p : ptosIntersec) {
@@ -439,7 +440,7 @@ int main() {
         cout << "---" << endl;
         ptosIntersec.clear();
         Esfera esfera2 = Esfera(Punto(0,0,0), 1, RGB());
-        esfera2.interseccion(Rayo(Direccion(1,0,0), Punto(1,0,0)), ptosIntersec, emision);
+        esfera2.interseccion(Rayo(Direccion(1,0,0), Punto(1,0,0)), ptosIntersec, emision, choqueConLuz);
 
         if (!ptosIntersec.empty()) {
             for (Punto p : ptosIntersec) {
@@ -458,7 +459,7 @@ int main() {
         float distanciaPlano = -5.0f;   // El plano está a 5 unidades del origen UCS
         sh_ptr<Plano> plano = std::make_shared<Plano>(*normalPlano, distanciaPlano);
         //cout << *plano << endl;
-        plano->interseccion(Rayo(*dir, *pto), ptosIntersec, emision);
+        plano->interseccion(Rayo(*dir, *pto), ptosIntersec, emision, choqueConLuz);
 
         if (!ptosIntersec.empty()) {
             for (Punto p : ptosIntersec) {
@@ -491,7 +492,7 @@ int main() {
         Punto origenRayo(arrOrigenRayo);
         Direccion direccionRayo(arrDireccionRayo);
 
-        triangulo.interseccion(Rayo(direccionRayo, origenRayo), ptosIntersec, emision);
+        triangulo.interseccion(Rayo(direccionRayo, origenRayo), ptosIntersec, emision, choqueConLuz);
 
         if (!ptosIntersec.empty()) {
             for (Punto p : ptosIntersec) {

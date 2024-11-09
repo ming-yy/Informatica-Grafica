@@ -14,21 +14,23 @@ Escena::Escena(std::vector<Primitiva*> _primitivas, std::vector<LuzPuntual> _luc
                 primitivas(_primitivas), luces(_luces) {}
 
 
-bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca, Direccion& normal) const {
+bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca, Direccion& normal,
+                          bool& choqueConLuz) const {
     bool resVal = false;
     bool primerIntersec = true;  // Flag: la primera intersección encontrada
+    bool auxChoqueConLuz = false;
 
     for (const Primitiva* objeto : this->primitivas) {
         std::vector<Punto> intersec;
         RGB emision;
 
-        objeto->interseccion(rayo, intersec, emision);
-
+        objeto->interseccion(rayo, intersec, emision, auxChoqueConLuz);
         if (!intersec.empty()) {    // Si hay intersecciones
             resVal = true;
             // El intersec[0] es el punto más cercano al origen del rayo en este objeto
             if (primerIntersec || (modulo(rayo.o - intersec[0]) < modulo(rayo.o - ptoMasCerca))) {
                 ptoMasCerca = intersec[0];
+                choqueConLuz = auxChoqueConLuz;
                 normal = objeto->getNormal(ptoMasCerca);
                 resEmision = emision;
                 primerIntersec = false;  // Marcamos que ya se encontró una intersección
@@ -45,7 +47,8 @@ bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
     Punto ptoMasCerca;
     RGB rgb;
     Direccion normal;
-    bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, normal);
+    bool choqueConLuz = false;
+    bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, normal, choqueConLuz);
     
     if (chocaObjeto) {
         iluminar = modulo(luz.c - p0) <= modulo(ptoMasCerca - p0);
@@ -72,5 +75,11 @@ bool Escena::puntoIluminado(const Punto& p0) const {
         iluminar = luzIluminaPunto(p0, luz);
         if (iluminar) break;
     }
+    /*
+    for(const Primitiva& objeto : this->primitivas) {
+        iluminar = luzIluminaPunto(p0, objeto);
+        if (iluminar) break;
+    }
+    */
     return iluminar;
 }

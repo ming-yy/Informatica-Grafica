@@ -19,16 +19,23 @@ public:
     Punto c;        // Centro del plano
     Direccion n;    // Normal respecto al plano
     float d;        // Distancia máxima admitida
-    RGB emision;     // (r,g,b)
+    RGB emision;    // (r,g,b)
+    bool soyLuz;
     
     Plano();
-    Plano(const Direccion& _n, float _d, const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
-    
-    // Función que calcula la intersección entre un rayo (d) con origen
-    // en p y el plano e. Devuelve <True> si y solo si se produce la
-    // interseccion.
+    Plano(const Direccion& _n, float _d, const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}),
+          const bool _soyLuz = false);
+
+    // Método para calcular la intersección entre un rayo y el plano
+    //
+    // Devuelve en <ptos> un vector con los puntos de intersección en UCS del rayo <rayo>
+    // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
+    // en el vector será el primer punto de intersección. Si hay intersección, también
+    // devuelve la emisión del objeto en <emision> y si el objeto intersecado es luz o no en
+    // <choqueConLuz>.
+    // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                      RGB& emision) const override;
+                      RGB& emision, bool& choqueConLuz) const override;
     
     Direccion getNormal(const Punto& punto) const override;
 

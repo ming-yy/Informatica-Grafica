@@ -55,6 +55,12 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, cons
                               const float kd, const unsigned rebotesRestantes, RGB& emisionAcumulada,
                               float& brdfCosenoAcumulado, bool debug);
 
+// Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
+// para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.
+RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned maxRebotes,
+                            const unsigned numRayosMontecarlo, const Punto& ptoIntersec, const Direccion& normal,
+                            bool debug);
+
 // Función que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
 // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
 // son de 1 rayo por pixel.

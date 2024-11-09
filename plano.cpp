@@ -13,13 +13,13 @@ using std::endl;
 using std::vector;
 
 
-Plano::Plano(): n(0.0f, 0.0f, 0.0f), d(0.0f), emision({0.0f, 0.0f, 0.0f}) {}
+Plano::Plano(): n(0.0f, 0.0f, 0.0f), d(0.0f), soyLuz(false), emision({0.0f, 0.0f, 0.0f}) {}
 
-Plano::Plano(const Direccion& _n, float _d, const RGB& _emision):
-             n(normalizar(_n)), d(_d), emision(_emision) {}
+Plano::Plano(const Direccion& _n, float _d, const RGB& _emision, const bool _soyLuz):
+             n(normalizar(_n)), d(_d), soyLuz(_soyLuz), emision(_emision) {}
 
 void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                        RGB& emision) const {
+                        RGB& emision, bool& choqueConLuz) const {
     float denominador = dot(rayo.d, n);
     if (fabs(denominador) < 1e-6f) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;
@@ -36,6 +36,7 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     Punto aux = rayo.o + rayo.d * t;
     ptos.push_back(aux);
     emision = this->emision;
+    choqueConLuz = soyLuz;
     
     // DEBUG
     // cout << "Numerador: " << numerador << endl;

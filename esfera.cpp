@@ -9,17 +9,17 @@
 
 #define MARGEN_ERROR 10e-6
 
-Esfera::Esfera(): centro(Punto()), radio(0.0f), emision({0.0f,0.0f,0.0f}) {}
+Esfera::Esfera(): centro(Punto()), radio(0.0f), emision({0.0f,0.0f,0.0f}), soyLuz(false) {}
 
+Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _emision,
+               const bool _soyLuz) :
+               centro(_centro), radio(_radio), emision(_emision), soyLuz(_soyLuz) {}
 
-Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _emision) :
-               centro(_centro), radio(_radio), emision(_emision) {}
-
-Esfera::Esfera(const Planeta& p) : centro(p.centro), radio(p.radio), 
-                                                     emision(p.emision){}
+Esfera::Esfera(const Planeta& p) : centro(p.centro), radio(p.radio), emision(p.emision),
+                                   soyLuz(false){}
 
 void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                          RGB& emision) const {
+                          RGB& emision, bool& choqueConLuz) const {
     float a = modulo(rayo.d);
     a *= a;
     float b = 2 * dot(rayo.d, rayo.o - this->centro);
@@ -44,12 +44,15 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                 ptos.push_back(p1);
             }
             emision = this->emision;
+            choqueConLuz = soyLuz;
         } else if (t1 > MARGEN_ERROR) {
             ptos.push_back(p1);
             emision = this->emision;
+            choqueConLuz = soyLuz;
         } else if (t2 > MARGEN_ERROR) {
             ptos.push_back(p2);
             emision = this->emision;
+            choqueConLuz = soyLuz;
         }
  
         // DEBUG
@@ -64,6 +67,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         if (t > MARGEN_ERROR) {
             ptos.push_back(puntoInterseccion);
             emision = this->emision;
+            choqueConLuz = soyLuz;
         }
         // DEBUG
         //cout << "Hay 1 punto de interseccion (tngente): " << endl;

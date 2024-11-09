@@ -103,10 +103,14 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
             }
             continue;     // Si el punto no está iluminado, nos saltamos la iteración
         }
+        
+        
         Direccion CMenosX = luz.c - p0;
         float termino3 = calcCosenoAnguloIncidencia(CMenosX, normal);
         float termino2 = calcBrdfDifusa(coefDifuso);
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
+        
+        
         if(debug){
             cout << "(( luz.c: " << luz.c << " )) " << endl;
             cout << "(( p0: " << p0 << " )) " << endl;
@@ -116,7 +120,11 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
             cout << "(( termino2: " << termino2 << " )) " << endl;
             cout << "(( termino3: " << termino3 << " )) " << endl;
         }
+        
+        
         termino1 = termino1 * (termino2 * termino3);
+        
+        
         if(debug){
             cout << "(( iluminado: " << termino1 << " )) " << endl << endl;
         }
@@ -125,6 +133,10 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
         }
     }
     radiancia = radFinal;
+    
+    /*
+    Ahora otro "for" con los mismos cálculos pero para las luces de área
+    */
     return true;
 }
 
@@ -161,7 +173,7 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
         Rayo wi = generarCaminoAleatorio(estado.origen, estado.normal);
 
         bool choqueConLuz = false;
-        bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, new_normal);
+        bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, new_normal, choqueConLuz);
 
         // Condición terminal si no hay intersección o el rayo choca con una fuente de luz
         if (!hayIntersec || (hayIntersec && choqueConLuz)) {
@@ -203,7 +215,6 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                              RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug) {
     Punto ptoIntersec;
     Direccion new_normal;
-    bool choqueConLuz = false;
     RGB emisionActual;
 
     if (debug) {
@@ -213,19 +224,31 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
     }
     
     if (rebotesRestantes == 0) return;    // Condición terminal: alcanzado max rebotes
-    Rayo wi = generarCaminoAleatorio(origen, normal);
-    bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, new_normal);
     
-    // Condición terminal: 1) rayo no choca contra nada
-    //                     2) rayo choca contra fuente de luz de área
-    if (!hayIntersec || (hayIntersec && choqueConLuz)) {
+    Rayo wi = generarCaminoAleatorio(origen, normal);
+    bool choqueConLuz = false;
+    bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, new_normal, choqueConLuz);
+    
+    if (!hayIntersec) {  // Condición terminal: rayo no choca contra nada
         if (debug) {
-            cout << "Condicion terminal, parando" << endl;
+            cout << "CONDICION TERMINAL: rayo no choca con nada" << endl;
         }
+        return;
+    } else if (hayIntersec && choqueConLuz) {   // Condición terminal: rayo choca contra fuente de luz de área
+        if (debug) {
+            cout << "CONDICION TERMINAL: rayo choca con luz" << endl;
+        }
+        return;
+        // radianciaActual = loquesea (nextEventEstimation ???)
+        
+        // brdfCosenoAcumulado = brdfCosenoAcumulado * calcBrdfDifusa(kd) *
+        //                      calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
+        // emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual * brdfCosenoAcumulado;
         return;
     } else {
         RGB radianciaActual;
         nextEventEstimation(ptoIntersec, new_normal, escena, kd, radianciaActual, debug);
+        
         if (debug) {
             cout << "RADIANCIA ACTUAL = " << radianciaActual << endl;
         }
@@ -247,6 +270,26 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                              emisionAcumulada, brdfCosenoAcumulado, debug);
 }
 
+RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned maxRebotes,
+                            const unsigned numRayosMontecarlo, const Punto& ptoIntersec, const Direccion& normal,
+                            bool debug) {
+    RGB emisionIndirecta;
+    if (maxRebotes > 0) {
+        for (unsigned i = 0; i < numRayosMontecarlo; ++i){   // Emisión media de N rayos por Montecarlo
+            RGB emisionAcumulada;
+            float brdfCosenoAcumulado = 1;
+            if(debug){
+                cout << endl << endl << endl << "    --- RAYO " << i+1 << endl << endl;
+            }
+            recursividadLuzIndirecta(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada,
+                                     brdfCosenoAcumulado, debug);
+            emisionIndirecta = emisionIndirecta + emisionAcumulada;
+        }
+    }
+    emisionIndirecta = emisionIndirecta / numRayosMontecarlo;
+    return emisionIndirecta;
+}
+
 
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
@@ -264,6 +307,10 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             RGB emisionDirecta;
             Punto ptoIntersec;
             Direccion normal;
+            bool choqueConLuz = false;
+            bool hayInterseccion = false;
+            
+            bool debug = false;
             
             
             //unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
@@ -273,31 +320,18 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             
             rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
-            if (escena.interseccion(rayo, emisionDirecta, ptoIntersec, normal)) {
-                RGB radiancia;
-
+            if (escena.interseccion(rayo, emisionDirecta, ptoIntersec, normal, choqueConLuz)) {
+                RGB radianciaDirecta;
+                nextEventEstimation(ptoIntersec, normal, escena, kd, radianciaDirecta, debug);
+                emisionDirecta = emisionDirecta * radianciaDirecta;
                 
-                bool debug = false;
-                
-                
-                nextEventEstimation(ptoIntersec, normal, escena, kd, radiancia, debug);   // Si no hay luz directa allí
-                emisionDirecta = emisionDirecta * radiancia;
-
-                RGB emisionIndirecta;
-                if (maxRebotes > 0) {
-                    for (unsigned i = 0; i < numRayosMontecarlo; ++i){   // Emisión media de N rayos por Montecarlo
-                        RGB emisionAcumulada;
-                        float brdfCosenoAcumulado = 1;
-                        if(debug){
-                            cout << endl << endl << endl << "    --- RAYO " << i+1 << endl << endl;
-                        }
-                        luzIndirectaIterativa(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada,
-                                                 brdfCosenoAcumulado, debug);
-                        emisionIndirecta = emisionIndirecta + emisionAcumulada;
-                    }
+                if (choqueConLuz) {
+                    coloresEscena[alto][ancho] = emisionDirecta;
+                } else {
+                    RGB emisionIndirecta = obtenerEmisionIndirecta(escena, kd, maxRebotes, numRayosMontecarlo,
+                                                                   ptoIntersec, normal, debug);
+                    coloresEscena[alto][ancho] = emisionDirecta + emisionIndirecta;
                 }
-                emisionIndirecta = emisionIndirecta / numRayosMontecarlo;
-                coloresEscena[alto][ancho] = emisionDirecta + emisionIndirecta;
             }
         }
     }

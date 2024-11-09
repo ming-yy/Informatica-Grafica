@@ -11,14 +11,15 @@ using std::cout;
 using std::endl;
 
 
-Triangulo::Triangulo() : v0(Punto()), v1(Punto()), v2(Punto()),
+Triangulo::Triangulo() : v0(Punto()), v1(Punto()), v2(Punto()), soyLuz(false),
                          emision({0.0f, 0.0f, 0.0f}) {}
 
-Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2,
-                     const RGB& _emision): v0(_v0), v1(_v1), v2(_v2), emision(_emision) {}
+Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const RGB& _emision,
+                     const bool _soyLuz):
+                     v0(_v0), v1(_v1), v2(_v2), soyLuz(_soyLuz), emision(_emision) {}
 
 void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                             RGB& emision) const {
+                             RGB& emision, bool& choqueConLuz) const {
 
     const float EPSILON = 1e-6f;
 
@@ -28,7 +29,7 @@ void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     float a = dot(edge1, h);
 
     if (fabs(a) < EPSILON) {
-        cout << "No hay intersección, el rayo es paralelo al triángulo." << endl;
+        // cout << "No hay intersección, el rayo es paralelo al triángulo." << endl;
         return;
     }
 
@@ -49,8 +50,9 @@ void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
 
     float t = f * dot(edge2, q);
     if (t > EPSILON) {
-        ptos.push_back(Punto(rayo.o + rayo.d * t)); // Calcular el punto de intersección
+        ptos.push_back(Punto(rayo.o + rayo.d * t));
         emision = this->emision;
+        choqueConLuz = soyLuz;
         return;
     } else {
         return ; // No hay intersección en la dirección del rayo
