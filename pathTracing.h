@@ -13,7 +13,11 @@
 #include "rgb.h"
 #include "camara.h"
 
+// Método que devuelve el coeficiente de difusión dividido por pi (fr, termino 2)
+float evaluacionBRDFdifusa(const float coefDifuso);
 
+// Método que devuelve el coseno entre la direccion y la normal pasadas (n * d/mod(d), termino 3)
+float evaluacionCosenoDirNormal(const Direccion& d, const Direccion& n);
 
 // Método que devuelve False si y solo si no hay ninguna fuente de luz que incide sobre el punto <p0>.
 // Además, si devuelve False, la radiancia devuelta será 0.
@@ -65,7 +69,8 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, bool debug)
 
 // Función que ...
 void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
-                                                    const float kd, const unsigned rebotesRestantes, RGB& emisionAcumulada, bool debug);
+                                                    const float kd, const unsigned rebotesRestantes, 
+                                                    RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug);
 
 // Función que ...
 void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,

@@ -210,7 +210,7 @@ string transformarValores(vector<float>& valores, const int tipoTransform, const
 
     case 5:     // FUNCION GAMMA+EQUALIZATION
         res = "5_Gamma+Equalization";
-        gammaAndClamp(valores, maxValue/5);
+        gammaAndClamp(valores, maxValue/2);
         break;
 
     default:    // ERROR

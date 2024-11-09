@@ -6,6 +6,7 @@
 //*****************************************************************
 
 #include "punto.h"
+#include <cmath>
 
 
 template<typename T, std::size_t N>
@@ -26,6 +27,12 @@ Matriz<4,1> Punto::getCoordHomo() const {
     array<array<float, 1>, 4> p = {coord[0], coord[1], coord[2], 1.0f};
 
     return p;
+}
+
+float Punto::distanciaHasta(const Punto& p) const {
+    return static_cast<float>(std::sqrt(std::pow(this->o[0] - p.o[0], 2) +
+                                        std::pow(this->o[1] - p.o[1], 2) +
+                                        std::pow(this->o[2] - p.o[2], 2)));
 }
 
 Punto Punto::operator+(const PuntoDireccion& pd) const {

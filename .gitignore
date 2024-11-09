@@ -6,3 +6,4 @@
 .DS_Store
 *.ppm
 *.ppm#
+.vscode/settings.json

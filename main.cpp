@@ -60,7 +60,7 @@ void cajaDeCornell(){
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
-    const float kd = 0.5f;
+    const float kd = 0.7f;
     const unsigned maxRebotes = 5;
     const unsigned numRayosMontecarlo = 128;
     auto inicio = std::chrono::high_resolution_clock::now();
@@ -71,8 +71,8 @@ void cajaDeCornell(){
     int mins = duracion.count() / 60;
     int segs = duracion.count() % 60;
     cout << endl << endl << "=========================================" << endl;
-    cout << "TIEMPO DE EJECUCIÓN: " << mins << "min " << segs << "s" << endl;
-    cout << endl << "=========================================" << endl << endl;
+    cout << "TIEMPO DE EJECUCION: " << mins << "min " << segs << "s" << endl;
+    cout << "=========================================" << endl << endl;
 
 
     for (auto& primitiva : objetos) {   // Liberamos memoria

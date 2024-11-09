@@ -13,7 +13,7 @@
 #include <cmath>
 #include <random>
 
-const double M_PI = 3.14159265358979323846;   // Por si no va cmath
+const double m_PI = 3.14159265358979323846;   // Por si no va cmath
 #define GRAD_A_RAD 3.1415926535898f/180
 
 using std::cout;
@@ -57,7 +57,7 @@ void generarAzimutInclinacion(float& azimut, float& inclinacion) {
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0, 1.0);
     inclinacion = acos(sqrt(1-dis(gen)));
-    azimut = 2 * M_PI * dis(gen);
+    azimut = 2 * m_PI * dis(gen);
 }
 
 void getCoordenadasCartesianas(const float azimut, const float inclinacion,
@@ -104,7 +104,11 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, bool debug)
 }
 
 float evaluacionBRDFdifusa(const float coefDifuso){
-    return coefDifuso / M_PI;
+    return coefDifuso / m_PI;
+}
+
+float evaluacionCosenoDirNormal(const Direccion& d, const Direccion& n){
+    return abs(dot(n, d / modulo(d)));
 }
 
 bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
@@ -126,7 +130,7 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
             continue;     // Si el punto no está iluminado, nos saltamos la iteración
         }
         Direccion CMenosX = luz.c - p0;
-        float termino3 = abs(dot(normal, CMenosX / modulo(CMenosX)));
+        float termino3 = evaluacionCosenoDirNormal(CMenosX, normal);
         float termino2 = evaluacionBRDFdifusa(coefDifuso);
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
         if(debug){
@@ -234,8 +238,8 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
 
 
 void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
-                             const Escena& escena, const float kd,
-                             const unsigned rebotesRestantes, RGB& emisionAcumulada, bool debug) {
+                             const Escena& escena, const float kd, const unsigned rebotesRestantes,
+                             RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug) {
     Punto ptoIntersec;
     Direccion new_normal;
     bool choqueConLuz = false;
@@ -265,20 +269,20 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
         if (debug) {
             cout << "RADIANCIA ACTUAL = " << radianciaActual << endl;
         }
-        //brdf_coseno.push_back(radiancia);
-        //for (auto termino: brdf_coseno) {
-        //    emisionAcumulada = emisionAcumulada + emisionActual * termino;
-        //}
-        emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual;
+        
+        brdfCosenoAcumulado = brdfCosenoAcumulado * 
+                                    evaluacionBRDFdifusa(kd) * evaluacionCosenoDirNormal(origen - ptoIntersec, normal);
+        emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual * brdfCosenoAcumulado;
     }
     
     if (debug) {
         cout << "Emision acumulada despues: " << emisionAcumulada << endl;
+        cout << "BrdfCoseno acumulado despues: " << brdfCosenoAcumulado << endl;
         cout << "Punto interseccion: " << ptoIntersec << endl;
         cout << "Nueva normal: " << new_normal << endl;
         cout << "==============================" << endl << endl;
     }
-    recursividadLuzIndirecta(ptoIntersec, new_normal, escena, kd, rebotesRestantes - 1, emisionAcumulada, debug);
+    recursividadLuzIndirecta(ptoIntersec, new_normal, escena, kd, rebotesRestantes - 1, emisionAcumulada, brdfCosenoAcumulado, debug);
 }
 
 
@@ -320,10 +324,11 @@ void renderizarEscena1RPPLuzIndirecta(Camara& camara, unsigned numPxlsAncho, uns
                     //std::vector<RGB> brdf_coseno;
                     //brdf_coseno.push_back(radiancia);
                     RGB emisionAcumulada;
+                    float brdfCosenoAcumulado = 1;
                     if(debug){
                         cout << endl << endl << endl << "    --- RAYO " << i+1 << endl << endl;
                     }
-                    recursividadLuzIndirecta(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada, debug);
+                    recursividadLuzIndirecta(ptoIntersec, normal, escena, kd, maxRebotes, emisionAcumulada, brdfCosenoAcumulado, debug);
                     emisionIndirecta = emisionIndirecta + emisionAcumulada;
                 }
 
