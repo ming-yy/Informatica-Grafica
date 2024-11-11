@@ -30,19 +30,6 @@ void imprimirImagen(const std::vector<std::vector<RGB>>& imagen) {
     }
 }
 
-void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
-                               const Direccion& l) {
-    //Rayo rayo = this->obtenerRayoEsquinaPixel(ancho, anchoPorPixel, alto, altoPorPixel);
-    rayo.d = normalizar(rayo.d);
-    Base baseLocalToGlobal = Base(abs(f / modulo(f)),
-                                  abs(u / modulo(u)),
-                                  abs(l / modulo(l)));
-    
-    rayo.d = cambioBase(rayo.d, baseLocalToGlobal, o, false);
-    rayo.o = cambioBase(rayo.o, baseLocalToGlobal, o, false);
-    rayo.d = normalizar(rayo.d);
-}
-
 void generarAzimutInclinacion(float& azimut, float& inclinacion) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -89,14 +76,18 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
 }
 
 bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                         const float coefDifuso, RGB& radiancia, bool debug) {
+                         const float kd, RGB& radiancia, bool debug) {
     int n = 0;
+    
     RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
     for (LuzPuntual luz : escena.luces) {
-        n++;
+        
         if(debug){
+            n++;
             cout << endl << "(( LUZ " << n << " )) " << endl;
         }
+        
+        
         if (!escena.luzIluminaPunto(p0, luz)) {
             if(debug){
                 cout << "(( NO iluminado )) " << endl << endl;
@@ -107,14 +98,14 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
         
         Direccion CMenosX = luz.c - p0;
         float termino3 = calcCosenoAnguloIncidencia(CMenosX, normal);
-        float termino2 = calcBrdfDifusa(coefDifuso);
+        float termino2 = calcBrdfDifusa(kd);
         Direccion termino1 = luz.p / (modulo(CMenosX) * modulo(CMenosX));
         
         
         if(debug){
             cout << "(( luz.c: " << luz.c << " )) " << endl;
             cout << "(( p0: " << p0 << " )) " << endl;
-            cout << "(( coefDifuso " << coefDifuso << " ))";
+            cout << "(( kd " << kd << " ))";
             cout << "(( CmenosX: " << CMenosX << " )) " << endl;
             cout << "(( termino1: " << termino1 << " )) " << endl;
             cout << "(( termino2: " << termino2 << " )) " << endl;
@@ -128,15 +119,32 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
         if(debug){
             cout << "(( iluminado: " << termino1 << " )) " << endl << endl;
         }
+        
+        
         for (int i = 0; i < 3; ++i) {
             radFinal.rgb[i] += termino1.coord[i];
         }
     }
+    
+    for (const Primitiva* objeto : escena.primitivas) {
+        Punto ptoLuz;
+        Direccion luzPower(1,1,1);
+        if (!(objeto->soyFuenteDeLuz()) || !escena.luzIluminaPunto(p0, objeto, ptoLuz)) {
+            continue;     // Si el punto no está iluminado, nos saltamos la iteración
+        }
+        Direccion CMenosX = ptoLuz - p0;
+        float termino3 = calcCosenoAnguloIncidencia(CMenosX, normal);
+        float termino2 = calcBrdfDifusa(kd);
+        Direccion termino1 = luzPower / (modulo(CMenosX) * modulo(CMenosX));
+        termino1 = termino1 * (termino2 * termino3);
+        
+        for (int i = 0; i < 3; ++i) {
+            radFinal.rgb[i] += termino1.coord[i];
+        }
+    }
+    
     radiancia = radFinal;
     
-    /*
-    Ahora otro "for" con los mismos cálculos pero para las luces de área
-    */
     return true;
 }
 
@@ -164,7 +172,7 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
             cout << "Emision acumulada antes: " << emisionAcumulada << endl;
         }
 
-        // Condición de terminación si no quedan rebotes
+        // Condición terminal: no quedan rebotes
         if (estado.rebotesRestantes == 0) continue;
 
         Punto ptoIntersec;
@@ -175,7 +183,7 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
         bool choqueConLuz = false;
         bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, new_normal, choqueConLuz);
 
-        // Condición terminal si no hay intersección o el rayo choca con una fuente de luz
+        // Condición terminal: no hay intersección o el rayo choca con una fuente de luz
         if (!hayIntersec || (hayIntersec && choqueConLuz)) {
             if (debug) {
                 cout << "Condición terminal, parando" << endl;
@@ -238,12 +246,11 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
         if (debug) {
             cout << "CONDICION TERMINAL: rayo choca con luz" << endl;
         }
-        return;
-        // radianciaActual = loquesea (nextEventEstimation ???)
         
-        // brdfCosenoAcumulado = brdfCosenoAcumulado * calcBrdfDifusa(kd) *
-        //                      calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
-        // emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual * brdfCosenoAcumulado;
+        RGB radianciaActual(1.0f, 1.0f, 1.0f);      // NextStepEstimation() ???
+        brdfCosenoAcumulado = brdfCosenoAcumulado * calcBrdfDifusa(kd) *
+                              calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
+        emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual * brdfCosenoAcumulado;
         return;
     } else {
         RGB radianciaActual;
@@ -271,8 +278,8 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
 }
 
 RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned maxRebotes,
-                            const unsigned numRayosMontecarlo, const Punto& ptoIntersec, const Direccion& normal,
-                            bool debug) {
+                            const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
+                            const Direccion& normal, bool debug) {
     RGB emisionIndirecta;
     if (maxRebotes > 0) {
         for (unsigned i = 0; i < numRayosMontecarlo; ++i){   // Emisión media de N rayos por Montecarlo
@@ -308,11 +315,9 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             Punto ptoIntersec;
             Direccion normal;
             bool choqueConLuz = false;
-            bool hayInterseccion = false;
+            
             
             bool debug = false;
-            
-            
             //unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
             //if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {
             //    cout << pixelActual << " pixeles de " << totalPixeles << endl;

@@ -17,7 +17,7 @@
 class Plano : public Primitiva {
 public:
     Punto c;        // Centro del plano
-    Direccion n;    // Normal respecto al plano
+    Direccion n;    // Normal respecto al plano (generalmente en UCS)
     float d;        // Distancia máxima admitida
     RGB emision;    // (r,g,b)
     bool soyLuz;
@@ -37,7 +37,14 @@ public:
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                       RGB& emision, bool& choqueConLuz) const override;
     
+    // Método que devuelve la normal de la primitiva en el punto <punto>
     Direccion getNormal(const Punto& punto) const override;
+    
+    // Método que devuelve <True> si y solo si esta primitiva es una fuente de luz.
+    bool soyFuenteDeLuz() const override;
+    
+    // Método que devuelve un punto aleatorio de la superficie del plano en UCS.
+    Punto generarPuntoAleatorio() const;
 
     // Función para mostrar por pantalla la información del plano
     friend ostream& operator<<(ostream& os, const Plano& p);

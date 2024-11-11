@@ -6,6 +6,10 @@
 //*****************************************************************
 
 #include "plano.h"
+#include "base.h"
+#include <random>
+
+#define MARGEN_ERROR 10e-6f
 
 using std::ostream;
 using std::cout;
@@ -21,7 +25,7 @@ Plano::Plano(const Direccion& _n, float _d, const RGB& _emision, const bool _soy
 void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                         RGB& emision, bool& choqueConLuz) const {
     float denominador = dot(rayo.d, n);
-    if (fabs(denominador) < 1e-6f) {    // Para evitar problemas de imprecision
+    if (fabs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;
         return;
     }
@@ -49,6 +53,33 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
 Direccion Plano::getNormal(const Punto& punto) const {
     return this->n;
 }
+
+bool Plano::soyFuenteDeLuz() const {
+    return this->soyLuz;
+}
+
+
+Punto Plano::generarPuntoAleatorio() const {
+    Direccion u, v;  // Vectores ortogonales en el plano
+    construirBaseOrtonormal(this->n, u, v);
+    
+    // Generador de números aleatorios en el rango de la superficie del plano
+    float minLimite = -5.0f;
+    float maxLimite = 5.0f;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(minLimite, maxLimite);
+
+    // Genera coordenadas aleatorias en el plano usando u y v
+    float randomU = dist(gen);
+    float randomV = dist(gen);
+
+    // Calcula el punto en el sistema global
+    Punto puntoAleatorio = c + u * randomU + v * randomV;
+    return puntoAleatorio;
+}
+
 
 ostream& operator<<(ostream& os, const Plano& r)
 {

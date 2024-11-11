@@ -6,12 +6,26 @@
 //*****************************************************************
 
 #include "rayo.h"
+#include "base.h"
+#include "transformaciones.h"
 
 
 Rayo::Rayo(const Direccion& dir, const Punto& origen) : d(dir), o(origen) {};
 
 void Rayo::imprimir() const {
     std::cout << "Rayo - Direccion: " << d << ", Origen: " << o << std::endl;
+}
+
+void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
+                               const Direccion& l) {
+    rayo.d = normalizar(rayo.d);
+    Base baseLocalToGlobal = Base(abs(f / modulo(f)),
+                                  abs(u / modulo(u)),
+                                  abs(l / modulo(l)));
+    
+    rayo.d = cambioBase(rayo.d, baseLocalToGlobal, o, false);
+    rayo.o = cambioBase(rayo.o, baseLocalToGlobal, o, false);
+    rayo.d = normalizar(rayo.d);
 }
 
 std::ostream& operator<<(std::ostream& os, const Rayo& r)

@@ -70,15 +70,15 @@ void cajaDeCornell(){
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
+    
     const float kd = 0.7f;
     const unsigned maxRebotes = 5;
-    const unsigned numRayosMontecarlo = 16;
+    const unsigned numRayosMontecarlo = 8;
+    
     auto inicio = std::chrono::high_resolution_clock::now();
     renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
     auto fin = std::chrono::high_resolution_clock::now();
-    
     printTiempo(inicio, fin);
-
 
     for (auto& primitiva : objetos) {   // Liberamos memoria
         delete primitiva;

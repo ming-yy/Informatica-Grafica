@@ -25,7 +25,7 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca,
         RGB emision;
 
         objeto->interseccion(rayo, intersec, emision, auxChoqueConLuz);
-        if (!intersec.empty()) {    // Si hay intersecciones
+        if (!intersec.empty()) {    // Hay intersección con el objeto <objeto>
             resVal = true;
             // El intersec[0] es el punto más cercano al origen del rayo en este objeto
             if (primerIntersec || (modulo(rayo.o - intersec[0]) < modulo(rayo.o - ptoMasCerca))) {
@@ -65,6 +65,27 @@ bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
         << "distancia ptoMasCerca-p0: " << modulo(ptoMasCerca - p0) << endl;
     }
     */
+    
+    return iluminar;
+}
+
+bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& origen) const {
+    bool iluminar = false;
+    int numIters = 100;     // Tiene que ir en función del tamaño del plano
+    for (int i = 0; i < numIters && !iluminar; ++i) {
+        Punto ptoLuz = luz->generarPuntoAleatorio();
+        Direccion d = normalizar(ptoLuz - p0);
+        Punto ptoMasCerca;
+        RGB rgb;
+        Direccion normal;
+        bool choqueConLuz = false;
+        bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, normal, choqueConLuz);
+        
+        if (chocaObjeto) {
+            iluminar = modulo(ptoLuz - p0) <= modulo(ptoMasCerca - p0);
+            origen = ptoLuz;
+        }
+    }
     
     return iluminar;
 }

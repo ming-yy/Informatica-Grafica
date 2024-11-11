@@ -7,6 +7,8 @@
 
 #include "triangulo.h"
 
+#define MARGEN_ERROR 10e-6f
+
 using std::cout;
 using std::endl;
 
@@ -20,15 +22,12 @@ Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const
 
 void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                              RGB& emision, bool& choqueConLuz) const {
-
-    const float EPSILON = 1e-6f;
-
     Direccion edge1 = v1 - v0;
     Direccion edge2 = v2 - v0;
     Direccion h = cross(rayo.d, edge2);
     float a = dot(edge1, h);
 
-    if (fabs(a) < EPSILON) {
+    if (fabs(a) < MARGEN_ERROR) {
         // cout << "No hay intersección, el rayo es paralelo al triángulo." << endl;
         return;
     }
@@ -49,7 +48,7 @@ void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     }
 
     float t = f * dot(edge2, q);
-    if (t > EPSILON) {
+    if (t > MARGEN_ERROR) {
         ptos.push_back(Punto(rayo.o + rayo.d * t));
         emision = this->emision;
         choqueConLuz = soyLuz;
@@ -65,3 +64,10 @@ Direccion Triangulo::getNormal(const Punto& punto) const {
     return normalizar(cross(d1, d2));
 }
 
+bool Triangulo::soyFuenteDeLuz() const {
+    return this->soyLuz;
+}
+
+Punto Triangulo::generarPuntoAleatorio() const {
+    return Punto();
+}

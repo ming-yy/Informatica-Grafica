@@ -28,10 +28,15 @@ public:
     bool interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca, Direccion& normal,
                       bool& choqueConLuz) const;
     
-    // Método que devuelve True si y solo si el punto <p0> es iluminado por la fuente de luz <luz>
+    // Método que devuelve "True" si y solo si el punto <p0> es iluminado por la fuente de luz <luz>
     bool luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const;
     
-    // Método que devuelve True si y solo si al punto <p0> lo ilumina una fuente de luz.
+    // Método que devuelve "True" si y solo si el punto <p0> es iluminado por la fuente de luz <luz>.
+    // Si devuelve "True", también devuelve en <origen> el punto de origen de la luz desde donde
+    // ilumina al punto <p0>.
+    bool luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& origen) const;
+    
+    // Método que devuelve "True" si y solo si al punto <p0> lo ilumina una fuente de luz.
     // En caso contrario, devuelve False.
     bool puntoIluminado(const Punto& p0) const;
 };

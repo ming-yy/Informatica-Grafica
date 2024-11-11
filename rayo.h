@@ -26,3 +26,9 @@ public:
     // Función para mostrar por pantalla el rayo
     friend ostream& operator<<(ostream& os, const Rayo& pd);
 };
+
+
+// Función que pasa el rayo <rayo> a las coordenadas globales (en base al origen <o>,
+// y los vectores <f>, <u> y <l>. Finalmente, normaliza el rayo y lo devuelve.
+void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f,
+                               const Direccion& u, const Direccion& l);

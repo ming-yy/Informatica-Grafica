@@ -7,7 +7,7 @@
 
 #include "esfera.h"
 
-#define MARGEN_ERROR 10e-6
+#define MARGEN_ERROR 10e-6f
 
 Esfera::Esfera(): centro(Punto()), radio(0.0f), emision({0.0f,0.0f,0.0f}), soyLuz(false) {}
 
@@ -82,4 +82,12 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
 
 Direccion Esfera::getNormal(const Punto& punto) const {
     return normalizar(punto - centro);
+}
+
+bool Esfera::soyFuenteDeLuz() const {
+    return this->soyLuz;
+}
+
+Punto Esfera::generarPuntoAleatorio() const {
+    return Punto();
 }

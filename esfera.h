@@ -34,5 +34,12 @@ public:
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                       RGB& emision, bool& choqueConLuz) const override;
     
+    // Método que devuelve la normal de la primitiva en el punto <punto>
     Direccion getNormal(const Punto& punto) const override;
+    
+    // Método que devuelve <True> si y solo si esta primitiva es una fuente de luz.
+    bool soyFuenteDeLuz() const override;
+    
+    // Método que devuelve un punto aleatorio de la esfera en UCS.
+    Punto generarPuntoAleatorio() const override;
 };
