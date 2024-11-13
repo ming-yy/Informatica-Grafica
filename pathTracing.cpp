@@ -79,6 +79,13 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
                          const float kd, RGB& radiancia, bool debug) {
     int n = 0;
     
+    // if (p0 pertenece a una luz de área) return radiancia máxima
+    if (escena.puntoPerteneceALuz(p0)) {
+        // return power;
+        radiancia = RGB({2.0f*255.0f, 2.0f*255.0f, 2.0f*255.0f});
+        return true;
+    }
+    
     RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
     for (LuzPuntual luz : escena.luces) {
         
@@ -127,12 +134,12 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
     }
     
     for (const Primitiva* objeto : escena.primitivas) {
-        Punto ptoLuz;
+        Punto origenLuz;
         Direccion luzPower(1,1,1);
-        if (!(objeto->soyFuenteDeLuz()) || !escena.luzIluminaPunto(p0, objeto, ptoLuz)) {
+        if (!(objeto->soyFuenteDeLuz()) || !escena.luzIluminaPunto(p0, objeto, origenLuz)) {
             continue;     // Si el punto no está iluminado, nos saltamos la iteración
         }
-        Direccion CMenosX = ptoLuz - p0;
+        Direccion CMenosX = origenLuz - p0;
         float termino3 = calcCosenoAnguloIncidencia(CMenosX, normal);
         float termino2 = calcBrdfDifusa(kd);
         Direccion termino1 = luzPower / (modulo(CMenosX) * modulo(CMenosX));
@@ -247,7 +254,7 @@ void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
             cout << "CONDICION TERMINAL: rayo choca con luz" << endl;
         }
         
-        RGB radianciaActual(1.0f, 1.0f, 1.0f);      // NextStepEstimation() ???
+        RGB radianciaActual(255.0f, 255.0f, 255.0f);      // NextStepEstimation() ???
         brdfCosenoAcumulado = brdfCosenoAcumulado * calcBrdfDifusa(kd) *
                               calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
         emisionAcumulada = emisionAcumulada + emisionActual * radianciaActual * brdfCosenoAcumulado;

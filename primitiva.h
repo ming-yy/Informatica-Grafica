@@ -28,6 +28,9 @@ public:
     virtual void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                               RGB& emision, bool& choqueConLuz) const = 0;
     
+    // Mëtodo virtual que devuelve "True" si y solo si el punto <p0> pertecene a la primitiva.
+    virtual bool pertenece(const Punto& p0) const = 0;
+    
     // Método virtual que devuelve la normal de la primitiva en el punto <punto>
     virtual Direccion getNormal(const Punto& punto) const = 0;
     

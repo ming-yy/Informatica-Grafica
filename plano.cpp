@@ -50,6 +50,11 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     
 }
 
+bool Plano::pertenece(const Punto& p0) const {
+    Direccion aux(this->c.coord);
+    return (dot(p0,this->n) + modulo(aux) == 0);
+}
+
 Direccion Plano::getNormal(const Punto& punto) const {
     return this->n;
 }
@@ -64,8 +69,8 @@ Punto Plano::generarPuntoAleatorio() const {
     construirBaseOrtonormal(this->n, u, v);
     
     // Generador de números aleatorios en el rango de la superficie del plano
-    float minLimite = -5.0f;
-    float maxLimite = 5.0f;
+    float minLimite = -0.5f;
+    float maxLimite = 0.5f;
 
     std::random_device rd;
     std::mt19937 gen(rd());

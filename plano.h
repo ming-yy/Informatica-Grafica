@@ -37,6 +37,9 @@ public:
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                       RGB& emision, bool& choqueConLuz) const override;
     
+    // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene al plano.
+    bool pertenece(const Punto& p0) const override;
+    
     // Método que devuelve la normal de la primitiva en el punto <punto>
     Direccion getNormal(const Punto& punto) const override;
     
@@ -44,7 +47,7 @@ public:
     bool soyFuenteDeLuz() const override;
     
     // Método que devuelve un punto aleatorio de la superficie del plano en UCS.
-    Punto generarPuntoAleatorio() const;
+    Punto generarPuntoAleatorio() const override;
 
     // Función para mostrar por pantalla la información del plano
     friend ostream& operator<<(ostream& os, const Plano& p);

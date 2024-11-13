@@ -58,6 +58,10 @@ void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     }
 }
 
+bool Triangulo::pertenece(const Punto& p0) const {
+    return false;
+}
+
 Direccion Triangulo::getNormal(const Punto& punto) const {
     Direccion d1 = v0 - v1;
     Direccion d2 = v1 - v2;

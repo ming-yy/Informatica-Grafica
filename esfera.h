@@ -34,6 +34,9 @@ public:
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                       RGB& emision, bool& choqueConLuz) const override;
     
+    // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene a la esfera.
+    bool pertenece(const Punto& p0) const override;
+    
     // Método que devuelve la normal de la primitiva en el punto <punto>
     Direccion getNormal(const Punto& punto) const override;
     

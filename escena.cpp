@@ -41,6 +41,18 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca,
     return resVal;
 }
 
+bool Escena::puntoPerteneceALuz(const Punto& p0) const {
+    bool resVal = false;
+    for (const Primitiva* objeto : this->primitivas) {
+        resVal = objeto->pertenece(p0);
+        if (resVal && objeto->soyFuenteDeLuz()) {
+            resVal = true;
+            break;
+        }
+    }
+    return resVal;
+}
+
 bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
     bool iluminar = true;
     Direccion d = normalizar(luz.c - p0);
@@ -69,12 +81,12 @@ bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
     return iluminar;
 }
 
-bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& origen) const {
+bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& origenLuz) const {
     bool iluminar = false;
-    int numIters = 100;     // Tiene que ir en función del tamaño del plano
+    int numIters = 1000;     // Tiene que ir en función del tamaño del plano
     for (int i = 0; i < numIters && !iluminar; ++i) {
-        Punto ptoLuz = luz->generarPuntoAleatorio();
-        Direccion d = normalizar(ptoLuz - p0);
+        Punto origen = luz->generarPuntoAleatorio();
+        Direccion d = normalizar(origen - p0);
         Punto ptoMasCerca;
         RGB rgb;
         Direccion normal;
@@ -82,8 +94,8 @@ bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& orige
         bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, normal, choqueConLuz);
         
         if (chocaObjeto) {
-            iluminar = modulo(ptoLuz - p0) <= modulo(ptoMasCerca - p0);
-            origen = ptoLuz;
+            iluminar = modulo(origen - p0) <= modulo(ptoMasCerca - p0);
+            origenLuz = origen;
         }
     }
     

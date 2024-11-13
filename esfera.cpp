@@ -80,6 +80,10 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     //}
 }
 
+bool Esfera::pertenece(const Punto& p0) const {
+    return false;
+}
+
 Direccion Esfera::getNormal(const Punto& punto) const {
     return normalizar(punto - centro);
 }
