@@ -53,7 +53,6 @@ void printTiempo(auto inicio, auto fin) {
     cout << "=========================================" << endl << endl;
 }
 
-
 void cajaDeCornell(){
     std::vector<Primitiva*> objetos;
     objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({255.0f, 0.0f, 0.0f}))); // plano izquierdo, rojo
@@ -64,7 +63,9 @@ void cajaDeCornell(){
     objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({227.0f, 177.0f, 210.0f}))); // esfera izquierda, rosa
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f}))); // esfera derecha, azul
     std::vector<LuzPuntual> luces;
-    luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}));
+    
+    Direccion potencia(5.0f, 5.0f, 5.0f);
+    luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
                         {0.0f, 0.0f, 3.0f},
