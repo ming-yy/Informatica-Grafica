@@ -55,16 +55,16 @@ void printTiempo(auto inicio, auto fin) {
 
 void cajaDeCornell(){
     std::vector<Primitiva*> objetos;
-    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({255.0f, 0.0f, 0.0f}))); // plano izquierdo, rojo
-    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 255.0f, 0.0f}))); // plano derecho, verde
-    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f}))); // plano suelo, blanco
-    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f}))); // plano techo, blanco
-    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({255.0f, 255.0f, 255.0f}))); // plano fondo, blanco
-    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({227.0f, 177.0f, 210.0f}))); // esfera izquierda, rosa
-    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({178.0f, 255.0f, 255.0f}))); // esfera derecha, azul
+    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({1.0f, 0.0f, 0.0f}))); // plano izquierdo, rojo
+    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 1.0f, 0.0f}))); // plano derecho, verde
+    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}))); // plano suelo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}))); // plano techo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}))); // plano fondo, blanco
+    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.89f, 0.45f, 0.82f}))); // esfera izquierda, rosa
+    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}))); // esfera derecha, azul
     std::vector<LuzPuntual> luces;
     
-    Direccion potencia(5.0f, 5.0f, 5.0f);
+    Direccion potencia(50.0f, 50.0f, 50.0f);
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
@@ -72,9 +72,9 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
     
-    const float kd = 0.7f;
-    const unsigned maxRebotes = 5;
-    const unsigned numRayosMontecarlo = 8;
+    const float kd = 0.8f;
+    const unsigned maxRebotes = 10;
+    const unsigned numRayosMontecarlo = 25;
     
     auto inicio = std::chrono::high_resolution_clock::now();
     renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);

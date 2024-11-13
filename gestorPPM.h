@@ -68,8 +68,9 @@ string transformarValores(vector<float>& valores, const int tipoTransform, const
 // Función principal que coordina el proceso
 int transformarFicheroPPM(const string& nombreFichero, const int idFuncion);
 
+// Función que dada una matriz de valores RGB, devuelve el componente máximo
+float maximoValorRGB(const std::vector<std::vector<RGB>>& matrizRGB);
+
 // Función que dado una matriz de RGB's, genera el PPM correspondiente.
 void pintarEscenaEnPPM(const std::string& nombreArchivo,
-                        const float maxColorRes = 1.0f,
-                        const float c = 255.0f,
                         const std::vector<std::vector<RGB>>& imagen = {});

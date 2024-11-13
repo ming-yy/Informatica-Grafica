@@ -47,9 +47,8 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
                            RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug);
 
 // Función que ...
-void recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
-                              const float kd, const unsigned rebotesRestantes, RGB& emisionAcumulada,
-                              float& brdfCosenoAcumulado, bool debug);
+RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
+                              const float kd, const unsigned rebotesRestantes, bool debug);
 
 // Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
 // para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.

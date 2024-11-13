@@ -7,7 +7,7 @@
 
 #include "rgb.h"
 #include <stdexcept>
-
+#include <algorithm>
 
 RGB::RGB() : rgb({0.0f, 0.0f, 0.0f}) {}
 
@@ -24,6 +24,9 @@ RGB::RGB(std::initializer_list<float> _rgb) {
 
 RGB::RGB(const std::array<float, 3>& _rgb): rgb(_rgb) {}
 
+float RGB::max() const {
+    return std::max({rgb[0], rgb[1], rgb[2]});
+}
 
 RGB RGB::operator+(const RGB& d) const {
     return RGB(rgb[0] + d.rgb[0], rgb[1] + d.rgb[1], rgb[2] + d.rgb[2]);

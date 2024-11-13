@@ -20,6 +20,8 @@ public:
     RGB(const std::array<float, 3>& _rgb);
     RGB(const RGB& other) = default; // constructor de copia
 
+    // Devuelve el mayor valor de entre los 3 (R, G o B)
+    float max() const;
 
     // Operación de suma de dos RGB
     RGB operator+(const RGB& d) const;

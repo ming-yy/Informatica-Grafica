@@ -251,8 +251,20 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
 }
 
 
-void pintarEscenaEnPPM(const std::string& nombreArchivo, const float maxColorRes, const float c,
-                        const std::vector<std::vector<RGB>>& imagen) {
+float maximoValorRGB(const std::vector<std::vector<RGB>>& matrizRGB) {
+    float maximo = 0.0f;
+
+    // Recorre todos los vectores de RGB
+    for (const auto& fila : matrizRGB) {
+        for (const auto& pixel : fila) {
+            // Encuentra el máximo entre los tres valores del array de cada RGB
+            maximo = std::max({maximo, pixel.max()});
+        }
+    }
+    return maximo;
+}
+
+void pintarEscenaEnPPM(const std::string& nombreArchivo, const std::vector<std::vector<RGB>>& imagen) {
     std::ofstream archivo(nombreArchivo + ".ppm");
     if (!archivo) {
         std::cerr << "Error al abrir el archivo " << nombreArchivo << std::endl;
@@ -261,20 +273,21 @@ void pintarEscenaEnPPM(const std::string& nombreArchivo, const float maxColorRes
 
     unsigned numPxlsAlto = imagen.size();
     unsigned numPxlsAncho = numPxlsAlto > 0 ? imagen[0].size() : 0;
-
+    float maxColorRes = maximoValorRGB(imagen);
+    int c = 1000000;
     // Encabezado del archivo PPM
     archivo << "P3\n";
-    archivo << "#MAX=255\n";
+    archivo << "#MAX=" << maxColorRes << "\n";
     archivo << numPxlsAncho << " " << numPxlsAlto << "\n";
-    archivo << static_cast<int>(maxColorRes) << "\n";  // Valor máximo del color
+    archivo << static_cast<int>(c) << "\n";  // Valor máximo del color
 
     // Píxeles de la imagen
     for (size_t y = 0; y < numPxlsAlto; y++) {
         for (size_t x = 0; x < numPxlsAncho; x++) {
             const RGB& pixel = imagen[y][x];
-            int r = std::round(std::min(pixel.rgb[0] * c, maxColorRes));
-            int g = std::round(std::min(pixel.rgb[1] * c, maxColorRes));
-            int b = std::round(std::min(pixel.rgb[2] * c, maxColorRes));
+            int r = std::round((pixel.rgb[0] * c) / maxColorRes);
+            int g = std::round((pixel.rgb[1] * c)/ maxColorRes);
+            int b = std::round((pixel.rgb[2] * c)/ maxColorRes);
             archivo << r << " " << g << " " << b << "  ";
         }
         archivo << "\n";
