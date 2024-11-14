@@ -72,7 +72,10 @@
         "charconv": "cpp",
         "chrono": "cpp",
         "format": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "__tree": "cpp",
+        "forward_list": "cpp",
+        "map": "cpp"
     },
     "makefile.configureOnOpen": true
 }

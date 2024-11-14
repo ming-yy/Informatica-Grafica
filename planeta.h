@@ -29,7 +29,7 @@ public:
     array<float, 2> estacion;  // [inclinacion, azimut] respecto a <cref>
                                // inclin = (0, pi)   azimut = (-pi, pi]
     array<float, 3> coordLocEstac; // Coord locales de estación respecto centro planeta
-    RGB emision;    // (r,g,b)
+    RGB reflectancia;    // (r,g,b)
     
     // De momento NO SIRVE PARA NADA
     //Direccion normal;   // Respecto a la superficie de la estación y tiene módulo 1
@@ -40,7 +40,7 @@ public:
     Planeta();
     Planeta(const Punto& _centro, const Direccion& _eje, const Punto& _cref,
             const float& inclinacion, const float& azimut,
-            const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}));
+            const RGB& _reflectancia = RGB({255.0f, 255.0f, 255.0f}));
     
     // Método que devuelve las coordenadas de la estación en UCS
     Punto estacionToUCS() const;

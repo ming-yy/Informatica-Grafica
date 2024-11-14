@@ -75,18 +75,15 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
     return abs(dot(n, d / modulo(d)));
 }
 
-bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                         const float kd, RGB& radiancia, bool debug) {
+RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
+                         const float kd, bool debug) {
     int n = 0;
-    
-    // if (p0 pertenece a una luz de área) return radiancia máxima
-    if (escena.puntoPerteneceALuz(p0)) {
-        // return power;
-        radiancia = RGB({2.0f*255.0f, 2.0f*255.0f, 2.0f*255.0f});
-        return true;
+
+    if (escena.puntoPerteneceALuz(p0)) {    // p0 es de una fuente de luz
+        return RGB({1,1,1});    // Debería ser el power de la fuente de luz
     }
     
-    RGB radFinal;
+    RGB radianciaSaliente;
     for (LuzPuntual luz : escena.luces) {
         
         if(debug){
@@ -102,12 +99,10 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
             continue;     // Si el punto no está iluminado, nos saltamos la iteración
         }
         
-        
         Direccion dirIncidente = luz.c - p0;
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(dirIncidente, normal);
         float reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
-        Direccion radianciaEntrante = luz.p / (modulo(dirIncidente) * modulo(dirIncidente));
-        
+        Direccion radianciaIncidente = luz.p / (modulo(dirIncidente) * modulo(dirIncidente));
         
         if(debug){
             cout << "(( luz.c: " << luz.c << " )) " << endl;
@@ -115,22 +110,21 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
             cout << "(( p0: " << p0 << " )) " << endl;
             cout << "(( kd " << kd << " ))";
             cout << "(( CmenosX: " << dirIncidente << " )) " << endl;
-            cout << "(( radianciaEntrante: " << radianciaEntrante << " )) " << endl;
+            cout << "(( radianciaIncidente: " << radianciaIncidente << " )) " << endl;
             cout << "(( reflectanciaBRDFDifusa: " << reflectanciaBRDFDifusa << " )) " << endl;
             cout << "(( cosAnguloIncidencia: " << cosAnguloIncidencia << " )) " << endl;
         }
         
-        
-        radianciaEntrante = radianciaEntrante * (reflectanciaBRDFDifusa * cosAnguloIncidencia);
+        radianciaIncidente = radianciaIncidente * (reflectanciaBRDFDifusa * cosAnguloIncidencia);
         
         
         if(debug){
-            cout << "(( iluminado: " << radianciaEntrante << " )) " << endl << endl;
+            cout << "(( iluminado: " << radianciaIncidente << " )) " << endl << endl;
         }
         
         
         for (int i = 0; i < 3; ++i) {
-            radFinal.rgb[i] += radianciaEntrante.coord[i];
+            radianciaSaliente.rgb[i] += radianciaIncidente.coord[i];
         }
     }
     
@@ -144,18 +138,16 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
         Direccion dirIncidente = origenLuz - p0;
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(dirIncidente, normal);
         float reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
-        Direccion radianciaEntrante = luzPower / (modulo(dirIncidente) * modulo(dirIncidente));
-        radianciaEntrante = radianciaEntrante * (reflectanciaBRDFDifusa * cosAnguloIncidencia);
+        Direccion radianciaIncidente = luzPower / (modulo(dirIncidente) * modulo(dirIncidente));
+        radianciaIncidente = radianciaIncidente * (reflectanciaBRDFDifusa * cosAnguloIncidencia);
         
         for (int i = 0; i < 3; ++i) {
-            radFinal.rgb[i] += radianciaEntrante.coord[i];
+            radianciaSaliente.rgb[i] += radianciaIncidente.coord[i];
         }
     }
     */
     
-    radiancia = radFinal;
-    
-    return true;
+    return radianciaSaliente;
 }
 
 void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalInicial,
@@ -179,7 +171,7 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
         if (debug) {
             cout << "==============================" << endl;
             cout << "REBOTES RESTANTES: " << estado.rebotesRestantes << endl;
-            cout << "Emision acumulada antes: " << radianciaAcumulada << endl;
+            cout << "Radiancia acumulada antes: " << radianciaAcumulada << endl;
         }
 
         // Condición terminal: no quedan rebotes
@@ -187,11 +179,11 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
 
         Punto ptoIntersec;
         Direccion nuevaNormal;
-        RGB radianciaActual;
+        RGB emisionActual;
         Rayo wi = generarCaminoAleatorio(estado.origen, estado.normal);
 
         bool choqueConLuz = false;
-        bool hayIntersec = escena.interseccion(wi, radianciaActual, ptoIntersec, nuevaNormal, choqueConLuz);
+        bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, nuevaNormal, choqueConLuz);
 
         // Condición terminal: no hay intersección o el rayo choca con una fuente de luz
         if (!hayIntersec || (hayIntersec && choqueConLuz)) {
@@ -201,8 +193,7 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
             continue;
         }
 
-        // Calcular radiancia y actualizar acumuladores
-        nextEventEstimation(ptoIntersec, nuevaNormal, escena, kd, radianciaActual, debug);
+        RGB radianciaActual = nextEventEstimation(ptoIntersec, nuevaNormal, escena, kd, debug);
         
         if (debug) {
             cout << "RADIANCIA ACTUAL = " << radianciaActual << endl;
@@ -210,7 +201,7 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
 
         float nuevoBrdfCoseno = estado.brdfCosenoActual * calcBrdfDifusa(kd) *
                                 calcCosenoAnguloIncidencia(estado.origen - ptoIntersec, estado.normal);
-        radianciaAcumulada = radianciaAcumulada + radianciaActual * radianciaActual * nuevoBrdfCoseno;
+        radianciaAcumulada = radianciaAcumulada + emisionActual * radianciaActual * nuevoBrdfCoseno;
 
         if (debug) {
             cout << "Emision acumulada despues: " << radianciaAcumulada << endl;
@@ -233,7 +224,7 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                              const unsigned rebotesRestantes, bool debug) {
     Punto ptoIntersec;
     Direccion nuevaNormal;
-    RGB emisionActual;
+    RGB reflectancia;
 
     if (debug) {
         cout << "==============================" << endl;
@@ -244,40 +235,36 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                                                 //                      devuelve (0,0,0)
     Rayo wi = generarCaminoAleatorio(origen, normal);
     bool choqueConLuz = false;
-    bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, nuevaNormal, choqueConLuz);
+    bool hayIntersec = escena.interseccion(wi, reflectancia, ptoIntersec, nuevaNormal, choqueConLuz);
     
     if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada
         if (debug) {       //                       devuelve (0,0,0)
             cout << "CONDICION TERMINAL: rayo no choca con nada" << endl;
         }
         return RGB();
-
     } else if (hayIntersec && choqueConLuz) {   // Condición terminal: rayo choca contra fuente de luz de área
         if (debug) {                            //                      devuelve emisión de la luz
             cout << "CONDICION TERMINAL: rayo choca con luz" << endl;
         }
         
-        return emisionActual; // Se supone que es la emision de la luz??? mirar interseccion...
+        return reflectancia;    // RECORDAR: terminar de implementar luz de área
     }
 
-    RGB radianciaActual;
-    nextEventEstimation(ptoIntersec, nuevaNormal, escena, kd, radianciaActual, debug);
-    radianciaActual = radianciaActual * calcBrdfDifusa(kd)
-                                      * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
-    
+    RGB radianciaSalienteDirecta = reflectancia * nextEventEstimation(ptoIntersec, nuevaNormal, escena, kd, debug);
+    RGB radianciaSalienteIndirecta = recursividadLuzIndirecta(ptoIntersec, nuevaNormal, escena,
+                                                        kd, rebotesRestantes - 1, debug)
+                                    * calcBrdfDifusa(kd)
+                                    * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
+
     if (debug) {
-        cout << "RADIANCIA ACTUAL = " << radianciaActual << endl;
+        cout << "LUZ INTERSECCION = " << radianciaSalienteDirecta << endl;
         cout << "Punto interseccion: " << ptoIntersec << endl;
         cout << "Nueva normal: " << nuevaNormal << endl;
         cout << "==============================" << endl << endl;
     }
     
-    return radianciaActual + emisionActual
-                            * recursividadLuzIndirecta(ptoIntersec, nuevaNormal, escena,
-                                                        kd, rebotesRestantes - 1, debug)
-                            * calcBrdfDifusa(kd)
-                            * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
-            
+    return radianciaSalienteDirecta + radianciaSalienteIndirecta;
+           
 }
 
 RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned maxRebotes,
@@ -295,8 +282,7 @@ RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned
                                                                         kd, maxRebotes, debug);
         }
     }
-    // Se devuelve la media de todas ellas
-    return sumaRadianciasIndirectas / numRayosMontecarlo;
+    return sumaRadianciasIndirectas / numRayosMontecarlo;       // Media de todas
 }
 
 
@@ -333,8 +319,7 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
             if (escena.interseccion(rayo, emisionDirecta, ptoIntersec, normal, choqueConLuz)) {
-                RGB radianciaDirecta;
-                nextEventEstimation(ptoIntersec, normal, escena, kd, radianciaDirecta, debug);
+                RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, kd, debug);
                 emisionDirecta = emisionDirecta * radianciaDirecta;
                 
                 if (choqueConLuz) {

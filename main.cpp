@@ -53,6 +53,13 @@ void printTiempo(auto inicio, auto fin) {
     cout << "=========================================" << endl << endl;
 }
 
+void liberarMemoriaDePrimitivas(std::vector<Primitiva*>& objetos) {
+    for (Primitiva* objeto : objetos) {
+        delete objeto; // Elimina cada objeto, llama al destructor correcto
+    }
+    objetos.clear(); // Limpia el vector para evitar punteros colgantes
+}
+
 void cajaDeCornell(){
     std::vector<Primitiva*> objetos;
     objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({1.0f, 0.0f, 0.0f}))); // plano izquierdo, rojo
@@ -64,7 +71,7 @@ void cajaDeCornell(){
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}))); // esfera derecha, azul
     std::vector<LuzPuntual> luces;
     
-    Direccion potencia(5.0f, 5.0f, 5.0f);
+    Direccion potencia(1.0f, 1.0f, 1.0f);
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
@@ -81,14 +88,12 @@ void cajaDeCornell(){
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
-    for (auto& primitiva : objetos) {   // Liberamos memoria
-        delete primitiva;
-    }
+    liberarMemoriaDePrimitivas(objetos);
 
-    //transformarFicheroPPM("./cornell.ppm", 1);
-    //transformarFicheroPPM("./cornell.ppm", 2);
-    //transformarFicheroPPM("./cornell.ppm", 3);
-    //transformarFicheroPPM("./cornell.ppm", 4);
+    transformarFicheroPPM("./cornell.ppm", 1);
+    transformarFicheroPPM("./cornell.ppm", 2);
+    transformarFicheroPPM("./cornell.ppm", 3);
+    transformarFicheroPPM("./cornell.ppm", 4);
     transformarFicheroPPM("./cornell.ppm", 5);
 }
 

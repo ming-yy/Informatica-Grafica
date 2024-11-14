@@ -8,12 +8,17 @@
 #include "punto.h"
 #include "rayo.h"
 #include "rgb.h"
+#include "bsdfs.h"
 #include <vector>
+#include <string>
 
-// Clase virtual que todas las primitivas geométricas deben heredar
+
+// Clase abstracta que todas las primitivas geométricas deben heredar
 class Primitiva {
 public:
-    Primitiva() = default;
+    BSDFs coeficientes;
+
+    Primitiva(const RGB& color, const std::string material);
     
     // Destructor virtual para asegurar que los destructores de las clases derivadas
     // se llamen correctamente.

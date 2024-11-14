@@ -18,12 +18,12 @@
 class Triangulo : public Primitiva {
 public:
     Punto v0, v1, v2;
-    RGB emision;
+    RGB reflectancia;
     bool soyLuz;
 
     Triangulo();
     Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2,
-              const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}),
+              const RGB& _reflectancia = RGB({255.0f, 255.0f, 255.0f}),
               const bool _soyLuz = false);
 
     // Método para calcular la intersección entre un rayo y el triángulo
@@ -32,11 +32,11 @@ public:
     // Devuelve en <ptos> un vector con los puntos de intersección en UCS del rayo <rayo>
     // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
     // en el vector será el primer punto de intersección. Si hay intersección, también
-    // devuelve la emisión del objeto en <emision> y si el objeto intersecado es luz o no en
+    // devuelve la emisión del objeto en <reflectancia> y si el objeto intersecado es luz o no en
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                      RGB& emision, bool& choqueConLuz) const override;
+                      RGB& reflectancia, bool& choqueConLuz) const override;
     
     // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene al triángulo.
     bool pertenece(const Punto& p0) const override;

@@ -24,8 +24,8 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 // Además, si devuelve False, la radiancia devuelta será 0.
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
 // al punto <p0>.
-bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                   const float kd, RGB& radiancia, bool debug);
+RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
+                         const float kd, bool debug);
 
 // Función que devuelve un valor aleatorio para azimut y otro para inclinación
 // para muestreo uniforme de ángulo sólido.

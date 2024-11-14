@@ -14,13 +14,13 @@ class Esfera: public Primitiva {
 public:
     Punto centro;   // Generalmente en UCS
     float radio;
-    RGB emision;    // (r,g,b)
+    RGB reflectancia;    // (r,g,b)
     bool soyLuz;
     
     
     Esfera();
     Esfera(const Punto& _centro, const float& _radio,
-           const RGB& _emision = RGB({255.0f, 255.0f, 255.0f}), const bool _soyLuz = false);
+           const RGB& _reflectancia = RGB({255.0f, 255.0f, 255.0f}), const bool _soyLuz = false);
     Esfera(const Planeta& p);
     
     // Método para calcular la intersección entre un rayo y la esfera
@@ -28,11 +28,11 @@ public:
     // Devuelve en <ptos> un vector con los puntos de intersección en UCS del rayo <rayo>
     // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
     // en el vector será el primer punto de intersección. Si hay intersección, también
-    // devuelve la emisión del objeto en <emision> y si el objeto intersecado es luz o no en
+    // devuelve la emisión del objeto en <reflectancia> y si el objeto intersecado es luz o no en
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                      RGB& emision, bool& choqueConLuz) const override;
+                      RGB& reflectancia, bool& choqueConLuz) const override;
     
     // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene a la esfera.
     bool pertenece(const Punto& p0) const override;
