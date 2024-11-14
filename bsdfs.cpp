@@ -4,8 +4,11 @@
 // Date:   octubre 2024
 // Coms:   Práctica 4.3 de Informática Gráfica
 //*****************************************************************
+
+#include "bsdfs.h"
 #include <map>
 #include <array>
+
 
 #define KD_i 0  // coef difuso
 #define KS_i 1  // coef especular (reflexión)
@@ -18,13 +21,13 @@ std::map<std::string, FloatArray> materiales{
     {"cristal", {0.0f, 0.2f, 0.7f}},
     {"espejo", {0.0f, 0.9f, 0.0f}},
     {"plastico", {0.65f, 0.25f, 0.0f}},
-}
+};
 
 BSDFs::BSDFs(const RGB& _color, const std::string _material) {
     FloatArray coefs = materiales[_material];
-    kd = _color * coef[KD_i];
-    ks = _color * coef[KS_i];
-    kt = _color * coef[KT_i];
+    kd = _color * coefs[KD_i];
+    ks = _color * coefs[KS_i];
+    kt = _color * coefs[KT_i];
 }
 
 
