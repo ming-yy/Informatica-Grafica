@@ -64,7 +64,7 @@ void cajaDeCornell(){
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}))); // esfera derecha, azul
     std::vector<LuzPuntual> luces;
     
-    Direccion potencia(50.0f, 50.0f, 50.0f);
+    Direccion potencia(5.0f, 5.0f, 5.0f);
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
@@ -73,8 +73,8 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     
     const float kd = 0.8f;
-    const unsigned maxRebotes = 10;
-    const unsigned numRayosMontecarlo = 25;
+    const unsigned maxRebotes = 5;
+    const unsigned numRayosMontecarlo = 8;
     
     auto inicio = std::chrono::high_resolution_clock::now();
     renderizarEscena(cam, 256, 256, cornell, "cornell", 1, kd, maxRebotes, numRayosMontecarlo);
@@ -85,10 +85,10 @@ void cajaDeCornell(){
         delete primitiva;
     }
 
-    transformarFicheroPPM("./cornell.ppm", 1);
-    transformarFicheroPPM("./cornell.ppm", 2);
-    transformarFicheroPPM("./cornell.ppm", 3);
-    transformarFicheroPPM("./cornell.ppm", 4);
+    //transformarFicheroPPM("./cornell.ppm", 1);
+    //transformarFicheroPPM("./cornell.ppm", 2);
+    //transformarFicheroPPM("./cornell.ppm", 3);
+    //transformarFicheroPPM("./cornell.ppm", 4);
     transformarFicheroPPM("./cornell.ppm", 5);
 }
 

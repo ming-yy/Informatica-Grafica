@@ -86,7 +86,7 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
         return true;
     }
     
-    RGB radFinal = RGB({0.0f, 0.0f, 0.0f});
+    RGB radFinal;
     for (LuzPuntual luz : escena.luces) {
         
         if(debug){
@@ -111,6 +111,7 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
         
         if(debug){
             cout << "(( luz.c: " << luz.c << " )) " << endl;
+            cout << "(( luz.p: " << luz.p << " )) " << endl;
             cout << "(( p0: " << p0 << " )) " << endl;
             cout << "(( kd " << kd << " ))";
             cout << "(( CmenosX: " << dirIncidente << " )) " << endl;
@@ -133,6 +134,7 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
         }
     }
     
+    /*
     for (const Primitiva* objeto : escena.primitivas) {
         Punto origenLuz;
         Direccion luzPower(1,1,1);
@@ -149,6 +151,7 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
             radFinal.rgb[i] += radianciaEntrante.coord[i];
         }
     }
+    */
     
     radiancia = radFinal;
     
@@ -317,7 +320,7 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             bool choqueConLuz = false;
             
             
-            bool debug = false;
+            bool debug = (alto == 100 && ancho == 100);
             if (printPixelesProcesados){
                 unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
                 if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {

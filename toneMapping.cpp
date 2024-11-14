@@ -13,7 +13,7 @@ using std::pow;
 
 // GAMMA puede ser otro, pero 2.2 es un valor común
 // utilizado para la corrección gamma en monitores estándar.
-#define GAMMA 2.2
+#define GAMMA 1.5
 
 
 void clamp(vector<float>& valores){
