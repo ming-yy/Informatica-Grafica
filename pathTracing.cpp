@@ -14,7 +14,7 @@
 #include <random>
 #include <stack>
 
-const double M_PI = 3.14159265358979323846;   // Por si no va cmath
+//const double M_PI = 3.14159265358979323846;   // Por si no va cmath
 #define GRAD_A_RAD 3.1415926535898f/180
 
 using std::cout;
@@ -158,8 +158,6 @@ bool nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena&
     return true;
 }
 
-// HAY QUE ARREGLARLA
-/*
 void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalInicial,
                            const Escena& escena, const float kd, const unsigned maxRebotes,
                            RGB& radianciaAcumulada, float& brdfCosenoAcumulado, bool debug) {
@@ -228,14 +226,14 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
         }
     }
 }
-*/
+
 
 RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                              const Escena& escena, const float kd,
                              const unsigned rebotesRestantes, bool debug) {
     Punto ptoIntersec;
     Direccion nuevaNormal;
-    RGB radianciaActual;
+    RGB emisionActual;
 
     if (debug) {
         cout << "==============================" << endl;
@@ -246,7 +244,7 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                                                 //                      devuelve (0,0,0)
     Rayo wi = generarCaminoAleatorio(origen, normal);
     bool choqueConLuz = false;
-    bool hayIntersec = escena.interseccion(wi, radianciaActual, ptoIntersec, nuevaNormal, choqueConLuz);
+    bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, nuevaNormal, choqueConLuz);
     
     if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada
         if (debug) {       //                       devuelve (0,0,0)
@@ -259,11 +257,13 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
             cout << "CONDICION TERMINAL: rayo choca con luz" << endl;
         }
         
-        return radianciaActual; // Se supone que es la emision de la luz??? mirar interseccion...
+        return emisionActual; // Se supone que es la emision de la luz??? mirar interseccion...
     }
 
-    // radianciaActual se sobreescribe
+    RGB radianciaActual;
     nextEventEstimation(ptoIntersec, nuevaNormal, escena, kd, radianciaActual, debug);
+    radianciaActual = radianciaActual * calcBrdfDifusa(kd)
+                                      * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
     
     if (debug) {
         cout << "RADIANCIA ACTUAL = " << radianciaActual << endl;
@@ -272,7 +272,8 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
         cout << "==============================" << endl << endl;
     }
     
-    return radianciaActual + recursividadLuzIndirecta(ptoIntersec, nuevaNormal, escena, 
+    return radianciaActual + emisionActual
+                            * recursividadLuzIndirecta(ptoIntersec, nuevaNormal, escena,
                                                         kd, rebotesRestantes - 1, debug)
                             * calcBrdfDifusa(kd)
                             * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
