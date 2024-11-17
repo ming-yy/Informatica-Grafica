@@ -42,7 +42,7 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     Punto aux = rayo.o + rayo.d * t;
     ptos.push_back(aux);
     coefsObjeto = this->coeficientes;
-    choqueConLuz = soyLuz;
+    choqueConLuz = this->soyLuz;
     
     // DEBUG
     // cout << "Numerador: " << numerador << endl;

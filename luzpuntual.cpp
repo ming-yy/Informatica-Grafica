@@ -10,4 +10,4 @@
 
 LuzPuntual::LuzPuntual(): c(0.0f, 0.0f, 0.0f), p(1.0f, 1.0f, 1.0f) {}
 
-LuzPuntual::LuzPuntual(Punto _c, Direccion _p): c(_c), p(_p) {}
+LuzPuntual::LuzPuntual(Punto _c, RGB _p): c(_c), p(_p) {}

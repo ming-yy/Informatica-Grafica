@@ -43,17 +43,16 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                 ptos.push_back(p2);
                 ptos.push_back(p1);
             }
-            coefsObjeto = this->coeficientes;
-            choqueConLuz = soyLuz;
+            
         } else if (t1 > MARGEN_ERROR) {
             ptos.push_back(p1);
-            coefsObjeto = this->coeficientes;
-            choqueConLuz = soyLuz;
+            
         } else if (t2 > MARGEN_ERROR) {
             ptos.push_back(p2);
-            coefsObjeto = this->coeficientes;
-            choqueConLuz = soyLuz;
         }
+        
+        coefsObjeto = this->coeficientes;
+        choqueConLuz = this->soyLuz;
  
         // DEBUG
         //cout << "Hay 2 puntos de interseccion: " << endl;
@@ -67,7 +66,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         if (t > MARGEN_ERROR) {
             ptos.push_back(puntoInterseccion);
             coefsObjeto = this->coeficientes;
-            choqueConLuz = soyLuz;
+            choqueConLuz = this->soyLuz;
         }
         // DEBUG
         //cout << "Hay 1 punto de interseccion (tngente): " << endl;

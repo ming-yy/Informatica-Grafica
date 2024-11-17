@@ -15,14 +15,12 @@ class Esfera: public Primitiva {
 public:
     Punto centro;   // Generalmente en UCS
     float radio;
-    RGB reflectancia;    // (r,g,b)
-    bool soyLuz;
     
     
     Esfera();
     Esfera(const Punto& _centro, const float& _radio,
            const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
-            const string _material = "plastico", const bool _soyLuz = false);
+            const string _material = "difuso", const bool _soyLuz = false);
     Esfera(const Planeta& p);
     
     // Método para calcular la intersección entre un rayo y la esfera

@@ -14,7 +14,7 @@
 #include "camara.h"
 
 // Función que calcula la reflectancia difusa de Lambert.
-float calcBrdfDifusa(const float kd);
+RGB calcBrdfDifusa(const RGB &kd);
 
 // Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
 // por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
@@ -25,7 +25,7 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
 // al punto <p0>.
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                         const float kd, bool debug);
+                         const RGB &kd, bool debug);
 
 // Función que devuelve un valor aleatorio para azimut y otro para inclinación
 // para muestreo uniforme de ángulo sólido.
@@ -43,16 +43,16 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
 // Función que ...
 void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalInicial,
-                           const Escena& escena, const float kd, const unsigned maxRebotes,
+                           const Escena& escena, const unsigned maxRebotes,
                            RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug);
 
 // Función que ...
 RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
-                              const float kd, const unsigned rebotesRestantes, bool debug);
+                             const unsigned rebotesRestantes, bool debug);
 
 // Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
 // para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.
-RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned maxRebotes,
+RGB obtenerEmisionIndirecta(const Escena& escena, const unsigned maxRebotes,
                             const unsigned numRayosMontecarlo, const Punto& ptoIntersec, const Direccion& normal,
                             bool debug);
 
@@ -61,7 +61,7 @@ RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned
 // son de 1 rayo por pixel.
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
-                          const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                          const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                           std::vector<std::vector<RGB>>& coloresEscena);
 
 // Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
@@ -75,4 +75,4 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
 // Función que ...
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                       const Escena& escena, const std::string& nombreEscena, const unsigned rpp,
-                      const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo);
+                      const unsigned maxRebotes, const unsigned numRayosMontecarlo);

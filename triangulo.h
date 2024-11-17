@@ -11,6 +11,7 @@
 #include <cmath>
 #include "primitiva.h"
 
+using std::string;
 
 class Triangulo : public Primitiva {
 public:
@@ -19,7 +20,7 @@ public:
     Triangulo();
     Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, 
                             const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
-                            const string _material = "plastico", const bool _soyLuz = false);
+                            const string _material = "difuso", const bool _soyLuz = false);
 
     // Método para calcular la intersección entre un rayo y el triángulo
     // Algoritmo usado: Möller–Trumbore

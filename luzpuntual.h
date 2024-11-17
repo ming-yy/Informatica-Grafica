@@ -7,15 +7,15 @@
 
 #pragma once
 #include "punto.h"
-#include "direccion.h"
+#include "rgb.h"
 
 
 class LuzPuntual {
 public:
     Punto c;
-    Direccion p;
+    RGB p;
     
     
     LuzPuntual();
-    LuzPuntual(Punto _c, Direccion _p = {1.0f, 1.0f, 1.0f});
+    LuzPuntual(Punto _c, RGB _p = {1.0f, 1.0f, 1.0f});
 };

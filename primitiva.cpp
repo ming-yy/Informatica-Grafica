@@ -7,7 +7,6 @@
 
 #include "primitiva.h"
 #include "bsdfs.h"
-#include "bsdfs.cpp"
 #include <stdexcept>
 #include <array>
 

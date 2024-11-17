@@ -23,4 +23,9 @@ public:
     BSDFs(const RGB& _color, array<float, 3> _kd, 
          array<float, 3> _ks, array<float, 3> _kt);
     ~BSDFs() = default;
+
+        // Operador de asignación
+    BSDFs& operator=(const BSDFs& d);
+    
+    friend std::ostream& operator<<(std::ostream& os, const BSDFs& r);
 };

@@ -14,7 +14,7 @@
 #include <random>
 #include <stack>
 
-//const double M_PI = 3.14159265358979323846;   // Por si no va cmath
+const double M_PI = 3.14159265358979323846;   // Por si no va cmath
 #define GRAD_A_RAD 3.1415926535898f/180
 
 using std::cout;
@@ -67,7 +67,7 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
     return Rayo(nuevaDir, o);
 }
 
-float calcBrdfDifusa(const float kd){
+RGB calcBrdfDifusa(const RGB &kd){
     return kd / M_PI;
 }
 
@@ -76,7 +76,7 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
 }
 
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                         const float kd, bool debug) {
+                         const RGB &kd, bool debug) {
     int n = 0;
 
     if (escena.puntoPerteneceALuz(p0)) {    // p0 es de una fuente de luz
@@ -101,8 +101,8 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         
         Direccion dirIncidente = luz.c - p0;
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(dirIncidente, normal);
-        float reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
-        Direccion radianciaIncidente = luz.p / (modulo(dirIncidente) * modulo(dirIncidente));
+        RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
+        RGB radianciaIncidente = luz.p / (modulo(dirIncidente) * modulo(dirIncidente));
         
         if(debug){
             cout << "(( luz.c: " << luz.c << " )) " << endl;
@@ -124,7 +124,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         
         
         for (int i = 0; i < 3; ++i) {
-            radianciaSaliente.rgb[i] += radianciaIncidente.coord[i];
+            radianciaSaliente.rgb[i] += radianciaIncidente.rgb[i];
         }
     }
     
@@ -150,6 +150,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     return radianciaSaliente;
 }
 
+/*
 void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalInicial,
                            const Escena& escena, const float kd, const unsigned maxRebotes,
                            RGB& radianciaAcumulada, float& brdfCosenoAcumulado, bool debug) {
@@ -179,11 +180,11 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
 
         Punto ptoIntersec;
         Direccion nuevaNormal;
-        RGB emisionActual;
+        BSDFs coeficientes;
         Rayo wi = generarCaminoAleatorio(estado.origen, estado.normal);
 
         bool choqueConLuz = false;
-        bool hayIntersec = escena.interseccion(wi, emisionActual, ptoIntersec, nuevaNormal, choqueConLuz);
+        bool hayIntersec = escena.interseccion(wi, coeficientes, ptoIntersec, nuevaNormal, choqueConLuz);
 
         // Condición terminal: no hay intersección o el rayo choca con una fuente de luz
         if (!hayIntersec || (hayIntersec && choqueConLuz)) {
@@ -201,7 +202,7 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
 
         float nuevoBrdfCoseno = estado.brdfCosenoActual * calcBrdfDifusa(kd) *
                                 calcCosenoAnguloIncidencia(estado.origen - ptoIntersec, estado.normal);
-        radianciaAcumulada = radianciaAcumulada + emisionActual * radianciaActual * nuevoBrdfCoseno;
+        radianciaAcumulada = radianciaAcumulada + coeficientes.kd * radianciaActual * nuevoBrdfCoseno;
 
         if (debug) {
             cout << "Emision acumulada despues: " << radianciaAcumulada << endl;
@@ -217,14 +218,13 @@ void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalIn
         }
     }
 }
-
+*/
 
 RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
-                             const Escena& escena, const float kd,
-                             const unsigned rebotesRestantes, bool debug) {
+                             const Escena& escena, const unsigned rebotesRestantes, bool debug) {
     Punto ptoIntersec;
     Direccion nuevaNormal;
-    RGB reflectancia;
+    BSDFs coeficientes;
 
     if (debug) {
         cout << "==============================" << endl;
@@ -235,7 +235,7 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
                                                 //                      devuelve (0,0,0)
     Rayo wi = generarCaminoAleatorio(origen, normal);
     bool choqueConLuz = false;
-    bool hayIntersec = escena.interseccion(wi, reflectancia, ptoIntersec, nuevaNormal, choqueConLuz);
+    bool hayIntersec = escena.interseccion(wi, coeficientes, ptoIntersec, nuevaNormal, choqueConLuz);
     
     if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada
         if (debug) {       //                       devuelve (0,0,0)
@@ -245,15 +245,16 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
     } else if (hayIntersec && choqueConLuz) {   // Condición terminal: rayo choca contra fuente de luz de área
         if (debug) {                            //                      devuelve emisión de la luz
             cout << "CONDICION TERMINAL: rayo choca con luz" << endl;
+            cout << "coefs: " << coeficientes << endl;
         }
         
-        return reflectancia;    // RECORDAR: terminar de implementar luz de área
+        return coeficientes.kd;    // RECORDAR: terminar de implementar luz de área
     }
 
-    RGB radianciaSalienteDirecta = reflectancia * nextEventEstimation(ptoIntersec, nuevaNormal, escena, kd, debug);
+    RGB radianciaSalienteDirecta = coeficientes.kd * nextEventEstimation(ptoIntersec, nuevaNormal, escena, coeficientes.kd, debug);
     RGB radianciaSalienteIndirecta = recursividadLuzIndirecta(ptoIntersec, nuevaNormal, escena,
-                                                        kd, rebotesRestantes - 1, debug)
-                                    * calcBrdfDifusa(kd)
+                                                                rebotesRestantes - 1, debug)
+                                    * calcBrdfDifusa(coeficientes.kd)
                                     * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
 
     if (debug) {
@@ -267,7 +268,7 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
            
 }
 
-RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned maxRebotes,
+RGB obtenerEmisionIndirecta(const Escena& escena, const unsigned maxRebotes,
                             const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
                             const Direccion& normal, bool debug) {
     RGB sumaRadianciasIndirectas;
@@ -279,7 +280,7 @@ RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned
             
             sumaRadianciasIndirectas = sumaRadianciasIndirectas +
                                         recursividadLuzIndirecta(ptoIntersec, normal, escena, 
-                                                                        kd, maxRebotes, debug);
+                                                                    maxRebotes, debug);
         }
     }
     return sumaRadianciasIndirectas / numRayosMontecarlo;       // Media de todas
@@ -288,7 +289,7 @@ RGB obtenerEmisionIndirecta(const Escena& escena, const float kd, const unsigned
 
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
-                          const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                          const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                           std::vector<std::vector<RGB>>& coloresEscena) {
     
     unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
@@ -301,13 +302,14 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
             Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
-            RGB emisionDirecta;
+            BSDFs coefsDirectos;
             Punto ptoIntersec;
             Direccion normal;
             bool choqueConLuz = false;
             
             
-            bool debug = (alto == 100 && ancho == 100);
+            bool debug = (alto == 100 && ancho == 100) ||
+                            (alto == 100 && ancho == 15);
             if (printPixelesProcesados){
                 unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
                 if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {
@@ -318,14 +320,14 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             
             rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
-            if (escena.interseccion(rayo, emisionDirecta, ptoIntersec, normal, choqueConLuz)) {
-                RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, kd, debug);
-                emisionDirecta = emisionDirecta * radianciaDirecta;
+            if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
+                RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
+                RGB emisionDirecta = coefsDirectos.kd * radianciaDirecta;
                 
                 if (choqueConLuz) {
                     coloresEscena[alto][ancho] = emisionDirecta;
                 } else {
-                    RGB emisionIndirecta = obtenerEmisionIndirecta(escena, kd, maxRebotes, numRayosMontecarlo,
+                    RGB emisionIndirecta = obtenerEmisionIndirecta(escena, maxRebotes, numRayosMontecarlo,
                                                                   ptoIntersec, normal, debug);
                     //RGB emisionIndirecta;
                     coloresEscena[alto][ancho] = emisionDirecta + emisionIndirecta;
@@ -371,7 +373,7 @@ void renderizarEscenaConAntialising(Camara& camara, unsigned numPxlsAncho, unsig
 
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                       const Escena& escena, const std::string& nombreEscena, const unsigned rpp,
-                      const float kd, const unsigned maxRebotes, const unsigned numRayosMontecarlo) {
+                      const unsigned maxRebotes, const unsigned numRayosMontecarlo) {
     float anchoPorPixel = camara.calcularAnchoPixel(numPxlsAncho);
     float altoPorPixel = camara.calcularAltoPixel(numPxlsAlto);
    
@@ -380,7 +382,7 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
                                                                               {0.0f, 0.0f, 0.0f}));
     if(rpp == 1){
         renderizarEscena1RPP(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
-                             altoPorPixel, kd, maxRebotes, numRayosMontecarlo, coloresEscena);
+                             altoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena);
     } else {
         //renderizarEscenaAntialising(camara, numPxlsAncho, numPxlsAlto,
         //                escena, anchoPorPixel, altoPorPixel, kd, coloresEscena, rpp);

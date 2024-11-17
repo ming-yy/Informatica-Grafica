@@ -9,7 +9,6 @@
 #include <map>
 #include <array>
 
-
 #define KD_i 0  // coef difuso
 #define KS_i 1  // coef especular (reflexión)
 #define KT_i 2  // coef transmitancia (refracción)
@@ -17,9 +16,9 @@
 using FloatArray = std::array<float, 3>;
     
 std::map<std::string, FloatArray> materiales{
-    {"difuso", {0.9f, 0.0f, 0.0f}},
+    {"difuso", {0.8f, 0.0f, 0.0f}},
     {"cristal", {0.0f, 0.1f, 0.8f}},
-    {"espejo", {0.0f, 0.9f, 0.0f}},
+    {"espejo", {0.0f, 0.8f, 0.0f}},
     {"plastico", {0.7f, 0.2f, 0.0f}},
 };
 
@@ -54,3 +53,17 @@ BSDFs::BSDFs(const RGB& _color,
     kt = _color * _kt;
 }
 
+BSDFs& BSDFs::operator=(const BSDFs& c) {
+    if (this != &c) {  // Evitar auto-asignación
+        this->kd = c.kd;
+        this->ks = c.ks;
+        this->kt = c.kt;
+    }
+    return *this;
+}
+std::ostream& operator<<(std::ostream& os, const BSDFs& c){
+    os << "[ kd= " << c.kd << std::endl;
+    os << "  ks= " << c.ks << std::endl;
+    os << "  kt= " << c.kt << " ]" << std::endl;
+    return os;
+}
