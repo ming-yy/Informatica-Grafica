@@ -9,6 +9,7 @@
 #include "planeta.h"
 #include "rgb.h"
 
+using std::string;
 
 class Esfera: public Primitiva {
 public:

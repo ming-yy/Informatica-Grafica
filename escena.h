@@ -20,12 +20,12 @@ public:
     Escena(std::vector<Primitiva*> _primitivas, std::vector<LuzPuntual> _luces);
     
     // Método que devuelve "True" si y solo si hay intersección entre el rayo <rayo> y algún
-    // objeto de la escena. En caso de haber intersección, la emisión del punto por el
+    // objeto de la escena. En caso de haber intersección, los coeficientes del punto por el
     // que interseca el rayo <rayo> con el primer objeto que se encuentre en la escena es
-    // devuelta en <resEmision>, el punto mencionado es devuelto en <ptoMasCerca> y en
+    // devuelta en <coefsObjeto>, el punto mencionado es devuelto en <ptoMasCerca> y en
     // <choqueConLuz> devolverá si el objeto se trata de una fuente de luz o no. También devuelve
     // la normal del punto más cercano respecto del objeto al que pertenece.
-    bool interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca, Direccion& normal,
+    bool interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCerca, Direccion& normal,
                       bool& choqueConLuz) const;
     
     // Función que devuelve "True" si y solo si el punto p0 pertenece a una fuente de luz.

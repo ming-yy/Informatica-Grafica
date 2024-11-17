@@ -9,13 +9,13 @@
 
 #define MARGEN_ERROR 10e-6f
 
-Esfera::Esfera(): centro(Punto()), radio(0.0f), Primitiva() {}
+Esfera::Esfera(): Primitiva(), centro(Punto()), radio(0.0f) {}
 
 Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _reflectancia,
                      const string _material, const bool _soyLuz) :
-               centro(_centro), radio(_radio), Primitiva(_reflectancia, _material, _soyLuz)  {}
+               Primitiva(_reflectancia, _material, _soyLuz), centro(_centro), radio(_radio)  {}
 
-Esfera::Esfera(const Planeta& p) : centro(p.centro), radio(p.radio), Primitiva() {}
+Esfera::Esfera(const Planeta& p) : Primitiva(), centro(p.centro), radio(p.radio) {}
 
 void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                           BSDFs& coefsObjeto, bool& choqueConLuz) const {

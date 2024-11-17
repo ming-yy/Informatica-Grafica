@@ -14,7 +14,7 @@ Escena::Escena(std::vector<Primitiva*> _primitivas, std::vector<LuzPuntual> _luc
                 primitivas(_primitivas), luces(_luces) {}
 
 
-bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca, Direccion& normal,
+bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCerca, Direccion& normal,
                           bool& choqueConLuz) const {
     bool resVal = false;
     bool primerIntersec = true;  // Flag: la primera intersección encontrada
@@ -22,9 +22,9 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca,
 
     for (const Primitiva* objeto : this->primitivas) {
         std::vector<Punto> intersec;
-        RGB emision;
+        BSDFs coeficientes;
 
-        objeto->interseccion(rayo, intersec, emision, auxChoqueConLuz);
+        objeto->interseccion(rayo, intersec, coefsObjeto, auxChoqueConLuz);
         if (!intersec.empty()) {    // Hay intersección con el objeto <objeto>
             resVal = true;
             // El intersec[0] es el punto más cercano al origen del rayo en este objeto
@@ -32,7 +32,7 @@ bool Escena::interseccion(const Rayo& rayo, RGB& resEmision, Punto& ptoMasCerca,
                 ptoMasCerca = intersec[0];
                 choqueConLuz = auxChoqueConLuz;
                 normal = objeto->getNormal(ptoMasCerca);
-                resEmision = emision;
+                coefsObjeto = coeficientes;
                 primerIntersec = false;  // Marcamos que ya se encontró una intersección
             }
         }
@@ -57,10 +57,10 @@ bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
     bool iluminar = true;
     Direccion d = normalizar(luz.c - p0);
     Punto ptoMasCerca;
-    RGB rgb;
+    BSDFs coefs;
     Direccion normal;
     bool choqueConLuz = false;
-    bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, normal, choqueConLuz);
+    bool chocaObjeto = this->interseccion(Rayo(d, p0), coefs, ptoMasCerca, normal, choqueConLuz);
     
     if (chocaObjeto) {
         iluminar = modulo(luz.c - p0) <= modulo(ptoMasCerca - p0);
@@ -88,10 +88,10 @@ bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& orige
         Punto origen = luz->generarPuntoAleatorio();
         Direccion d = normalizar(origen - p0);
         Punto ptoMasCerca;
-        RGB rgb;
+        BSDFs coefs;
         Direccion normal;
         bool choqueConLuz = false;
-        bool chocaObjeto = this->interseccion(Rayo(d, p0), rgb, ptoMasCerca, normal, choqueConLuz);
+        bool chocaObjeto = this->interseccion(Rayo(d, p0), coefs, ptoMasCerca, normal, choqueConLuz);
         
         if (chocaObjeto) {
             iluminar = modulo(origen - p0) <= modulo(ptoMasCerca - p0);

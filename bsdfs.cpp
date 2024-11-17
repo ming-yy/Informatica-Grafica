@@ -46,9 +46,9 @@ BSDFs::BSDFs(const RGB& _color, const RGB& _kd, const RGB& _ks, const RGB& _kt) 
 }
 
 BSDFs::BSDFs(const RGB& _color, 
-                const std::array<float, 3> _kd, 
-                const std::array<float, 3> _ks, 
-                const std::array<float, 3> _kt) {
+                std::array<float, 3> _kd, 
+                std::array<float, 3> _ks, 
+                std::array<float, 3> _kt) {
     kd = _color * _kd;
     ks = _color * _ks;
     kt = _color * _kt;

@@ -17,7 +17,7 @@ public:
     Punto v0, v1, v2;
 
     Triangulo();
-    Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, 
+    Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, 
                             const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
                             const string _material = "plastico", const bool _soyLuz = false);
 

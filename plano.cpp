@@ -15,13 +15,14 @@ using std::ostream;
 using std::cout;
 using std::endl;
 using std::vector;
+using std::string;
 
 
-Plano::Plano(): n(0.0f, 0.0f, 0.0f), d(0.0f), soyLuz(false), Primitiva() {}
+Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f) {}
 
 Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia,
                      const string _material, const bool _soyLuz) :
-             n(normalizar(_n)), d(_d), Primitiva(_reflectancia, _material, _soyLuz) {}
+             Primitiva(_reflectancia, _material, _soyLuz), n(normalizar(_n)), d(_d){}
 
 void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                         BSDFs& coefsObjeto, bool& choqueConLuz) const {
@@ -40,7 +41,7 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     
     Punto aux = rayo.o + rayo.d * t;
     ptos.push_back(aux);
-    reflectancia = this->reflectancia;
+    coefsObjeto = this->coeficientes;
     choqueConLuz = soyLuz;
     
     // DEBUG

@@ -7,6 +7,9 @@
 #pragma once
 #include "rgb.h"
 #include <string>
+#include <array>
+
+using std::array;
 
 class BSDFs {
 public:
@@ -17,7 +20,7 @@ public:
     BSDFs();
     BSDFs(const RGB& _color, const std::string _material);
     BSDFs(const RGB& _color, const RGB& _kd, const RGB& _ks, const RGB& _kt);
-    BSDFs(const RGB& _color, const array<float, 3> _kd, 
-            const array<float, 3> _ks, const array<float, 3> _kt);
+    BSDFs(const RGB& _color, array<float, 3> _kd, 
+         array<float, 3> _ks, array<float, 3> _kt);
     ~BSDFs() = default;
 };
