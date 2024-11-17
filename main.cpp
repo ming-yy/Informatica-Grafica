@@ -83,7 +83,7 @@ void cajaDeCornell(){
     const unsigned numRayosMontecarlo = 8;
     
     auto inicio = std::chrono::high_resolution_clock::now();
-    renderizarEscena(cam, 256, 256, cornell, "cornell", 1, maxRebotes, numRayosMontecarlo);
+    renderizarEscena(cam, 256, 256, cornell, "cornell", 3, maxRebotes, numRayosMontecarlo);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 

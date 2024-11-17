@@ -314,8 +314,7 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             bool choqueConLuz = false;
             
             
-            bool debug = (alto == 100 && ancho == 100) ||
-                            (alto == 100 && ancho == 15);
+            bool debug = false;
             if (printPixelesProcesados){
                 unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
                 if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {
@@ -328,24 +327,72 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
             if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
                 RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
-                RGB emisionDirecta = coefsDirectos.kd * radianciaDirecta;
-                if(debug){
-                    cout << "PRIMER CHOQUE: normal: " << normal << ", coefs: " << coefsDirectos << endl;
-                }
+                RGB radianciaSalienteDirecta = coefsDirectos.kd * radianciaDirecta;
                 
                 if (choqueConLuz) {
-                    coloresEscena[alto][ancho] = emisionDirecta;
+                    coloresEscena[alto][ancho] = radianciaSalienteDirecta;
                 } else {
-                    RGB emisionIndirecta = obtenerEmisionIndirecta(escena, maxRebotes, numRayosMontecarlo,
+                    RGB radianciaSalienteIndirecta = obtenerEmisionIndirecta(escena, maxRebotes, numRayosMontecarlo,
                                                                   ptoIntersec, normal, debug);
-                    //RGB emisionIndirecta;
-                    coloresEscena[alto][ancho] = emisionDirecta + emisionIndirecta;
+                    coloresEscena[alto][ancho] = radianciaSalienteDirecta + radianciaSalienteIndirecta;
                 }
             }
         }
     }
 }
 
+
+void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+                          const Escena& escena, float anchoPorPixel, float altoPorPixel,
+                          const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                          std::vector<std::vector<RGB>>& coloresEscena, const unsigned rpp) {
+    
+    unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
+    bool printPixelesProcesados = true;
+    if (printPixelesProcesados){
+        cout << "Procesando pixeles..." << endl;
+        cout << "0 pixeles de " << totalPixeles << endl;
+    }
+
+    for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
+        for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
+            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
+            BSDFs coefsDirectos;
+            Punto ptoIntersec;
+            Direccion normal;
+            bool choqueConLuz = false;
+            
+            
+            bool debug = false;
+            if (printPixelesProcesados){
+                unsigned pixelActual = numPxlsAncho * ancho + alto + 1;
+                if (pixelActual % 100 == 0 || pixelActual == totalPixeles) {
+                    cout << pixelActual << " pixeles de " << totalPixeles << endl;
+                }
+            }
+            
+            RGB radianciaSalienteTotal;
+            for(unsigned i = 0; i < rpp; i++){
+                rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+                globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
+                if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
+                    RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
+                    RGB radianciaSalienteDirecta = coefsDirectos.kd * radianciaDirecta;
+ 
+                    
+                    if (choqueConLuz) {
+                        radianciaSalienteTotal = radianciaSalienteTotal + radianciaSalienteDirecta;
+                    } else {
+                        RGB radianciaSalienteIndirecta = obtenerEmisionIndirecta(escena, maxRebotes, numRayosMontecarlo,
+                                                                    ptoIntersec, normal, debug);
+                        radianciaSalienteTotal = radianciaSalienteTotal + radianciaSalienteDirecta + radianciaSalienteIndirecta;
+                    }
+                }
+            }
+            coloresEscena[alto][ancho] = radianciaSalienteTotal / rpp;
+        }
+    }
+}
 
 /* Esto es lo que había para luz directa
 void renderizarEscenaConAntialising(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
@@ -393,8 +440,8 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
         renderizarEscena1RPP(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
                              altoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena);
     } else {
-        //renderizarEscenaAntialising(camara, numPxlsAncho, numPxlsAlto,
-        //                escena, anchoPorPixel, altoPorPixel, kd, coloresEscena, rpp);
+        renderizarEscenaConAntialiasing(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel, 
+                                    altoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena, rpp);
     }
     
     //imprimirImagen(coloresEscena);

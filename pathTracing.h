@@ -67,10 +67,10 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
 // Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
 // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
 // son de <rpp> rayos por pixel (rpp > 1).
-//void renderizarEscenaConAntialising(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
-//                              const Escena& escena, float anchoPorPixel, float altoPorPixel,
-//                              const float kd, std::vector<std::vector<RGB>>& coloresEscena,
-//                              const unsigned rpp);
+void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+                          const Escena& escena, float anchoPorPixel, float altoPorPixel,
+                          const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                          std::vector<std::vector<RGB>>& coloresEscena, const unsigned rpp);
 
 // Función que ...
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
