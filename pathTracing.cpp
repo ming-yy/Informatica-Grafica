@@ -373,7 +373,7 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
             
             RGB radianciaSalienteTotal;
             for(unsigned i = 0; i < rpp; i++){
-                rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+                rayo = camara.obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
                 globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
                 if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
                     RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
@@ -387,6 +387,7 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
                                                                     ptoIntersec, normal, debug);
                         radianciaSalienteTotal = radianciaSalienteTotal + radianciaSalienteDirecta + radianciaSalienteIndirecta;
                     }
+                    if(ancho == 10 && alto == 10) cout << "radianciasalientetotal = " << radianciaSalienteTotal;
                 }
             }
             coloresEscena[alto][ancho] = radianciaSalienteTotal / rpp;

@@ -62,13 +62,13 @@ void liberarMemoriaDePrimitivas(std::vector<Primitiva*>& objetos) {
 
 void cajaDeCornell(){
     std::vector<Primitiva*> objetos;
-    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({1.0f, 0.0f, 0.0f}), "difuso", false)); // plano izquierdo, rojo
-    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 1.0f, 0.0f}), "difuso", false)); // plano derecho, verde
-    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "difuso", false)); // plano suelo, blanco
-    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "difuso", false)); // plano techo, blanco
-    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "difuso", false)); // plano fondo, blanco
-    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.89f, 0.45f, 0.82f}), "difuso", false)); // esfera izquierda, rosa
-    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}), "difuso", false)); // esfera derecha, azul
+    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso", false)); // plano izquierdo, rojo
+    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso", false)); // plano derecho, verde
+    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano suelo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano techo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano fondo, blanco
+    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.89f, 0.45f, 0.82f}), "muy_difuso", false)); // esfera izquierda, rosa
+    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso", false)); // esfera derecha, azul
     std::vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
@@ -80,10 +80,11 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     
     const unsigned maxRebotes = 5;
-    const unsigned numRayosMontecarlo = 8;
+    const unsigned numRayosAntialiasing = 12;
+    const unsigned numRayosMontecarlo = 5;
     
     auto inicio = std::chrono::high_resolution_clock::now();
-    renderizarEscena(cam, 256, 256, cornell, "cornell", 3, maxRebotes, numRayosMontecarlo);
+    renderizarEscena(cam, 256, 256, cornell, "cornell", numRayosAntialiasing, maxRebotes, numRayosMontecarlo);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
