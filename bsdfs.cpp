@@ -23,7 +23,7 @@ std::map<std::string, FloatArray> materiales{
 };
 
 BSDFs::BSDFs() {
-    RGB _color(1.1f, 1.1f, 1.1f);
+    RGB _color(1.0f, 1.0f, 1.0f);
     FloatArray coefs = materiales["difuso"];
     kd = _color * coefs[KD_i];
     ks = _color * coefs[KS_i];

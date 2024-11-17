@@ -22,9 +22,9 @@ bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCer
 
     for (const Primitiva* objeto : this->primitivas) {
         std::vector<Punto> intersec;
-        BSDFs coeficientes;
+        BSDFs coefsAux;
 
-        objeto->interseccion(rayo, intersec, coefsObjeto, auxChoqueConLuz);
+        objeto->interseccion(rayo, intersec, coefsAux, auxChoqueConLuz);
         if (!intersec.empty()) {    // Hay intersección con el objeto <objeto>
             resVal = true;
             // El intersec[0] es el punto más cercano al origen del rayo en este objeto
@@ -32,7 +32,7 @@ bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCer
                 ptoMasCerca = intersec[0];
                 choqueConLuz = auxChoqueConLuz;
                 normal = objeto->getNormal(ptoMasCerca);
-                coefsObjeto = coeficientes;
+                coefsObjeto = coefsAux;
                 primerIntersec = false;  // Marcamos que ya se encontró una intersección
             }
         }

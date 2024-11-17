@@ -88,6 +88,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         
         if(debug){
             n++;
+            cout << endl << "(( kd antes: " << kd << endl;
             cout << endl << "(( LUZ " << n << " )) " << endl;
         }
         
@@ -237,6 +238,13 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
     bool choqueConLuz = false;
     bool hayIntersec = escena.interseccion(wi, coeficientes, ptoIntersec, nuevaNormal, choqueConLuz);
     
+    if (debug) {
+        cout << "Punto interseccion: " << ptoIntersec << endl;
+        cout << "Nueva normal: " << nuevaNormal << endl;
+        cout << "coeficientes: " << coeficientes << endl;
+        cout << "==============================" << endl << endl;
+    }
+
     if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada
         if (debug) {       //                       devuelve (0,0,0)
             cout << "CONDICION TERMINAL: rayo no choca con nada" << endl;
@@ -251,19 +259,17 @@ RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal,
         return coeficientes.kd;    // RECORDAR: terminar de implementar luz de área
     }
 
+    
+
     RGB radianciaSalienteDirecta = coeficientes.kd * nextEventEstimation(ptoIntersec, nuevaNormal, escena, coeficientes.kd, debug);
     RGB radianciaSalienteIndirecta = recursividadLuzIndirecta(ptoIntersec, nuevaNormal, escena,
                                                                 rebotesRestantes - 1, debug)
                                     * calcBrdfDifusa(coeficientes.kd)
                                     * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
-
     if (debug) {
         cout << "LUZ INTERSECCION = " << radianciaSalienteDirecta << endl;
-        cout << "Punto interseccion: " << ptoIntersec << endl;
-        cout << "Nueva normal: " << nuevaNormal << endl;
-        cout << "==============================" << endl << endl;
     }
-    
+
     return radianciaSalienteDirecta + radianciaSalienteIndirecta;
            
 }
@@ -323,6 +329,9 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
                 RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
                 RGB emisionDirecta = coefsDirectos.kd * radianciaDirecta;
+                if(debug){
+                    cout << "PRIMER CHOQUE: normal: " << normal << ", coefs: " << coefsDirectos << endl;
+                }
                 
                 if (choqueConLuz) {
                     coloresEscena[alto][ancho] = emisionDirecta;

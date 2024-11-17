@@ -91,5 +91,6 @@ Punto Plano::generarPuntoAleatorio() const {
 ostream& operator<<(ostream& os, const Plano& r)
 {
     os << "\nNormal: " << r.n << "\nDistancia: " << r.d;
+    os << "\nCoeficientes: " << r.coeficientes << endl << "\nSoyLuz: " << r.soyLuz << endl;
     return os;
 }
