@@ -23,8 +23,8 @@ public:
     bool soyLuz;
     
     Plano();
-    Plano(const Direccion& _n, float _d, const RGB& _reflectancia = RGB({255.0f, 255.0f, 255.0f}),
-          const bool _soyLuz = false);
+    Plano(const Direccion& _n, float _d, const RGB& _reflectancia,
+                     const string _material, const bool _soyLuz);
 
     // Método para calcular la intersección entre un rayo y el plano
     //
@@ -35,7 +35,7 @@ public:
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                      RGB& reflectancia, bool& choqueConLuz) const override;
+                      BSDFs& coefsObjeto, bool& choqueConLuz) const override;
     
     // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene al plano.
     bool pertenece(const Punto& p0) const override;

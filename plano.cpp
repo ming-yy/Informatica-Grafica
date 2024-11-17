@@ -17,13 +17,14 @@ using std::endl;
 using std::vector;
 
 
-Plano::Plano(): n(0.0f, 0.0f, 0.0f), d(0.0f), soyLuz(false), reflectancia({0.0f, 0.0f, 0.0f}) {}
+Plano::Plano(): n(0.0f, 0.0f, 0.0f), d(0.0f), soyLuz(false), Primitiva() {}
 
-Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia, const bool _soyLuz):
-             n(normalizar(_n)), d(_d), soyLuz(_soyLuz), reflectancia(_reflectancia) {}
+Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia,
+                     const string _material, const bool _soyLuz) :
+             n(normalizar(_n)), d(_d), Primitiva(_reflectancia, _material, _soyLuz) {}
 
 void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                        RGB& reflectancia, bool& choqueConLuz) const {
+                        BSDFs& coefsObjeto, bool& choqueConLuz) const {
     float denominador = dot(rayo.d, n);
     if (fabs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;

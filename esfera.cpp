@@ -9,17 +9,17 @@
 
 #define MARGEN_ERROR 10e-6f
 
-Esfera::Esfera(): centro(Punto()), radio(0.0f), reflectancia({0.0f,0.0f,0.0f}), soyLuz(false) {}
+Esfera::Esfera(): centro(Punto()), radio(0.0f), Primitiva() {}
 
 Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _reflectancia,
-               const bool _soyLuz) :
-               centro(_centro), radio(_radio), reflectancia(_reflectancia), soyLuz(_soyLuz) {}
+                     const string _material, const bool _soyLuz) :
+               centro(_centro), radio(_radio), Primitiva(_reflectancia, _material, _soyLuz)  {}
 
-Esfera::Esfera(const Planeta& p) : centro(p.centro), radio(p.radio), reflectancia(p.reflectancia),
-                                   soyLuz(false){}
+Esfera::Esfera(const Planeta& p) : centro(p.centro), radio(p.radio), Primitiva() {}
 
 void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                          RGB& reflectancia, bool& choqueConLuz) const {
+                          BSDFs& coefsObjeto, bool& choqueConLuz) const {
+
     float a = modulo(rayo.d);
     a *= a;
     float b = 2 * dot(rayo.d, rayo.o - this->centro);
@@ -43,15 +43,15 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
                 ptos.push_back(p2);
                 ptos.push_back(p1);
             }
-            reflectancia = this->reflectancia;
+            coefsObjeto = this->coeficientes;
             choqueConLuz = soyLuz;
         } else if (t1 > MARGEN_ERROR) {
             ptos.push_back(p1);
-            reflectancia = this->reflectancia;
+            coefsObjeto = this->coeficientes;
             choqueConLuz = soyLuz;
         } else if (t2 > MARGEN_ERROR) {
             ptos.push_back(p2);
-            reflectancia = this->reflectancia;
+            coefsObjeto = this->coeficientes;
             choqueConLuz = soyLuz;
         }
  
@@ -66,7 +66,7 @@ void Esfera::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
         Punto puntoInterseccion = rayo.o + rayo.d * t;
         if (t > MARGEN_ERROR) {
             ptos.push_back(puntoInterseccion);
-            reflectancia = this->reflectancia;
+            coefsObjeto = this->coeficientes;
             choqueConLuz = soyLuz;
         }
         // DEBUG

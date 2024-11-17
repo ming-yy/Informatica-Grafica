@@ -14,8 +14,10 @@ public:
     RGB ks;
     RGB kt;
 
+    BSDFs();
     BSDFs(const RGB& _color, const std::string _material);
     BSDFs(const RGB& _color, const RGB& _kd, const RGB& _ks, const RGB& _kt);
-
+    BSDFs(const RGB& _color, const array<float, 3> _kd, 
+            const array<float, 3> _ks, const array<float, 3> _kt);
     ~BSDFs() = default;
 };

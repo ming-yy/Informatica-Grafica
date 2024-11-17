@@ -4,7 +4,6 @@
 // Date:   octubre 2024
 // Coms:   Práctica 1 de Informática Gráfica
 //*****************************************************************
-
 #include "triangulo.h"
 
 #define MARGEN_ERROR 10e-6f
@@ -13,15 +12,14 @@ using std::cout;
 using std::endl;
 
 
-Triangulo::Triangulo() : v0(Punto()), v1(Punto()), v2(Punto()), soyLuz(false),
-                         reflectancia({0.0f, 0.0f, 0.0f}) {}
+Triangulo::Triangulo() : v0(Punto()), v1(Punto()), v2(Punto()), Primitiva() {}
 
 Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const RGB& _reflectancia,
-                     const bool _soyLuz):
-                     v0(_v0), v1(_v1), v2(_v2), soyLuz(_soyLuz), reflectancia(_reflectancia) {}
+                     const string _material, const bool _soyLuz):
+                     v0(_v0), v1(_v1), v2(_v2), Primitiva(_reflectancia, _material, _soyLuz) {}
 
 void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                             RGB& reflectancia, bool& choqueConLuz) const {
+                             BSDFs& coefsObjeto, bool& choqueConLuz) const {
     Direccion edge1 = v1 - v0;
     Direccion edge2 = v2 - v0;
     Direccion h = cross(rayo.d, edge2);
@@ -50,7 +48,7 @@ void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     float t = f * dot(edge2, q);
     if (t > MARGEN_ERROR) {
         ptos.push_back(Punto(rayo.o + rayo.d * t));
-        reflectancia = this->reflectancia;
+        coefsObjeto = this->coeficientes;
         choqueConLuz = soyLuz;
         return;
     } else {

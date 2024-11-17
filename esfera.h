@@ -20,7 +20,8 @@ public:
     
     Esfera();
     Esfera(const Punto& _centro, const float& _radio,
-           const RGB& _reflectancia = RGB({255.0f, 255.0f, 255.0f}), const bool _soyLuz = false);
+           const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
+            const string _material = "plastico", const bool _soyLuz = false);
     Esfera(const Planeta& p);
     
     // Método para calcular la intersección entre un rayo y la esfera
@@ -32,7 +33,7 @@ public:
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                      RGB& reflectancia, bool& choqueConLuz) const override;
+                      BSDFs& coefsObjeto, bool& choqueConLuz) const override;
     
     // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene a la esfera.
     bool pertenece(const Punto& p0) const override;

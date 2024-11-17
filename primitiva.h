@@ -17,8 +17,12 @@
 class Primitiva {
 public:
     BSDFs coeficientes;
+    bool soyLuz;
 
-    Primitiva(const RGB& color, const std::string material);
+    Primitiva();
+    Primitiva(const RGB& color, const std::string material, const bool _soyLuz);
+    Primitiva (const RGB& color, const array<float, 3> kd, 
+                const array<float, 3> ks, const array<float, 3> kt, const bool _soyLuz);
     
     // Destructor virtual para asegurar que los destructores de las clases derivadas
     // se llamen correctamente.
@@ -31,7 +35,7 @@ public:
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     virtual void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                              RGB& emision, bool& choqueConLuz) const = 0;
+                              BSDFs& coefsObjeto, bool& choqueConLuz) const = 0;
     
     // Mëtodo virtual que devuelve "True" si y solo si el punto <p0> pertecene a la primitiva.
     virtual bool pertenece(const Punto& p0) const = 0;
