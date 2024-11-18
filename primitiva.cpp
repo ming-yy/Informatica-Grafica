@@ -23,9 +23,3 @@ Primitiva::Primitiva(const RGB& color, const array<float, 3> kd, const array<flo
     this->coeficientes = BSDFs(color, kd, ks, kt);
     this->soyLuz = _soyLuz;
 }
-
-Primitiva::Primitiva(const RGB& color, const init_list<float> kd, const init_list<float> ks,
-          const init_list<float> kt, const bool _soyLuz) {
-    
-    this->soyLuz = _soyLuz;
-}

@@ -13,16 +13,16 @@ RGB::RGB() : rgb({0.0f, 0.0f, 0.0f}) {}
 
 RGB::RGB(const float& r, const float& g, const float& b): rgb({r, g, b}) {}
 
-RGB::RGB(std::initializer_list<float> _rgb) {
+RGB::RGB(init_list<float> _rgb) {
     if (_rgb.size() == 3) {
         auto it_rgb = _rgb.begin();
         this->rgb = {*(it_rgb), *(it_rgb + 1), *(it_rgb + 2)};
     } else {
-        throw std::invalid_argument("RGB no esta recibiendo un initializer_list de 3 valores.");
+        throw invalid_argument("RGB no esta recibiendo un initializer_list de 3 valores.");
     }
 }
 
-RGB::RGB(const std::array<float, 3>& _rgb): rgb(_rgb) {}
+RGB::RGB(const array<float, 3>& _rgb): rgb(_rgb) {}
 
 float RGB::max() const {
     return std::max({rgb[0], rgb[1], rgb[2]});
@@ -46,7 +46,7 @@ RGB RGB::operator*(const RGB& d) const {
 
 RGB RGB::operator/(const float escalar) const {
     if (escalar == 0) {
-        throw std::invalid_argument("Error: Division por cero no permitida.");
+        throw invalid_argument("Error: Division por cero no permitida.");
     }
     
     return RGB(rgb[0] / escalar, rgb[1] / escalar, rgb[2] / escalar);
@@ -59,12 +59,12 @@ RGB& RGB::operator=(const RGB& r) {
     return *this;
 }
 
-RGB& RGB::operator=(const std::initializer_list<float>& r) {
+RGB& RGB::operator=(const init_list<float>& r) {
     if (r.size() == 3) {
         auto it_r = r.begin();
         this->rgb = {*(it_r), *(it_r + 1), *(it_r + 2)};
     } else {
-        throw std::invalid_argument("La tripleta RGB debe tener 3 elementos.");
+        throw invalid_argument("La tripleta RGB debe tener 3 elementos.");
     }
     return *this;
 }

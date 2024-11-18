@@ -6,12 +6,12 @@
 //*****************************************************************
 
 #pragma once
+#include <array>
 #include "puntoDireccion.h"
 #include "direccion.h"
 #include "matriz.h"
+#include "utilidades.h"
 
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
 
 class Punto : public PuntoDireccion {
 public:

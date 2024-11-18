@@ -10,14 +10,8 @@
 #include <iostream>
 #include <initializer_list>
 #include "direccion.h"
+#include "utilidades.h"
 
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-template<typename T>
-using init_list = std::initializer_list<T>;
-
-using std::ostream;
 
 class Base {
 public:

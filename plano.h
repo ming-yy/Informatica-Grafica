@@ -13,7 +13,6 @@
 #include "primitiva.h"
 #include "rgb.h"
 
-using std::string;
 
 class Plano : public Primitiva {
 public:
@@ -24,7 +23,7 @@ public:
     
     Plano();
     Plano(const Direccion& _n, float _d, const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
-                     const string _material = "difuso", const bool _soyLuz = false);
+                     const std::string _material = "difuso", const bool _soyLuz = false);
 
     // Método para calcular la intersección entre un rayo y el plano
     //

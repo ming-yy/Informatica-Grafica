@@ -12,9 +12,9 @@
 #define KD_i 0  // coef difuso
 #define KS_i 1  // coef especular (reflexión)
 #define KT_i 2  // coef transmitancia (refracción)
+#define FloatArray std::array<float, 3>
 
-using FloatArray = std::array<float, 3>;
-    
+
 std::map<std::string, FloatArray> materiales{
     {"muy_difuso", {0.8f, 0.0f, 0.0f}},
     {"difuso", {0.55f, 0.0f, 0.0f}},
@@ -46,20 +46,11 @@ BSDFs::BSDFs(const RGB& _color, const RGB& _kd, const RGB& _ks, const RGB& _kt) 
     kt = _color * _kt;
 }
 
-BSDFs::BSDFs(const RGB& _color, 
-                std::array<float, 3> _kd, 
-                std::array<float, 3> _ks, 
-                std::array<float, 3> _kt) {
+BSDFs::BSDFs(const RGB& _color, std::array<float, 3> _kd, std::array<float, 3> _ks,
+             std::array<float, 3> _kt) {
     kd = _color * _kd;
     ks = _color * _ks;
     kt = _color * _kt;
-}
-
-BSDFs::BSDFs(const RGB& color, const init_list<float> _kd, const init_list<float> _ks,
-             const init_list<float> _kt) {
-    for (const auto& valor : kd) {
-        this->kd = 
-    }
 }
 
 BSDFs& BSDFs::operator=(const BSDFs& c) {

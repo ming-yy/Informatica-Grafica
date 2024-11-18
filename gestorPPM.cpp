@@ -10,17 +10,6 @@
 #include <algorithm>
 #include <iomanip>
 
-using std::string;
-using std::ifstream;
-using std::ofstream;
-using std::vector;
-using std::cerr;
-using std::endl;
-using std::cout;
-using std::istringstream;
-using std::fixed;
-using std::setprecision;
-
 
 ifstream abrir_fichero(const string& nombreFich) {
     ifstream fichero(nombreFich);

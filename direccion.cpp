@@ -7,11 +7,6 @@
 
 #include "direccion.h"
 
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-using std::invalid_argument;
-using std::sqrt;
 
 Direccion::Direccion() : PuntoDireccion() {}
 

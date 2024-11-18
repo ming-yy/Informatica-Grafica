@@ -12,6 +12,8 @@
 #include "escena.h"
 #include "rgb.h"
 #include "camara.h"
+#include "utilidades.h"
+
 
 // Función que calcula la reflectancia difusa de Lambert.
 RGB calcBrdfDifusa(const RGB &kd);
@@ -74,7 +76,7 @@ void printPixelActual(unsigned totalPixeles, unsigned numPxlsAncho, unsigned anc
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          std::vector<std::vector<RGB>>& coloresEscena, const unsigned totalPixeles, 
+                          vector<vector<RGB>>& coloresEscena, const unsigned totalPixeles,
                           const bool printPixelesProcesados);
 
 // Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
@@ -83,10 +85,10 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
 void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          std::vector<std::vector<RGB>>& coloresEscena, const bool printPixelesProcesados, 
+                          vector<vector<RGB>>& coloresEscena, const bool printPixelesProcesados,
                           const unsigned totalPixeles, const unsigned rpp);
 
 // Función que ...
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
-                      const Escena& escena, const std::string& nombreEscena, const unsigned rpp,
+                      const Escena& escena, const string& nombreEscena, const unsigned rpp,
                       const unsigned maxRebotes, const unsigned numRayosMontecarlo, const bool printPixelesProcesados);

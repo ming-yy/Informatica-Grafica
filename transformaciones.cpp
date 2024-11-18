@@ -7,17 +7,6 @@
 
 #include "transformaciones.h"
 
-#define GRAD_A_RAD 3.1415926535898f/180
-
-template<typename T>
-using sh_ptr = std::shared_ptr<T>;
-
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-template<typename T>
-using init_list = std::initializer_list<T>;
-
 
 Matriz<4, 1> translate(const PuntoDireccion& pd, float x, float y, float z) {
     Matriz<4, 4> m = Matriz<4, 4>(

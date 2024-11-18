@@ -13,7 +13,7 @@
 Rayo::Rayo(const Direccion& dir, const Punto& origen) : d(dir), o(origen) {};
 
 void Rayo::imprimir() const {
-    std::cout << "Rayo - Direccion: " << d << ", Origen: " << o << std::endl;
+    cout << "Rayo - Direccion: " << d << ", Origen: " << o << endl;
 }
 
 void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, const Direccion& u,
@@ -28,7 +28,7 @@ void globalizarYNormalizarRayo(Rayo& rayo, const Punto& o, const Direccion& f, c
     rayo.d = normalizar(rayo.d);
 }
 
-std::ostream& operator<<(std::ostream& os, const Rayo& r)
+ostream& operator<<(ostream& os, const Rayo& r)
 {
     os << "Rayo - Direccion: " << r.d << ", Origen: " << r.o;
     return os;

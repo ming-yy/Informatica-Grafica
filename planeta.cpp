@@ -7,15 +7,6 @@
 
 #include "planeta.h"
 
-#define MARGEN_ERROR 10e-6
-#define GRAD_A_RAD 3.1415926535898f/180
-
-using std::to_string;
-using std::invalid_argument;
-using std::endl;
-using std::ostream;
-using std::cout;
-
 
 Planeta::Planeta(): centro(Punto()), eje(Direccion()), cref(Punto()),
                     estacion{0.0f, 0.0f}, reflectancia(RGB({0.0f,0.0f,0.0f})) {}

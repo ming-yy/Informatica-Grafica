@@ -13,12 +13,9 @@
 #include "base.h"
 #include "matriz.h"
 #include "transformaciones.h"
+#include "utilidades.h"
 #include "rgb.h"
 
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-using std::ostream;
 
 class Planeta {
 public:

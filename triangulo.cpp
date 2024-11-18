@@ -4,21 +4,18 @@
 // Date:   octubre 2024
 // Coms:   Práctica 1 de Informática Gráfica
 //*****************************************************************
+
 #include "triangulo.h"
+#include "utilidades.h"
 
-#define MARGEN_ERROR 10e-6f
-
-using std::cout;
-using std::endl;
-using std::string;
 
 Triangulo::Triangulo() : Primitiva(), v0(Punto()), v1(Punto()), v2(Punto()) {}
 
 Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const RGB& _reflectancia,
                      const string _material, const bool _soyLuz):
-                      Primitiva(_reflectancia, _material, _soyLuz), v0(_v0), v1(_v1), v2(_v2){}
+                     Primitiva(_reflectancia, _material, _soyLuz), v0(_v0), v1(_v1), v2(_v2){}
 
-void Triangulo::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
+void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos,
                              BSDFs& coefsObjeto, bool& choqueConLuz) const {
     Direccion edge1 = v1 - v0;
     Direccion edge2 = v2 - v0;

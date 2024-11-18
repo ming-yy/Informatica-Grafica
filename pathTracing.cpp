@@ -10,23 +10,18 @@
 #include "base.h"
 #include "transformaciones.h"
 #include "gestorPPM.h"
+#include "utilidades.h"
 #include <cmath>
 #include <random>
 #include <stack>
 
-//const double M_PI = 3.14159265358979323846;   // Por si no va cmath
-#define GRAD_A_RAD 3.1415926535898f/180
 
-using std::cout;
-using std::endl;
-
-
-void imprimirImagen(const std::vector<std::vector<RGB>>& imagen) {
+void imprimirImagen(const vector<vector<RGB>>& imagen) {
     for (const auto& fila : imagen) {
         for (const auto& pixel : fila) {
-            std::cout << "(" << pixel.rgb[0] << ", " << pixel.rgb[1] << ", " << pixel.rgb[2] << ") ";
+            cout << "(" << pixel.rgb[0] << ", " << pixel.rgb[1] << ", " << pixel.rgb[2] << ") ";
         }
-        std::cout << std::endl; // Nueva línea para cada fila
+        cout << endl; // Nueva línea para cada fila
     }
 }
 
@@ -129,7 +124,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         }
     }
     
-    /*
+    /*  Para luz de área
     for (const Primitiva* objeto : escena.primitivas) {
         Punto origenLuz;
         Direccion luzPower(1,1,1);
@@ -163,7 +158,7 @@ void iterativaRadianciaIndirecta(const Punto& origenInicial, const Direccion& no
         float brdfCosenoActual;
     };
 
-    std::stack<EstadoRebote> pila;      // Inicializar la pila con el primer estado
+    stack<EstadoRebote> pila;      // Inicializar la pila con el primer estado
     pila.push({origenInicial, normalInicial, maxRebotes, RGB(0, 0, 0), 1.0f});
 
     while (!pila.empty()) {
@@ -290,33 +285,33 @@ void printPixelActual(unsigned totalPixeles, unsigned numPxlsAncho, unsigned anc
 }
 
 RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned maxRebotes, 
-                                const unsigned numRayosMontecarlo, bool debug){
+                             const unsigned numRayosMontecarlo, bool debug){
     BSDFs coefsDirectos;
     Punto ptoIntersec;
     Direccion normal;
     bool choqueConLuz = false;
-    RGB radianciaSaliente;
+    RGB radianciaSalienteTotal;
 
     if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
         // Calcular mediante RULETA RUSA si el rayo es difuso, reflectante, refractante o si se absorbe
         RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
         RGB radianciaSalienteDirecta = coefsDirectos.kd * radianciaDirecta;
         
-        if (choqueConLuz) {
-            radianciaSaliente = radianciaSalienteDirecta;
-        } else {
-            radianciaSaliente = radianciaSalienteDirecta + obtenerRadianciaSalienteIndirecta(escena, maxRebotes, numRayosMontecarlo,
-                                                                                            ptoIntersec, normal, debug);
+        radianciaSalienteTotal = radianciaSalienteDirecta;
+        if (!choqueConLuz) {
+            radianciaSalienteTotal = radianciaSalienteTotal +
+                                     obtenerRadianciaSalienteIndirecta(escena, maxRebotes, numRayosMontecarlo,
+                                                                       ptoIntersec, normal, debug);
         }
     }
 
-    return radianciaSaliente;
+    return radianciaSalienteTotal;
 }
 
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          std::vector<std::vector<RGB>>& coloresEscena, const unsigned totalPixeles, 
+                          vector<vector<RGB>>& coloresEscena, const unsigned totalPixeles,
                           const bool printPixelesProcesados) {
     
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
@@ -337,7 +332,7 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
 void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          std::vector<std::vector<RGB>>& coloresEscena, const bool printPixelesProcesados, 
+                          vector<vector<RGB>>& coloresEscena, const bool printPixelesProcesados,
                           const unsigned totalPixeles, const unsigned rpp) {
 
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
@@ -361,7 +356,7 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
 
 
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
-                      const Escena& escena, const std::string& nombreEscena, const unsigned rpp,
+                      const Escena& escena, const string& nombreEscena, const unsigned rpp,
                       const unsigned maxRebotes, const unsigned numRayosMontecarlo, const bool printPixelesProcesados) {
     float anchoPorPixel = camara.calcularAnchoPixel(numPxlsAncho);
     float altoPorPixel = camara.calcularAltoPixel(numPxlsAlto);
@@ -370,7 +365,7 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
     if (printPixelesProcesados) cout << "Procesando pixeles..." << endl << "0 pixeles de " << totalPixeles << endl;
 
     // Inicializado todo a color negro
-    std::vector<std::vector<RGB>> coloresEscena(numPxlsAlto, std::vector<RGB>(numPxlsAncho,
+    vector<vector<RGB>> coloresEscena(numPxlsAlto, vector<RGB>(numPxlsAncho,
                                                                               {0.0f, 0.0f, 0.0f}));
 
     if(rpp == 1){

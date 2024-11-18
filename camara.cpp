@@ -8,9 +8,8 @@
 #include "camara.h"
 #include <iostream>
 #include <random>
-#include <cmath>     // permite usar número pi
+#include <cmath>
 
-//const double M_PI = 3.14159265358979323846;
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    f(Direccion(-1.0f, 0.0f, 0.0f)),
@@ -18,10 +17,8 @@ Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    l(Direccion(0.0f, 1.0f, 0.0f)) {}
 
 
-Camara::Camara(std::initializer_list<float> _o, 
-               std::initializer_list<float> _f, 
-               std::initializer_list<float> _u, 
-               std::initializer_list<float> _l) {
+Camara::Camara(init_list<float> _o, init_list<float> _f, init_list<float> _u,
+               init_list<float> _l) {
     // Lista contiene 3 elementos (x, y, z)
     if (_o.size() == 3 && _l.size() == 3 && _u.size() == 3 && _f.size() == 3) {
         auto it_o = _o.begin();
@@ -37,7 +34,7 @@ Camara::Camara(std::initializer_list<float> _o,
         l = Direccion(*(it_l), *(it_l + 1), *(it_l + 2));
 
     } else {
-        throw std::invalid_argument("Inicializadores deben contener 3 elementos cada uno.");
+        throw invalid_argument("Inicializadores deben contener 3 elementos cada uno.");
     }
 }
 

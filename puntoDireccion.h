@@ -9,11 +9,8 @@
 #include <iostream>
 #include <array>
 #include "matriz.h"
+#include "utilidades.h"
 
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-using std::ostream;
 
 class PuntoDireccion {
 public:

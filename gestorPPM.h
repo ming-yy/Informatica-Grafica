@@ -11,11 +11,7 @@
 #include <fstream>
 #include <string>
 #include "rgb.h"
-
-using std::string;
-using std::ifstream;
-using std::ofstream;
-using std::vector;
+#include "utilidades.h"
 
 
 // Función que itera por cada valor del RGB de un ppm y lo convierte al
@@ -69,8 +65,8 @@ string transformarValores(vector<float>& valores, const int tipoTransform, const
 int transformarFicheroPPM(const string& nombreFichero, const int idFuncion);
 
 // Función que dada una matriz de valores RGB, devuelve el componente máximo
-float maximoValorRGB(const std::vector<std::vector<RGB>>& matrizRGB);
+float maximoValorRGB(const vector<vector<RGB>>& matrizRGB);
 
 // Función que dado una matriz de RGB's, genera el PPM correspondiente.
-void pintarEscenaEnPPM(const std::string& nombreArchivo,
-                        const std::vector<std::vector<RGB>>& imagen = {});
+void pintarEscenaEnPPM(const string& nombreArchivo,
+                        const vector<vector<RGB>>& imagen = {});

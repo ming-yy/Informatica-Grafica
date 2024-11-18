@@ -11,25 +11,7 @@
 #include <initializer_list>
 #include <cmath>
 #include <iomanip>
-
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-template<typename T>
-using init_list = std::initializer_list<T>;
-
-using std::size_t;
-using std::copy;
-using std::cerr;
-using std::endl;
-using std::invalid_argument;
-using std::abs;
-using std::ostream;
-using std::runtime_error;
-using std::fixed;
-using std::setprecision;
-using std::setw;
-
+#include "utilidades.h"
 
 
 template <size_t Filas, size_t Columnas>
@@ -67,20 +49,20 @@ public:
             // Buscar el pivote más grande en la columna i para intercambiar filas
             size_t maxRow = i;
             for (size_t k = i + 1; k < 4; ++k) {
-                if (std::abs(temp.matriz[k][i]) > std::abs(temp.matriz[maxRow][i])) {
+                if (abs(temp.matriz[k][i]) > abs(temp.matriz[maxRow][i])) {
                     maxRow = k;
                 }
             }
 
             // Intercambiar filas si es necesario
             if (i != maxRow) {
-                std::swap(temp.matriz[i], temp.matriz[maxRow]);
-                std::swap(inv.matriz[i], inv.matriz[maxRow]);
+                swap(temp.matriz[i], temp.matriz[maxRow]);
+                swap(inv.matriz[i], inv.matriz[maxRow]);
             }
 
             // Verificar si la matriz es singular
             float diagElem = temp.matriz[i][i];
-            if (std::abs(diagElem) < 1e-7) {
+            if (abs(diagElem) < 1e-7) {
                 throw runtime_error("La matriz es singular y no tiene inversa.");
             }
 
@@ -106,8 +88,8 @@ public:
     }
     
 
-    friend std::ostream& operator<<(std::ostream& os, const Matriz& m) {
-        os << std::fixed << std::setprecision(3);  // Tres decimales para todos los números
+    friend ostream& operator<<(ostream& os, const Matriz& m) {
+        os << fixed << setprecision(3);  // Tres decimales para todos los números
 
         // Encuentra el ancho máximo que debe ocupar cada número
         int max_width = 0;
@@ -115,10 +97,10 @@ public:
             for (const auto& valor : fila) {
                 // Calcula el tamaño de cada número, incluyendo el signo negativo y los decimales
                 // El ancho se calcula solo para el valor absoluto y se ajusta para el signo y el punto decimal
-                int width = std::to_string(static_cast<int>(std::abs(valor))).length() +
+                int width = to_string(static_cast<int>(abs(valor))).length() +
                             (valor < 0 ? 1 : 0) + // Para el signo negativo
                             4; // Para incluir el punto decimal y los tres decimales
-                max_width = std::max(max_width, width);
+                max_width = max(max_width, width);
             }
         }
 
@@ -126,9 +108,9 @@ public:
         for (const auto& fila : m.matriz) {
             os << "|";
             for (const auto& valor : fila) {
-                os << " " << std::setw(max_width) << valor;  // Alinea cada valor con el ancho máximo
+                os << " " << setw(max_width) << valor;  // Alinea cada valor con el ancho máximo
             }
-            os << " |" << std::endl;
+            os << " |" << endl;
         }
 
         return os;

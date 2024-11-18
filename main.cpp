@@ -5,16 +5,17 @@
 // Coms:   Práctica 1 de Informática Gráfica
 //*****************************************************************
 
-
 #include <iostream>
-#include <memory>
+#include <memory>       // para los shared_pointers
 #include <string>
+#include <chrono>
 #include "base.h"
 #include "punto.h"
 #include "direccion.h"
 #include "planeta.h"
 #include "matriz.h"
 #include "transformaciones.h"
+#include "utilidades.h"
 #include "gestorPPM.h"
 #include "camara.h"
 #include "rayo.h"
@@ -23,24 +24,6 @@
 #include "esfera.h"
 #include "luzpuntual.h"
 #include "pathTracing.h"
-#include <chrono>
-
-
-template<typename T>
-using sh_ptr = std::shared_ptr<T>;
-
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-template<typename T>
-using init_list = std::initializer_list<T>;
-
-
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::invalid_argument;
-using std::string;
 
 
 void printTiempo(auto inicio, auto fin) {
@@ -79,13 +62,13 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
     
-    const unsigned maxRebotes = 5;
-    const unsigned numRayosAntialiasing = 1;
-    const unsigned numRayosMontecarlo = 5;
+    const unsigned maxRebotes = 1;
+    const unsigned rpp = 1;
+    const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = false;
     
     auto inicio = std::chrono::high_resolution_clock::now();
-    renderizarEscena(cam, 256, 256, cornell, "cornell", numRayosAntialiasing, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 

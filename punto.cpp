@@ -9,12 +9,6 @@
 #include <cmath>
 
 
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-using std::invalid_argument;
-
-
 Punto::Punto() : PuntoDireccion(), o{0.0f, 0.0f, 0.0f} {}
 
 Punto::Punto(const Punto& p) : PuntoDireccion(p.coord), o{0.0f, 0.0f, 0.0f} {}

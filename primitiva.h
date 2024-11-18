@@ -5,6 +5,7 @@
 // Coms:   Práctica 3.2 de Informática Gráfica
 //*****************************************************************
 #pragma once
+#include "utilidades.h"
 #include "punto.h"
 #include "rayo.h"
 #include "rgb.h"
@@ -12,8 +13,6 @@
 #include <vector>
 #include <string>
 #include <initializer_list>
-
-#define init_list std::initializer_list
 
 
 // Clase abstracta que todas las primitivas geométricas deben heredar
@@ -23,11 +22,9 @@ public:
     bool soyLuz;
 
     Primitiva();
-    Primitiva(const RGB& color, const std::string material, const bool _soyLuz);
+    Primitiva(const RGB& color, const string material, const bool _soyLuz);
     Primitiva(const RGB& color, const array<float, 3> kd,
               const array<float, 3> ks, const array<float, 3> kt, const bool _soyLuz);
-    Primitiva(const RGB& color, const init_list<float> kd, const init_list<float> ks,
-              const init_list<float> kt, const bool _soyLuz);
     
     // Destructor virtual para asegurar que los destructores de las clases derivadas
     // se llamen correctamente.
@@ -39,7 +36,7 @@ public:
     // devuelve la emisión del objeto en <emision> y si el objeto intersecado es luz o no en
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
-    virtual void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
+    virtual void interseccion(const Rayo& rayo, vector<Punto>& ptos,
                               BSDFs& coefsObjeto, bool& choqueConLuz) const = 0;
     
     // Mëtodo virtual que devuelve "True" si y solo si el punto <p0> pertecene a la primitiva.

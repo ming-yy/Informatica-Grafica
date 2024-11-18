@@ -5,11 +5,11 @@
 // Coms:   Práctica 3.2 de Informática Gráfica
 //*****************************************************************
 #pragma once
+#include <vector>
 #include "primitiva.h"
 #include "planeta.h"
 #include "rgb.h"
-
-using std::string;
+#include "utilidades.h"
 
 class Esfera: public Primitiva {
 public:
@@ -31,7 +31,7 @@ public:
     // devuelve la emisión del objeto en <reflectancia> y si el objeto intersecado es luz o no en
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
-    void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
+    void interseccion(const Rayo& rayo, vector<Punto>& ptos,
                       BSDFs& coefsObjeto, bool& choqueConLuz) const override;
     
     // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene a la esfera.

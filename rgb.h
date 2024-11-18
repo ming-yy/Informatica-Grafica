@@ -9,15 +9,16 @@
 #include <array>
 #include <initializer_list>
 #include <iostream>
+#include "utilidades.h"
 
 class RGB {
 public:
-    std::array<float,3> rgb;
+    array<float,3> rgb;
 
     RGB();
     RGB(const float& r, const float& g, const float& b);
-    RGB(std::initializer_list<float> _rgb);
-    RGB(const std::array<float, 3>& _rgb);
+    RGB(init_list<float> _rgb);
+    RGB(const array<float, 3>& _rgb);
     RGB(const RGB& other) = default; // constructor de copia
 
     // Devuelve el mayor valor de entre los 3 (R, G o B)
@@ -41,7 +42,7 @@ public:
     RGB& operator=(const RGB& d);
     
     // Operación de asignación de array
-    RGB& operator=(const std::initializer_list<float>& r);
+    RGB& operator=(const init_list<float>& r);
 
-    friend std::ostream& operator<<(std::ostream& os, const RGB& r);
+    friend ostream& operator<<(ostream& os, const RGB& r);
 };

@@ -8,22 +8,6 @@
 #include "base.h"
 #include <iomanip>
 
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
-
-template<typename T>
-using init_list = std::initializer_list<T>;
-
-using std::cerr;
-using std::endl;
-using std::size_t;
-using std::ostream;
-using std::copy;
-using std::invalid_argument;
-using std::fixed;
-using std::setprecision;
-using std::setw;
-
 
 Base::Base() {
     for (int i=0; i<3; i++) {
@@ -106,7 +90,7 @@ ostream& operator<<(ostream& os, const Base& m) {
         for (const auto& valor : fila) {
             os << " " << std::setw(max_width) << valor;  // Alinea cada valor con el ancho máximo
         }
-        os << " )" << std::endl;
+        os << " )" << endl;
     }
 
     return os;

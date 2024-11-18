@@ -10,8 +10,8 @@
 #include <iostream>
 #include <cmath>
 #include "primitiva.h"
+#include "utilidades.h"
 
-using std::string;
 
 class Triangulo : public Primitiva {
 public:
@@ -31,7 +31,7 @@ public:
     // devuelve los BSDFs del objeto en <coefsObjeto> y si el objeto intersecado es luz o no en
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
-    void interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
+    void interseccion(const Rayo& rayo, vector<Punto>& ptos,
                       BSDFs& coefsObjeto, bool& choqueConLuz) const override;
     
     // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene al triángulo.

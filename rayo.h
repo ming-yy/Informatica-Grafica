@@ -8,6 +8,7 @@
 #pragma once
 #include "direccion.h"
 #include "punto.h"
+#include "utilidades.h"
 #include <memory>
 
 

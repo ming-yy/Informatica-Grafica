@@ -7,12 +7,10 @@
 
 #pragma once
 #include "puntoDireccion.h"
+#include "matriz.h"
+#include "utilidades.h"
 #include <cmath>
 #include <stdexcept>  // Para manejar excepciones
-#include "matriz.h"
-
-template<typename T, std::size_t N>
-using array = std::array<T, N>;
 
 
 class Direccion : public PuntoDireccion {

@@ -7,8 +7,7 @@
 
 #include <vector>
 #include <cmath>
-
-using std::vector;
+#include "utilidades.h"
 
 
 void clamp(vector<float>& valores);
