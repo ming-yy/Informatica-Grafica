@@ -11,6 +11,9 @@
 #include "bsdfs.h"
 #include <vector>
 #include <string>
+#include <initializer_list>
+
+#define init_list std::initializer_list
 
 
 // Clase abstracta que todas las primitivas geométricas deben heredar
@@ -21,8 +24,10 @@ public:
 
     Primitiva();
     Primitiva(const RGB& color, const std::string material, const bool _soyLuz);
-    Primitiva (const RGB& color, const array<float, 3> kd, 
-                const array<float, 3> ks, const array<float, 3> kt, const bool _soyLuz);
+    Primitiva(const RGB& color, const array<float, 3> kd,
+              const array<float, 3> ks, const array<float, 3> kt, const bool _soyLuz);
+    Primitiva(const RGB& color, const init_list<float> kd, const init_list<float> ks,
+              const init_list<float> kt, const bool _soyLuz);
     
     // Destructor virtual para asegurar que los destructores de las clases derivadas
     // se llamen correctamente.

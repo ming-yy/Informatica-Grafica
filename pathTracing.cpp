@@ -14,7 +14,7 @@
 #include <random>
 #include <stack>
 
-const double M_PI = 3.14159265358979323846;   // Por si no va cmath
+//const double M_PI = 3.14159265358979323846;   // Por si no va cmath
 #define GRAD_A_RAD 3.1415926535898f/180
 
 using std::cout;

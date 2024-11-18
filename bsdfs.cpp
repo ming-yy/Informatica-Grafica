@@ -55,6 +55,13 @@ BSDFs::BSDFs(const RGB& _color,
     kt = _color * _kt;
 }
 
+BSDFs::BSDFs(const RGB& color, const init_list<float> _kd, const init_list<float> _ks,
+             const init_list<float> _kt) {
+    for (const auto& valor : kd) {
+        this->kd = 
+    }
+}
+
 BSDFs& BSDFs::operator=(const BSDFs& c) {
     if (this != &c) {  // Evitar auto-asignación
         this->kd = c.kd;
@@ -63,6 +70,7 @@ BSDFs& BSDFs::operator=(const BSDFs& c) {
     }
     return *this;
 }
+
 std::ostream& operator<<(std::ostream& os, const BSDFs& c){
     os << "[ kd= " << c.kd << std::endl;
     os << "  ks= " << c.ks << std::endl;
