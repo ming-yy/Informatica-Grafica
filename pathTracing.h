@@ -41,20 +41,32 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
 Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
 
-// Función que ...
-void luzIndirectaIterativa(const Punto& origenInicial, const Direccion& normalInicial,
+// Función iterativa que calcula la radiancia del punto <origenInicial> y las radiancias de los puntos
+// intersectados tras <rebotesRestantes> rebotes
+void iterativaRadianciaIndirecta(const Punto& origenInicial, const Direccion& normalInicial,
                            const Escena& escena, const unsigned maxRebotes,
                            RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug);
 
-// Función que ...
-RGB recursividadLuzIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
+// Función recursiva que calcula la radiancia del punto <origen> y las radiancias de los puntos
+// intersectados tras <rebotesRestantes> rebotes
+RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
                              const unsigned rebotesRestantes, bool debug);
 
 // Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
 // para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.
-RGB obtenerEmisionIndirecta(const Escena& escena, const unsigned maxRebotes,
+RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRebotes,
                             const unsigned numRayosMontecarlo, const Punto& ptoIntersec, const Direccion& normal,
                             bool debug);
+
+// Función que devuelve la radiancia saliente total (directa + indirecta) dado un rayo y una escena,
+// rebotando un máximo de <maxRebotes> veces y calculada a través de la media de <numRayosMontecarlo> rayos
+// Cabe aclarar que el primer punto de intersección es siempre el mismo, los rayos "Montecarlo" comienzan
+// aleatoriamente siempre desde este primer punto.
+RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned maxRebotes, 
+                                const unsigned numRayosMontecarlo, bool debug);
+
+// Método que muestra por pantalla el número de píxeles procesados (cada 100 píxeles)
+void printPixelActual(unsigned totalPixeles, unsigned numPxlsAncho, unsigned ancho, unsigned alto);
 
 // Función que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
 // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
@@ -62,7 +74,8 @@ RGB obtenerEmisionIndirecta(const Escena& escena, const unsigned maxRebotes,
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          std::vector<std::vector<RGB>>& coloresEscena);
+                          std::vector<std::vector<RGB>>& coloresEscena, const unsigned totalPixeles, 
+                          const bool printPixelesProcesados);
 
 // Método que calcula todas las emisiones y sus radiancias para la escena con la especificación pasada
 // por los parámetros y las devuelve dentro de la matriz 2D <coloresEscena>. Los cálculos de emisiones
@@ -70,9 +83,10 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
 void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                           const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          std::vector<std::vector<RGB>>& coloresEscena, const unsigned rpp);
+                          std::vector<std::vector<RGB>>& coloresEscena, const bool printPixelesProcesados, 
+                          const unsigned totalPixeles, const unsigned rpp);
 
 // Función que ...
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                       const Escena& escena, const std::string& nombreEscena, const unsigned rpp,
-                      const unsigned maxRebotes, const unsigned numRayosMontecarlo);
+                      const unsigned maxRebotes, const unsigned numRayosMontecarlo, const bool printPixelesProcesados);

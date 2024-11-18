@@ -48,7 +48,7 @@ void printTiempo(auto inicio, auto fin) {
     auto mins = std::chrono::duration_cast<std::chrono::minutes>(duracion_total);
     auto segs = duracion_total - mins;
 
-    cout << endl << endl << "=========================================" << endl;
+    cout << endl << "=========================================" << endl;
     cout << "TIEMPO DE EJECUCION: " << mins.count() << "min " << segs.count() << "s" << endl;
     cout << "=========================================" << endl << endl;
 }
@@ -80,11 +80,12 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     
     const unsigned maxRebotes = 5;
-    const unsigned numRayosAntialiasing = 12;
+    const unsigned numRayosAntialiasing = 1;
     const unsigned numRayosMontecarlo = 5;
+    const bool printPixelesProcesados = false;
     
     auto inicio = std::chrono::high_resolution_clock::now();
-    renderizarEscena(cam, 256, 256, cornell, "cornell", numRayosAntialiasing, maxRebotes, numRayosMontecarlo);
+    renderizarEscena(cam, 256, 256, cornell, "cornell", numRayosAntialiasing, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
