@@ -227,48 +227,39 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion& normal,
     Direccion nuevaNormal;
     BSDFs coeficientes;
 
-    if (debug) {
-        cout << "==============================" << endl;
-        cout << "REBOTES RESTANTES: " << rebotesRestantes << endl;
-    }
-    
-    if (rebotesRestantes == 0) return RGB();    // Condición terminal: alcanzado max rebotes,
+    if (rebotesRestantes == 0) cout << "REBOTES RESTANTES: 0" << endl; return RGB();    // Condición terminal: alcanzado max rebotes,
                                                 //                      devuelve (0,0,0)
     Rayo wi = generarCaminoAleatorio(origen, normal);
     bool choqueConLuz = false;
     bool hayIntersec = escena.interseccion(wi, coeficientes, ptoIntersec, nuevaNormal, choqueConLuz);
     
-    if (debug) {
+     if (debug) {
+        cout << "==============================" << endl;
+        cout << "REBOTES RESTANTES: " << rebotesRestantes << endl;
         cout << "Punto interseccion: " << ptoIntersec << endl;
         cout << "Nueva normal: " << nuevaNormal << endl;
         cout << "coeficientes: " << coeficientes << endl;
         cout << "==============================" << endl << endl;
     }
 
-    if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada
-        if (debug) {       //                       devuelve (0,0,0)
-            cout << "CONDICION TERMINAL: rayo no choca con nada" << endl;
-        }
+    if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada, devuelve (0,0,0)
+        if (debug) cout << "CONDICION TERMINAL: rayo no choca con nada" << endl;
         return RGB();
     } else if (hayIntersec && choqueConLuz) {   // Condición terminal: rayo choca contra fuente de luz de área
-        if (debug) {                            //                      devuelve emisión de la luz
-            cout << "CONDICION TERMINAL: rayo choca con luz" << endl;
-            cout << "coefs: " << coeficientes << endl;
-        }
-        
+                                                //                      devuelve emisión de la luz
+        if (debug) cout << "CONDICION TERMINAL: rayo choca con luz" << endl << "coefs: " << coeficientes << endl;
         return coeficientes.kd;    // RECORDAR: terminar de implementar luz de área
     }
 
     
-
+    // Calcular mediante RULETA RUSA si el rayo es difuso, reflectante, refractante o si se absorbe
     RGB radianciaSalienteDirecta = coeficientes.kd * nextEventEstimation(ptoIntersec, nuevaNormal, escena, coeficientes.kd, debug);
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, nuevaNormal, escena,
                                                                 rebotesRestantes - 1, debug)
                                     * calcBrdfDifusa(coeficientes.kd)
                                     * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
-    if (debug) {
-        cout << "LUZ INTERSECCION = " << radianciaSalienteDirecta << endl;
-    }
+    
+    if (debug) cout << "LUZ INTERSECCION = " << radianciaSalienteDirecta << endl;
 
     return radianciaSalienteDirecta + radianciaSalienteIndirecta;
            
@@ -307,6 +298,7 @@ RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned ma
     RGB radianciaSaliente;
 
     if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
+        // Calcular mediante RULETA RUSA si el rayo es difuso, reflectante, refractante o si se absorbe
         RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
         RGB radianciaSalienteDirecta = coefsDirectos.kd * radianciaDirecta;
         
