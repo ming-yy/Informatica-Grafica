@@ -16,7 +16,7 @@ Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const
                      Primitiva(_reflectancia, _material, _soyLuz), v0(_v0), v1(_v1), v2(_v2){}
 
 void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                             BSDFs& coefsObjeto, bool& choqueConLuz) const {
+                             BSDFs& coefs, bool& choqueConLuz) const {
     Direccion edge1 = v1 - v0;
     Direccion edge2 = v2 - v0;
     Direccion h = cross(rayo.d, edge2);
@@ -45,7 +45,7 @@ void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos,
     float t = f * dot(edge2, q);
     if (t > MARGEN_ERROR) {
         ptos.push_back(Punto(rayo.o + rayo.d * t));
-        coefsObjeto = this->coeficientes;
+        coefs = this->coeficientes;
         choqueConLuz = soyLuz;
         return;
     } else {

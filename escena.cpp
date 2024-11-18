@@ -8,10 +8,10 @@
 #include "escena.h"
 #include <memory>
 
-Escena::Escena(): primitivas(std::vector<Primitiva*>()) {}
+Escena::Escena(): primitivas(vector<Primitiva*>()) {}
 
-Escena::Escena(std::vector<Primitiva*> _primitivas, std::vector<LuzPuntual> _luces):
-                primitivas(_primitivas), luces(_luces) {}
+Escena::Escena(vector<Primitiva*> _primitivas, vector<LuzPuntual> _luces):
+               primitivas(_primitivas), luces(_luces) {}
 
 
 bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCerca, Direccion& normal,
@@ -21,7 +21,7 @@ bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCer
     bool auxChoqueConLuz = false;
 
     for (const Primitiva* objeto : this->primitivas) {
-        std::vector<Punto> intersec;
+        vector<Punto> intersec;
         BSDFs coefsAux;
 
         objeto->interseccion(rayo, intersec, coefsAux, auxChoqueConLuz);
@@ -69,7 +69,7 @@ bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
     // DEBUG
     /*
     else {
-        std::cout << "Choca y no ilumina" << "\n"
+        cout << "Choca y no ilumina" << "\n"
         << "P0: " << p0 << "\n"
         << "Luz: " << luz.c << "\n"
         << "distancia luz-p0: " << modulo(luz.c - p0) << "\n"

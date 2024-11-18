@@ -9,13 +9,14 @@
 #include <map>
 #include <array>
 
-#define KD_i 0  // coef difuso
-#define KS_i 1  // coef especular (reflexión)
-#define KT_i 2  // coef transmitancia (refracción)
-#define FloatArray std::array<float, 3>
+constexpr int KD_i = 0;  // coef difuso
+constexpr int KS_i = 1;  // coef especular (reflexión)
+constexpr int KT_i = 2;  // coef transmitancia (refracción)
+
+using FloatArray = std::array<float, 3>;
 
 
-std::map<std::string, FloatArray> materiales{
+std::map<string, FloatArray> materiales{
     {"muy_difuso", {0.8f, 0.0f, 0.0f}},
     {"difuso", {0.55f, 0.0f, 0.0f}},
     {"poco_difuso", {0.3f, 0.0f, 0.0f}},
@@ -33,7 +34,7 @@ BSDFs::BSDFs() {
 }
 
 
-BSDFs::BSDFs(const RGB& _color, const std::string _material) {
+BSDFs::BSDFs(const RGB& _color, const string _material) {
     FloatArray coefs = materiales[_material];
     kd = _color * coefs[KD_i];
     ks = _color * coefs[KS_i];
@@ -46,8 +47,8 @@ BSDFs::BSDFs(const RGB& _color, const RGB& _kd, const RGB& _ks, const RGB& _kt) 
     kt = _color * _kt;
 }
 
-BSDFs::BSDFs(const RGB& _color, std::array<float, 3> _kd, std::array<float, 3> _ks,
-             std::array<float, 3> _kt) {
+BSDFs::BSDFs(const RGB& _color, const array<float, 3> _kd, const array<float, 3> _ks,
+             const array<float, 3> _kt) {
     kd = _color * _kd;
     ks = _color * _ks;
     kt = _color * _kt;
@@ -62,9 +63,9 @@ BSDFs& BSDFs::operator=(const BSDFs& c) {
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, const BSDFs& c){
-    os << "[ kd= " << c.kd << std::endl;
-    os << "  ks= " << c.ks << std::endl;
-    os << "  kt= " << c.kt << " ]" << std::endl;
+ostream& operator<<(ostream& os, const BSDFs& c){
+    os << "[ kd= " << c.kd << endl;
+    os << "  ks= " << c.ks << endl;
+    os << "  kt= " << c.kt << " ]" << endl;
     return os;
 }

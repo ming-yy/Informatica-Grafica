@@ -20,8 +20,8 @@ public:
     BSDFs();
     BSDFs(const RGB& _color, const string _material);
     BSDFs(const RGB& _color, const RGB& _kd, const RGB& _ks, const RGB& _kt);
-    BSDFs(const RGB& _color, array<float, 3> _kd, array<float, 3> _ks,
-          array<float, 3> _kt);
+    BSDFs(const RGB& _color, const array<float, 3> _kd, const array<float, 3> _ks,
+          const array<float, 3> _kt);
     ~BSDFs() = default;
 
     // Operador de asignación por copia de objeto de la misma clase

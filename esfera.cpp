@@ -17,7 +17,7 @@ Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _reflectanc
 Esfera::Esfera(const Planeta& p) : Primitiva(), centro(p.centro), radio(p.radio) {}
 
 void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                          BSDFs& coefsObjeto, bool& choqueConLuz) const {
+                          BSDFs& coefs, bool& choqueConLuz) const {
 
     float a = modulo(rayo.d);
     a *= a;
@@ -50,7 +50,7 @@ void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos,
             ptos.push_back(p2);
         }
         
-        coefsObjeto = this->coeficientes;
+        coefs = this->coeficientes;
         choqueConLuz = this->soyLuz;
  
         // DEBUG
@@ -64,7 +64,7 @@ void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos,
         Punto puntoInterseccion = rayo.o + rayo.d * t;
         if (t > MARGEN_ERROR) {
             ptos.push_back(puntoInterseccion);
-            coefsObjeto = this->coeficientes;
+            coefs = this->coeficientes;
             choqueConLuz = this->soyLuz;
         }
         // DEBUG

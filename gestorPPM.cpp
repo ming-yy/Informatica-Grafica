@@ -240,23 +240,23 @@ int transformarFicheroPPM(const string& nombreFichero, const int idFuncion) {
 }
 
 
-float maximoValorRGB(const std::vector<std::vector<RGB>>& matrizRGB) {
+float maximoValorRGB(const vector<vector<RGB>>& matrizRGB) {
     float maximo = 0.0f;
 
     // Recorre todos los vectores de RGB
     for (const auto& fila : matrizRGB) {
         for (const auto& pixel : fila) {
             // Encuentra el máximo entre los tres valores del array de cada RGB
-            maximo = std::max({maximo, pixel.max()});
+            maximo = max({maximo, pixel.max()});
         }
     }
     return maximo;
 }
 
-void pintarEscenaEnPPM(const std::string& nombreArchivo, const std::vector<std::vector<RGB>>& imagen) {
-    std::ofstream archivo(nombreArchivo + ".ppm");
+void pintarEscenaEnPPM(const string& nombreArchivo, const vector<vector<RGB>>& imagen) {
+    ofstream archivo(nombreArchivo + ".ppm");
     if (!archivo) {
-        std::cerr << "Error al abrir el archivo " << nombreArchivo << std::endl;
+        cerr << "Error al abrir el archivo " << nombreArchivo << endl;
         return;
     }
 
@@ -284,8 +284,8 @@ void pintarEscenaEnPPM(const std::string& nombreArchivo, const std::vector<std::
     archivo.close();
 
     if (!archivo) {
-        std::cerr << "Error al escribir el archivo " << nombreArchivo << std::endl;
+        cerr << "Error al escribir el archivo " << nombreArchivo << endl;
     } else {
-        std::cout << "Imagen PPM guardada en " << nombreArchivo << std::endl;
+        cout << "Imagen PPM guardada en " << nombreArchivo << endl;
     }
 }

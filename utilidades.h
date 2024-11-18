@@ -32,7 +32,7 @@ using init_list = std::initializer_list<T>;
 template<typename T>
 using sh_ptr = std::shared_ptr<T>;
 
-
+// using std::abs;    //por si no funciona <cmath>
 using std::array;
 using std::cerr;
 using std::copy;
@@ -45,6 +45,7 @@ using std::istringstream;
 using std::max;
 using std::ostream;
 using std::ofstream;
+// using std::pow;    //por si no funciona <cmath>
 using std::runtime_error;
 using std::setprecision;
 using std::size_t;

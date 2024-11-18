@@ -69,7 +69,7 @@ RGB& RGB::operator=(const init_list<float>& r) {
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, const RGB& r){
+ostream& operator<<(ostream& os, const RGB& r){
     os << "[r=" << r.rgb[0] << ", g=" << r.rgb[1] << ", b=" << r.rgb[2] << "]";
     return os;
 }

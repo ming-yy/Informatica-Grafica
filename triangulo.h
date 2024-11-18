@@ -28,11 +28,11 @@ public:
     // Devuelve en <ptos> un vector con los puntos de intersección en UCS del rayo <rayo>
     // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
     // en el vector será el primer punto de intersección. Si hay intersección, también
-    // devuelve los BSDFs del objeto en <coefsObjeto> y si el objeto intersecado es luz o no en
+    // devuelve los BSDFs del objeto en <coefs> y si el objeto intersecado es luz o no en
     // <choqueConLuz>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                      BSDFs& coefsObjeto, bool& choqueConLuz) const override;
+                      BSDFs& coefs, bool& choqueConLuz) const override;
     
     // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene al triángulo.
     bool pertenece(const Punto& p0) const override;

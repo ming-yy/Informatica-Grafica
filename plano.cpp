@@ -7,21 +7,17 @@
 
 #include "plano.h"
 #include "base.h"
-#include "utilidades.h"
 #include <random>
-
-
-using std::ostream;
 
 
 Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f) {}
 
 Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia,
-             const std::string _material, const bool _soyLuz) :
+             const string _material, const bool _soyLuz) :
              Primitiva(_reflectancia, _material, _soyLuz), n(normalizar(_n)), d(_d){}
 
-void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
-                        BSDFs& coefsObjeto, bool& choqueConLuz) const {
+void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos,
+                        BSDFs& coefs, bool& choqueConLuz) const {
     float denominador = dot(rayo.d, n);
     if (fabs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;
@@ -37,7 +33,7 @@ void Plano::interseccion(const Rayo& rayo, std::vector<Punto>& ptos,
     
     Punto aux = rayo.o + rayo.d * t;
     ptos.push_back(aux);
-    coefsObjeto = this->coeficientes;
+    coefs = this->coeficientes;
     choqueConLuz = this->soyLuz;
     
     // DEBUG

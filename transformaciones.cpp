@@ -134,6 +134,6 @@ Direccion cambioBase(const Direccion& d, const Base& b, const Punto& o, const bo
         res = Matriz<4, 1>((m * d.getCoordHomo()).matriz);
     }
 
-    // std::cout << m << "\n" << ucsToLocal << std::endl;
+    // cout << m << "\n" << ucsToLocal << endl;
     return Direccion(res.matriz[0][0], res.matriz[1][0], res.matriz[2][0]);
 }

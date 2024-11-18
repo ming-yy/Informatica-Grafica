@@ -13,7 +13,7 @@
 
 Primitiva::Primitiva(): coeficientes(BSDFs()), soyLuz(false) {}
 
-Primitiva::Primitiva(const RGB& color, const std::string material, const bool _soyLuz) {
+Primitiva::Primitiva(const RGB& color, const string material, const bool _soyLuz) {
     this->coeficientes = BSDFs(color, material);
     this->soyLuz = _soyLuz;
 }
