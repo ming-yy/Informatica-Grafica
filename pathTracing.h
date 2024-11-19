@@ -21,6 +21,9 @@ RGB calcBrdfDifusa(const RGB &kd);
 // Función que calcula la reflectancia especular.
 RGB calcBrdfEspecular(const RGB& ks, const Direccion& wo, const Direccion& n);
 
+// Función que calcula BSDF completo pero con ruleta rusa.
+RGB calcBsdf(const BSDFs& coefs, const Direccion& wo, const Direccion& n);
+
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
 // de la superficie (kd, ks, kt) proporcionados por <coefs>.
@@ -35,7 +38,7 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
 // al punto <p0>.
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                         const RGB &kd, bool debug);
+                        const BSDFs& coefs, bool debug);
 
 // Función que devuelve un valor aleatorio para azimut y otro para inclinación
 // para muestreo uniforme de ángulo sólido.

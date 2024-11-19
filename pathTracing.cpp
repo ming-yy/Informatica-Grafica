@@ -80,40 +80,53 @@ int dispararRuletaRusa(const BSDFs& coefs) {
     float maxKD = max(coefs.kd);
     float maxKS = max(coefs.ks);
     float maxKT = max(coefs.kt);
-    
-    // Calcular el denominador total para las probabilidades
     float total = maxKD + maxKS + maxKT;
     
-    // Si el total es cero, entonces no hay reflección ni refracción
-    if (total == 0) {
-        return -1; // No hay contribución, se puede manejar como error o escape
+    if (total == 0) {   // No hay reflección ni refracción
+        return -1;      // no corresponde con ningún rayo, error
     }
 
-    // Calcular probabilidades de cada tipo de rayo
-    float probDifuso = (maxKD > 0) ? maxKD / total : -1;
-    float probSpecular = (maxKS > 0) ? maxKS / total : -1;
-    float probRefractante = (maxKT > 0) ? maxKT / total : -1;
+    float probDifuso = maxKD / total;
+    float probEspecular = maxKS / total;
+    float probRefractante = maxKT / total;
 
-    // Generar un número aleatorio entre 0 y 1
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-    float bala = dist(gen);
+    float bala = dist(gen);     // Random float entre (0,1)
 
-    // Determinar el tipo de rayo según la "bala" y las probabilidades acumuladas
     if (bala <= probDifuso) {
         return 0;  // Rayo difuso
-    } else if (bala <= probDifuso + probSpecular) {
+    } else if (bala <= probDifuso + probEspecular) {
         return 1;  // Rayo especular
     } else {
         return 2;  // Rayo refractante
     }
 }
 
-RGB calcBrdf(const BSDFs& coefs, const Direccion& wo, const Direccion& n) {
-    dispararRuletaRusa(coefs);
+RGB calcBsdf(const BSDFs& coefs, const Direccion& wo, const Direccion& n) {
+    int rayo = dispararRuletaRusa(coefs);
+    RGB resultado;
     
-    return RGB();
+    switch (rayo) {
+        case 0:
+            resultado = calcBrdfDifusa(coefs.kd);
+            break;
+        
+        case 1:
+            resultado = calcBrdfEspecular(coefs.ks, wo, n);
+            break;
+        
+        case 2:
+            cerr << "WTF???" << endl;
+            break;
+            
+        default:
+            cerr << "Error: rayo no identificado" << endl;
+            break;
+    }
+    
+    return resultado;
 }
 
 float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
@@ -121,7 +134,7 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
 }
 
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                         const RGB &kd, bool debug) {
+                         const BSDFs& coefs, bool debug) {
     int n = 0;
 
     if (escena.puntoPerteneceALuz(p0)) {    // p0 es de una fuente de luz (de área)
@@ -133,7 +146,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         
         if(debug){
             n++;
-            cout << endl << "(( kd antes: " << kd << endl;
+            cout << endl << "(( coefs antes: " << coefs << endl;
             cout << endl << "(( LUZ " << n << " )) " << endl;
         }
         
@@ -147,22 +160,21 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         
         Direccion dirIncidente = luz.c - p0;
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(dirIncidente, normal);
-        RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
-        //RGB reflectanciaBRDFDifusa = calcBrdfSpecular(kd, dirIncidente, normal);
+        RGB reflectanciaBSDF = calcBsdf(coefs, dirIncidente, normal);
         RGB radianciaIncidente = luz.p / (modulo(dirIncidente) * modulo(dirIncidente));
         
         if(debug){
             cout << "(( luz.c: " << luz.c << " )) " << endl;
             cout << "(( luz.p: " << luz.p << " )) " << endl;
             cout << "(( p0: " << p0 << " )) " << endl;
-            cout << "(( kd " << kd << " ))";
+            cout << "(( coefs: " << coefs << " ))";
             cout << "(( CmenosX: " << dirIncidente << " )) " << endl;
             cout << "(( radianciaIncidente: " << radianciaIncidente << " )) " << endl;
-            cout << "(( reflectanciaBRDFDifusa: " << reflectanciaBRDFDifusa << " )) " << endl;
+            cout << "(( reflectanciaBRDFDifusa: " << reflectanciaBSDF << " )) " << endl;
             cout << "(( cosAnguloIncidencia: " << cosAnguloIncidencia << " )) " << endl;
         }
         
-        radianciaIncidente = radianciaIncidente * (reflectanciaBRDFDifusa * cosAnguloIncidencia);
+        radianciaIncidente = radianciaIncidente * (reflectanciaBSDF * cosAnguloIncidencia);
         
         
         if(debug){
@@ -303,7 +315,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion& normal,
 
     
     // Calcular mediante RULETA RUSA si el rayo es difuso, reflectante, refractante o si se absorbe
-    RGB radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, nuevaNormal, escena, coeficientes.kd, debug);
+    RGB radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, nuevaNormal, escena, coeficientes, debug);
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, nuevaNormal, escena,
                                                                 rebotesRestantes - 1, debug)
                                     * calcBrdfDifusa(coeficientes.kd)
@@ -349,7 +361,7 @@ RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned ma
 
     if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
         // Calcular mediante RULETA RUSA si el rayo es difuso, reflectante, refractante o si se absorbe
-        RGB radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
+        RGB radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos, debug);
         
         radianciaSalienteTotal = radianciaSalienteDirecta;
         if (!choqueConLuz) {
