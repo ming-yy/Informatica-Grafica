@@ -43,6 +43,9 @@ public:
     
     // Operación de asignación de array
     RGB& operator=(const init_list<float>& r);
-
+    
+    // Función que devuelve el valor máximo del RGB
+    friend float max(const RGB& a);
+    
     friend ostream& operator<<(ostream& os, const RGB& r);
 };

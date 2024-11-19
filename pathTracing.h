@@ -18,6 +18,14 @@
 // Función que calcula la reflectancia difusa de Lambert.
 RGB calcBrdfDifusa(const RGB &kd);
 
+// Función que calcula la reflectancia especular.
+RGB calcBrdfEspecular(const RGB& ks, const Direccion& wo, const Direccion& n);
+
+// Función que realiza una selección probabilística del tipo de rayo que
+// será disparado (difuso, especular o refractante) basándose en los coeficientes
+// de la superficie (kd, ks, kt) proporcionados por <coefs>.
+int dispararRuletaRusa(const BSDFs& coefs) {
+
 // Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
 // por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
 float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);

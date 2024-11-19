@@ -12,6 +12,7 @@
 #include "gestorPPM.h"
 #include "utilidades.h"
 #include <cmath>
+#include <algorithm>
 #include <random>
 #include <stack>
 
@@ -62,8 +63,57 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
     return Rayo(nuevaDir, o);
 }
 
-RGB calcBrdfDifusa(const RGB &kd){
+RGB calcBrdfDifusa(const RGB& kd){
     return kd / M_PI;
+}
+
+RGB calcBrdfEspecular(const RGB& ks, const Direccion& wo, const Direccion& n) {
+    Direccion wr = wo - n*2 * dot(wo, n);
+    RGB delta = RGB(ks.rgb[0] * wr.coord[0],
+                    ks.rgb[1] * wr.coord[1],
+                    ks.rgb[2] * wr.coord[2]);
+    return delta / dot(wr, n);
+}
+
+// Falta hace un typedef o algo para que no devuelva un entero (?)
+int dispararRuletaRusa(const BSDFs& coefs) {
+    float maxKD = max(coefs.kd);
+    float maxKS = max(coefs.ks);
+    float maxKT = max(coefs.kt);
+    
+    // Calcular el denominador total para las probabilidades
+    float total = maxKD + maxKS + maxKT;
+    
+    // Si el total es cero, entonces no hay reflección ni refracción
+    if (total == 0) {
+        return -1; // No hay contribución, se puede manejar como error o escape
+    }
+
+    // Calcular probabilidades de cada tipo de rayo
+    float probDifuso = (maxKD > 0) ? maxKD / total : -1;
+    float probSpecular = (maxKS > 0) ? maxKS / total : -1;
+    float probRefractante = (maxKT > 0) ? maxKT / total : -1;
+
+    // Generar un número aleatorio entre 0 y 1
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    float bala = dist(gen);
+
+    // Determinar el tipo de rayo según la "bala" y las probabilidades acumuladas
+    if (bala <= probDifuso) {
+        return 0;  // Rayo difuso
+    } else if (bala <= probDifuso + probSpecular) {
+        return 1;  // Rayo especular
+    } else {
+        return 2;  // Rayo refractante
+    }
+}
+
+RGB calcBrdf(const BSDFs& coefs, const Direccion& wo, const Direccion& n) {
+    dispararRuletaRusa(coefs);
+    
+    return RGB();
 }
 
 float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
@@ -74,7 +124,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
                          const RGB &kd, bool debug) {
     int n = 0;
 
-    if (escena.puntoPerteneceALuz(p0)) {    // p0 es de una fuente de luz
+    if (escena.puntoPerteneceALuz(p0)) {    // p0 es de una fuente de luz (de área)
         return RGB({1,1,1});    // Debería ser el power de la fuente de luz
     }
     
@@ -98,6 +148,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         Direccion dirIncidente = luz.c - p0;
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(dirIncidente, normal);
         RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
+        //RGB reflectanciaBRDFDifusa = calcBrdfSpecular(kd, dirIncidente, normal);
         RGB radianciaIncidente = luz.p / (modulo(dirIncidente) * modulo(dirIncidente));
         
         if(debug){
@@ -222,8 +273,11 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion& normal,
     Direccion nuevaNormal;
     BSDFs coeficientes;
 
-    if (rebotesRestantes == 0) cout << "REBOTES RESTANTES: 0" << endl; return RGB();    // Condición terminal: alcanzado max rebotes,
-                                                //                      devuelve (0,0,0)
+    if (rebotesRestantes == 0) {     // Condición terminal: alcanzado max rebotes
+        if (debug) cout << "REBOTES RESTANTES: 0" << endl;
+        return RGB({0.0f, 0.0f, 0.0f});
+    }
+
     Rayo wi = generarCaminoAleatorio(origen, normal);
     bool choqueConLuz = false;
     bool hayIntersec = escena.interseccion(wi, coeficientes, ptoIntersec, nuevaNormal, choqueConLuz);
@@ -239,16 +293,17 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion& normal,
 
     if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada, devuelve (0,0,0)
         if (debug) cout << "CONDICION TERMINAL: rayo no choca con nada" << endl;
-        return RGB();
+        return RGB({0.0f, 0.0f, 0.0f});
     } else if (hayIntersec && choqueConLuz) {   // Condición terminal: rayo choca contra fuente de luz de área
                                                 //                      devuelve emisión de la luz
         if (debug) cout << "CONDICION TERMINAL: rayo choca con luz" << endl << "coefs: " << coeficientes << endl;
         return coeficientes.kd;    // RECORDAR: terminar de implementar luz de área
+                                   // debería devolver un RGB(1,1,1) o el power que tenga
     }
 
     
     // Calcular mediante RULETA RUSA si el rayo es difuso, reflectante, refractante o si se absorbe
-    RGB radianciaSalienteDirecta = coeficientes.kd * nextEventEstimation(ptoIntersec, nuevaNormal, escena, coeficientes.kd, debug);
+    RGB radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, nuevaNormal, escena, coeficientes.kd, debug);
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, nuevaNormal, escena,
                                                                 rebotesRestantes - 1, debug)
                                     * calcBrdfDifusa(coeficientes.kd)
@@ -294,8 +349,7 @@ RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned ma
 
     if (escena.interseccion(rayo, coefsDirectos, ptoIntersec, normal, choqueConLuz)) {
         // Calcular mediante RULETA RUSA si el rayo es difuso, reflectante, refractante o si se absorbe
-        RGB radianciaDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
-        RGB radianciaSalienteDirecta = coefsDirectos.kd * radianciaDirecta;
+        RGB radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, normal, escena, coefsDirectos.kd, debug);
         
         radianciaSalienteTotal = radianciaSalienteDirecta;
         if (!choqueConLuz) {
@@ -304,7 +358,6 @@ RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned ma
                                                                        ptoIntersec, normal, debug);
         }
     }
-
     return radianciaSalienteTotal;
 }
 
@@ -343,11 +396,11 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
 
             bool debug = false;
             RGB radianciaSalienteTotal;
-            for(unsigned i = 0; i < rpp; i++){
+            for(unsigned i = 0; i < rpp; ++i){
                 rayo = camara.obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
                 globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
-                
-                radianciaSalienteTotal = radianciaSalienteTotal + obtenerRadianciaSaliente(rayo, escena, maxRebotes, numRayosMontecarlo, debug);
+                radianciaSalienteTotal = radianciaSalienteTotal +
+                                         obtenerRadianciaSaliente(rayo, escena, maxRebotes, numRayosMontecarlo, debug);
             }
             coloresEscena[alto][ancho] = radianciaSalienteTotal / rpp;
         }
@@ -357,7 +410,8 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
 
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                       const Escena& escena, const string& nombreEscena, const unsigned rpp,
-                      const unsigned maxRebotes, const unsigned numRayosMontecarlo, const bool printPixelesProcesados) {
+                      const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                      const bool printPixelesProcesados) {
     float anchoPorPixel = camara.calcularAnchoPixel(numPxlsAncho);
     float altoPorPixel = camara.calcularAltoPixel(numPxlsAlto);
    
@@ -365,8 +419,7 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
     if (printPixelesProcesados) cout << "Procesando pixeles..." << endl << "0 pixeles de " << totalPixeles << endl;
 
     // Inicializado todo a color negro
-    vector<vector<RGB>> coloresEscena(numPxlsAlto, vector<RGB>(numPxlsAncho,
-                                                                              {0.0f, 0.0f, 0.0f}));
+    vector<vector<RGB>> coloresEscena(numPxlsAlto, vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
 
     if(rpp == 1){
         renderizarEscena1RPP(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
@@ -374,8 +427,8 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
                              totalPixeles, printPixelesProcesados);
     } else {
         renderizarEscenaConAntialiasing(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
-                                    altoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena,
-                                    printPixelesProcesados, totalPixeles, rpp);
+                                        altoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena,
+                                        printPixelesProcesados, totalPixeles, rpp);
     }
     
     //imprimirImagen(coloresEscena);

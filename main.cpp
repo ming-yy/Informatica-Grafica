@@ -62,9 +62,9 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
     
-    const unsigned maxRebotes = 1;
-    const unsigned rpp = 1;
-    const unsigned numRayosMontecarlo = 1;
+    const unsigned maxRebotes = 5;
+    const unsigned rpp = 16;
+    const unsigned numRayosMontecarlo = 8;
     const bool printPixelesProcesados = false;
     
     auto inicio = std::chrono::high_resolution_clock::now();
