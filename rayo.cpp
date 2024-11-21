@@ -10,6 +10,8 @@
 #include "transformaciones.h"
 
 
+Rayo::Rayo(): d(Direccion()), o(Punto()) {};
+
 Rayo::Rayo(const Direccion& dir, const Punto& origen) : d(dir), o(origen) {};
 
 void Rayo::imprimir() const {

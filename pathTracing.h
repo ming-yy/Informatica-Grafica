@@ -15,14 +15,22 @@
 #include "utilidades.h"
 
 
+// Función que calcula la dirección de la luz reflejada (especular perfecta).
+Direccion calcDirEspecular(const Direccion& wo, const Direccion& n);
+
 // Función que calcula la reflectancia difusa de Lambert.
 RGB calcBrdfDifusa(const RGB &kd);
 
 // Función que calcula la reflectancia especular.
-RGB calcBrdfEspecular(const RGB& ks, const Direccion& wo, const Direccion& n);
+RGB calcBrdfEspecular(const RGB& ks, const Direccion& wi, const Direccion& wo, const Direccion& n,
+                      Direccion& wr);
 
 // Función que calcula BSDF completo pero con ruleta rusa.
-RGB calcBsdf(const BSDFs& coefs, const Direccion& wo, const Direccion& n);
+// <wi>: dirección luz saliente inversa. Rayo hijo del rayo que sale de la cámara e interseca contra una
+//       primitiva, obteniendo la normal <n>
+// <wo>: dirección luz entrante inversa. Rayo que va desde el punto donde ha interseccionado wi con la
+//       primitiva hasta la fuente de luz correspondiente.
+RGB calcBsdf(const BSDFs& coefs, const int tipoRayo);
 
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
@@ -37,8 +45,10 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 // Además, si devuelve False, la radiancia devuelta será 0.
 // En caso contrario, devuelve True. Si devuelve True, también devolverá la radiancia correspondiente
 // al punto <p0>.
-RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                        const BSDFs& coefs, bool debug);
+// <wi>: dirección luz saliente inversa. Es un rayo hijo del rayo que sale de la cámara, y que
+//       interseca con una primita en el punto <p0> y tiene la normal <normal> en ese punto.
+RGB nextEventEstimation(const Direccion& wi, const Punto& p0, const Direccion& normal,
+                        const Escena& escena, const BSDFs& coefs, bool debug);
 
 // Función que devuelve un valor aleatorio para azimut y otro para inclinación
 // para muestreo uniforme de ángulo sólido.
@@ -53,30 +63,25 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
 // como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
 Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
-
-// Función iterativa que calcula la radiancia del punto <origenInicial> y las radiancias de los puntos
-// intersectados tras <rebotesRestantes> rebotes
-void iterativaRadianciaIndirecta(const Punto& origenInicial, const Direccion& normalInicial,
-                           const Escena& escena, const unsigned maxRebotes,
-                           RGB& emisionAcumulada, float& brdfCosenoAcumulado, bool debug);
-
 // Función recursiva que calcula la radiancia del punto <origen> y las radiancias de los puntos
 // intersectados tras <rebotesRestantes> rebotes
-RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion& normal, const Escena& escena,
-                             const unsigned rebotesRestantes, bool debug);
+RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const BSDFs &coefsPtoInterseccion, 
+                                    const Direccion& normal, const Escena& escena,
+                                    const unsigned rebotesRestantes, bool debug);
 
 // Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
 // para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.
-RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRebotes,
-                            const unsigned numRayosMontecarlo, const Punto& ptoIntersec, const Direccion& normal,
-                            bool debug);
+RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRebotes, 
+                                        const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
+                                        const Direccion& wo, const BSDFs &coefsPtoInterseccion,
+                                        const Direccion& normal, bool debug);
 
 // Función que devuelve la radiancia saliente total (directa + indirecta) dado un rayo y una escena,
 // rebotando un máximo de <maxRebotes> veces y calculada a través de la media de <numRayosMontecarlo> rayos
 // Cabe aclarar que el primer punto de intersección es siempre el mismo, los rayos "Montecarlo" comienzan
 // aleatoriamente siempre desde este primer punto.
 RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned maxRebotes, 
-                                const unsigned numRayosMontecarlo, bool debug);
+                             const unsigned numRayosMontecarlo, bool debug);
 
 // Método que muestra por pantalla el número de píxeles procesados (cada 100 píxeles)
 void printPixelActual(unsigned totalPixeles, unsigned numPxlsAncho, unsigned ancho, unsigned alto);
