@@ -51,8 +51,8 @@ void cajaDeCornell(){
     objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano suelo, blanco
     objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano techo, blanco
     objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano fondo, blanco
-    //objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.89f, 0.45f, 0.82f}), "muy_difuso", false)); // esfera izquierda, rosa
-    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({1.0f, 1.0f, 1.0f}), "espejo", false)); // esfera izquierda, blanca
+    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.89f, 0.45f, 0.82f}), "muy_difuso", false)); // esfera izquierda, rosa
+    //objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({1.0f, 1.0f, 1.0f}), "espejo", false)); // esfera izquierda, blanca
     objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso", false)); // esfera derecha, azul
     vector<LuzPuntual> luces;
 
@@ -65,9 +65,9 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     
     const unsigned maxRebotes = 1;
-    const unsigned rpp = 32;
+    const unsigned rpp = 16;
     const unsigned numRayosMontecarlo = 1;
-    const bool printPixelesProcesados = false;
+    const bool printPixelesProcesados = true;
     
     auto inicio = std::chrono::high_resolution_clock::now();
     renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);

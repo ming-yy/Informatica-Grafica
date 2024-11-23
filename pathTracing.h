@@ -16,26 +16,29 @@
 
 
 // Función que calcula la dirección de la luz reflejada (especular perfecta).
+// <wo>: dirección luz entrante. Rayo que ha chocado contra un elemento de la escena
+//       en un punto
+// <n>:  normal del objeto por el punto donde ha chocado wo.
 Direccion calcDirEspecular(const Direccion& wo, const Direccion& n);
-
-// Función que calcula la reflectancia difusa de Lambert.
-RGB calcBrdfDifusa(const RGB &kd);
-
-// Función que calcula la reflectancia especular.
-RGB calcBrdfEspecular(const RGB& ks, const Direccion& wi, const Direccion& wo, const Direccion& n,
-                      Direccion& wr);
-
-// Función que calcula BSDF completo pero con ruleta rusa.
-// <wi>: dirección luz saliente inversa. Rayo hijo del rayo que sale de la cámara e interseca contra una
-//       primitiva, obteniendo la normal <n>
-// <wo>: dirección luz entrante inversa. Rayo que va desde el punto donde ha interseccionado wi con la
-//       primitiva hasta la fuente de luz correspondiente.
-RGB calcBsdf(const BSDFs& coefs, const int tipoRayo);
 
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
 // de la superficie (kd, ks, kt) proporcionados por <coefs>.
 int dispararRuletaRusa(const BSDFs& coefs);
+
+// Función que ..
+Rayo obtenerRayoRuletaRusa(const int tipoRayo, const Punto& origen, const Direccion& wo,
+                           const Direccion& normal, bool debug);
+
+// Función que calcula la reflectancia difusa de Lambert.
+RGB calcBrdfDifusa(const RGB &kd);
+
+// Función que calcula la reflectancia especular. Devuelve <ks> porque si se invoca esta
+// función, es porque se ha decidido que el rayo va a ser especular.
+RGB calcBrdfEspecular(const RGB& ks);
+
+// Función que calcula BSDF dado todos los coeficientes y el tipo de rayo que es.
+RGB calcBsdf(const BSDFs& coefs, const int tipoRayo);
 
 // Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
 // por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
@@ -47,8 +50,13 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 // al punto <p0>.
 // <wi>: dirección luz saliente inversa. Es un rayo hijo del rayo que sale de la cámara, y que
 //       interseca con una primita en el punto <p0> y tiene la normal <normal> en ese punto.
-RGB nextEventEstimation(const Direccion& wi, const Punto& p0, const Direccion& normal,
-                        const Escena& escena, const BSDFs& coefs, bool debug);
+//
+//
+//           CAMBIAR CAMBAIR CAMBIAR
+//
+//
+RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
+                        const BSDFs& coefs, bool debug);
 
 // Función que devuelve un valor aleatorio para azimut y otro para inclinación
 // para muestreo uniforme de ángulo sólido.
