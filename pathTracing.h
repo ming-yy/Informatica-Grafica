@@ -88,7 +88,7 @@ RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRe
 // rebotando un máximo de <maxRebotes> veces y calculada a través de la media de <numRayosMontecarlo> rayos
 // Cabe aclarar que el primer punto de intersección es siempre el mismo, los rayos "Montecarlo" comienzan
 // aleatoriamente siempre desde este primer punto.
-RGB obtenerRadianciaSaliente(Rayo &rayo, const Escena &escena, const unsigned maxRebotes, 
+RGB obtenerRadianciaSaliente(const Rayo &rayo, const Escena &escena, const unsigned maxRebotes, 
                              const unsigned numRayosMontecarlo, bool debug);
 
 // Método que muestra por pantalla el número de píxeles procesados (cada 100 píxeles)

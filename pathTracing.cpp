@@ -236,7 +236,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
     
     int tipoRayo = dispararRuletaRusa(coefsOrigen);
-    if (tipoRayo != -1) {
+    if (tipoRayo == -1) {
         return RGB({0.0f, 0.0f, 0.0f});
     }
     Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo, normal, debug);
@@ -267,7 +267,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
     
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
-    if (tipoRayo == 1) {    // Si es difuso
+    if (tipoRayo == 0) {    // Si es difuso
         radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, nuevaNormal, escena,
                                                         coefsPtoIntersec.kd, debug);
     }
@@ -276,7 +276,6 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
                                                                     escena, rebotesRestantes - 1, debug)
                                     * calcBsdf(coefsPtoIntersec, tipoRayo)
                                     * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
-    
     if (debug) cout << "LUZ INTERSECCION = " << radianciaSalienteDirecta << endl;
 
     return radianciaSalienteDirecta + radianciaSalienteIndirecta;
@@ -309,7 +308,7 @@ void printPixelActual(unsigned totalPixeles, unsigned numPxlsAncho, unsigned anc
     }
 }
 
-RGB obtenerRadianciaSaliente(Rayo &rayoIncidente, const Escena &escena, const unsigned maxRebotes, 
+RGB obtenerRadianciaSaliente(const Rayo &rayoIncidente, const Escena &escena, const unsigned maxRebotes, 
                              const unsigned numRayosMontecarlo, bool debug){
     Punto ptoIntersec;
     Direccion normal;
@@ -323,16 +322,18 @@ RGB obtenerRadianciaSaliente(Rayo &rayoIncidente, const Escena &escena, const un
             tipoRayo = dispararRuletaRusa(coefsPtoInterseccion);
         }
         
-        if (tipoRayo == 0) {
+        if (tipoRayo == 0) {    // Radiancia saliente directa
             radianciaSalienteTotal = nextEventEstimation(ptoIntersec, normal, escena,
                                                          coefsPtoInterseccion.kd , debug);
         }
 
-        if (!choqueConLuz) {
-            radianciaSalienteTotal = radianciaSalienteTotal +
-                                     obtenerRadianciaSalienteIndirecta(escena, maxRebotes, numRayosMontecarlo,
-                                                                       ptoIntersec, rayoIncidente.d, coefsPtoInterseccion,
-                                                                       normal, debug);
+        if (!choqueConLuz) {    // Radiancia saliente indirecta
+            RGB radianciaSalienteIndirecta = obtenerRadianciaSalienteIndirecta(escena, maxRebotes, numRayosMontecarlo,
+                                                                               ptoIntersec, rayoIncidente.d,
+                                                                               coefsPtoInterseccion,
+                                                                               normal, debug);
+            radianciaSalienteTotal = radianciaSalienteTotal + radianciaSalienteIndirecta;
+            //cout << "Radiancia Indirecta: " << max(radianciaSalienteIndirecta) << endl;
         }
     }
     return radianciaSalienteTotal;
