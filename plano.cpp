@@ -86,3 +86,7 @@ ostream& operator<<(ostream& os, const Plano& r)
     os << "\nCoeficientes: " << r.coeficientes << endl << "\nSoyLuz: " << r.soyLuz << endl;
     return os;
 }
+
+void Plano::diHola() const {
+    cout << "Soy plano: centro = " << this->c << ", normal = " << this->n << ", distancia = " << this->d << endl;
+}

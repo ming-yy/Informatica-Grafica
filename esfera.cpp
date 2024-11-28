@@ -93,3 +93,7 @@ bool Esfera::soyFuenteDeLuz() const {
 Punto Esfera::generarPuntoAleatorio() const {
     return Punto();
 }
+
+void Esfera::diHola() const {
+    cout << "Soy esfera: centro = " << this->centro << ", radio = " << this->radio << endl;
+}

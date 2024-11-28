@@ -45,4 +45,7 @@ public:
     
     // Método que devuelve un punto aleatorio de la esfera en UCS.
     Punto generarPuntoAleatorio() const override;
+    
+    // Debug
+    void diHola() const override;
 };

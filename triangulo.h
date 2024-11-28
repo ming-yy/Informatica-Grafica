@@ -45,4 +45,7 @@ public:
     
     // Método que devuelve un punto aleatorio del triángulo en UCS.
     Punto generarPuntoAleatorio() const override;
+    
+    // Debug
+    void diHola() const override;
 };

@@ -78,13 +78,10 @@ int dispararRuletaRusa(const BSDFs& coefs) {
     float probRefractante = maxKT / total;
     float probAbsorbente = 1 - probDifuso - probEspecular - probRefractante;
     
-    //cout << "Probabilidades: " << probDifuso << " " << probEspecular << " " << probRefractante << " " << probAbsorbente << endl;
-
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dist(0.0f, 1.0f);
     float bala = dist(gen);     // Random float entre (0,1)
-    //cout << bala << endl;
 
     if (bala <= probDifuso) {
         return 0;  // Rayo difuso
@@ -271,11 +268,12 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
         radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, nuevaNormal, escena,
                                                         coefsPtoIntersec.kd, debug);
     }
-    
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, wi.d, coefsPtoIntersec, nuevaNormal,
-                                                                    escena, rebotesRestantes - 1, debug)
-                                    * calcBsdf(coefsPtoIntersec, tipoRayo)
-                                    * calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
+                                                                    escena, rebotesRestantes - 1, debug);
+    float coseno = calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
+    RGB bsdf = calcBsdf(coefsOrigen, tipoRayo);
+
+    radianciaSalienteIndirecta = radianciaSalienteIndirecta * bsdf * coseno;
     if (debug) cout << "LUZ INTERSECCION = " << radianciaSalienteDirecta << endl;
 
     return radianciaSalienteDirecta + radianciaSalienteIndirecta;

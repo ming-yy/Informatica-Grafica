@@ -274,10 +274,15 @@ void pintarEscenaEnPPM(const string& nombreArchivo, const vector<vector<RGB>>& i
     for (size_t y = 0; y < numPxlsAlto; y++) {
         for (size_t x = 0; x < numPxlsAncho; x++) {
             const RGB& pixel = imagen[y][x];
-            int r = std::round((pixel.rgb[0] * c) / maxColorRes);
-            int g = std::round((pixel.rgb[1] * c)/ maxColorRes);
-            int b = std::round((pixel.rgb[2] * c)/ maxColorRes);
-            archivo << r << " " << g << " " << b << "  ";
+            
+            if (maxColorRes != 0) {
+                int r = std::round((pixel.rgb[0] * c) / maxColorRes);
+                int g = std::round((pixel.rgb[1] * c)/ maxColorRes);
+                int b = std::round((pixel.rgb[2] * c)/ maxColorRes);
+                archivo << r << " " << g << " " << b << "  ";
+            } else {
+                archivo << "0 0 0  ";
+            }
         }
         archivo << "\n";
     }

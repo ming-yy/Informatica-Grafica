@@ -70,3 +70,7 @@ bool Triangulo::soyFuenteDeLuz() const {
 Punto Triangulo::generarPuntoAleatorio() const {
     return Punto();
 }
+
+void Triangulo::diHola() const {
+    cout << "Soy triangulo: p1 = " << this->v0 << endl;
+}

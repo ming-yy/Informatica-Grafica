@@ -51,4 +51,7 @@ public:
 
     // Función para mostrar por pantalla la información del plano
     friend ostream& operator<<(ostream& os, const Plano& p);
+    
+    // Debug
+    void diHola() const override;
 };

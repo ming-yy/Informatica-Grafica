@@ -50,4 +50,7 @@ public:
     
     // Método virtual que devuelve un punto aleatorio de la primitiva.
     virtual Punto generarPuntoAleatorio() const = 0;
+    
+    // Debug
+    virtual void diHola() const = 0;
 };
