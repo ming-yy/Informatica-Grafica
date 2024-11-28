@@ -70,8 +70,8 @@ void cajaDeCornell(){
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
-    const unsigned maxRebotes = 5;
-    const unsigned rpp = 128;
+    const unsigned maxRebotes = 2;
+    const unsigned rpp = 16;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     

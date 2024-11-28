@@ -67,7 +67,7 @@ Direccion calcDirEspecular(const Direccion& wo, const Direccion& n) {
     return normalizar(wo - n * 2.0f * dot(wo, n));
 }
 
-int dispararRuletaRusa(const BSDFs& coefs) {
+TipoRayo dispararRuletaRusa(const BSDFs& coefs) {
     float maxKD = max(coefs.kd);
     float maxKS = max(coefs.ks);
     float maxKT = max(coefs.kt);
@@ -76,7 +76,7 @@ int dispararRuletaRusa(const BSDFs& coefs) {
     float probDifuso = maxKD / total;
     float probEspecular = maxKS / total;
     float probRefractante = maxKT / total;
-    float probAbsorbente = 1 - probDifuso - probEspecular - probRefractante;
+    float probAbsorbente = 1.0f - probDifuso - probEspecular - probRefractante;
     
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -84,25 +84,25 @@ int dispararRuletaRusa(const BSDFs& coefs) {
     float bala = dist(gen);     // Random float entre (0,1)
 
     if (bala <= probDifuso) {
-        return 0;  // Rayo difuso
+        return DIFUSO;  // Rayo difuso
     } else if (bala <= probDifuso + probEspecular) {
-        return 1;  // Rayo especular
+        return ESPECULAR;  // Rayo especular
     } else if (bala <= probDifuso + probEspecular + probRefractante) {
-        return 2;  // Rayo refractante
+        return REFRACTANTE;  // Rayo refractante
     } else {
-        return -1;   // Absorbente
+        return ABSORBENTE;   // Absorbente
     }
 }
 
-Rayo obtenerRayoRuletaRusa(const int tipoRayo, const Punto& origen, const Direccion& wo,
+Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
                            const Direccion& normal, bool debug) {
     Rayo wi;
-    if (tipoRayo == 0) {        // difuso
+    if (tipoRayo == DIFUSO) {        // difuso
         wi = generarCaminoAleatorio(origen, normal);
-    } else if (tipoRayo == 1) {    // especular
+    } else if (tipoRayo == ESPECULAR) {    // especular
         wi.d = calcDirEspecular(wo, normal);
         wi.o = origen;
-    } else if (tipoRayo == 2){     // refractante
+    } else if (tipoRayo == REFRACTANTE){     // refractante
         cout << "Todavía no implementada" << endl;
     }
     return wi;
@@ -116,23 +116,23 @@ RGB calcBrdfEspecular(const RGB& ks) {
     return ks;
 }
 
-RGB calcBsdf(const BSDFs& coefs, int tipoRayo) {
+RGB calcBsdf(const BSDFs& coefs, TipoRayo tipoRayo) {
     RGB resultado;
     
     switch (tipoRayo) {
-        case 0:
+        case DIFUSO:
             resultado = calcBrdfDifusa(coefs.kd);
             break;
         
-        case 1:
+        case ESPECULAR:
             resultado = calcBrdfEspecular(coefs.ks);
             break;
         
-        case 2:
+        case REFRACTANTE:
             cout << "REFRACTANTE" << endl;
             break;
             
-        case -1:
+        case ABSORBENTE:
             resultado = RGB(0.0f, 0.0f, 0.0f);
             break;
             
@@ -232,8 +232,8 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
         return RGB({0.0f, 0.0f, 0.0f});
     }
     
-    int tipoRayo = dispararRuletaRusa(coefsOrigen);
-    if (tipoRayo == -1) {
+    TipoRayo tipoRayo = dispararRuletaRusa(coefsOrigen);
+    if (tipoRayo == ABSORBENTE) {
         return RGB({0.0f, 0.0f, 0.0f});
     }
     Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo, normal, debug);
@@ -264,7 +264,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
     
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
-    if (tipoRayo == 0) {    // Si es difuso
+    if (tipoRayo == DIFUSO) {    // Si es difuso
         radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, nuevaNormal, escena,
                                                         coefsPtoIntersec.kd, debug);
     }
@@ -315,12 +315,12 @@ RGB obtenerRadianciaSaliente(const Rayo &rayoIncidente, const Escena &escena, co
     BSDFs coefsPtoInterseccion;
     
     if (escena.interseccion(rayoIncidente, coefsPtoInterseccion, ptoIntersec, normal, choqueConLuz)) {
-        int tipoRayo = -1;
-        while(tipoRayo == -1) {     // 1º rayo no puede ser absorbente
+        TipoRayo tipoRayo = ABSORBENTE;
+        while(tipoRayo == ABSORBENTE) {     // 1º rayo no puede ser absorbente
             tipoRayo = dispararRuletaRusa(coefsPtoInterseccion);
         }
         
-        if (tipoRayo == 0) {    // Radiancia saliente directa
+        if (tipoRayo == DIFUSO) {    // Radiancia saliente directa
             radianciaSalienteTotal = nextEventEstimation(ptoIntersec, normal, escena,
                                                          coefsPtoInterseccion.kd , debug);
         }

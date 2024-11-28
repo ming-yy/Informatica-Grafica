@@ -15,6 +15,14 @@
 #include "utilidades.h"
 
 
+enum TipoRayo {
+    ABSORBENTE = -1,
+    DIFUSO = 0,
+    ESPECULAR = 1,
+    REFRACTANTE = 2
+};
+
+
 // Función que calcula la dirección de la luz reflejada (especular perfecta).
 // <wo>: dirección luz entrante. Rayo que ha chocado contra un elemento de la escena
 //       en un punto
@@ -24,10 +32,10 @@ Direccion calcDirEspecular(const Direccion& wo, const Direccion& n);
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
 // de la superficie (kd, ks, kt) proporcionados por <coefs>.
-int dispararRuletaRusa(const BSDFs& coefs);
+TipoRayo dispararRuletaRusa(const BSDFs& coefs);
 
 // Función que ..
-Rayo obtenerRayoRuletaRusa(const int tipoRayo, const Punto& origen, const Direccion& wo,
+Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
                            const Direccion& normal, bool debug);
 
 // Función que calcula la reflectancia difusa de Lambert.
@@ -38,7 +46,7 @@ RGB calcBrdfDifusa(const RGB &kd);
 RGB calcBrdfEspecular(const RGB& ks);
 
 // Función que calcula BSDF dado todos los coeficientes y el tipo de rayo que es.
-RGB calcBsdf(const BSDFs& coefs, const int tipoRayo);
+RGB calcBsdf(const BSDFs& coefs, const TipoRayo tipoRayo);
 
 // Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
 // por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
