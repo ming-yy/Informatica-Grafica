@@ -319,8 +319,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
     if (tipoRayo == DIFUSO) {
         radianciaSalienteDirecta = nextEventEstimation(origen, normal, escena,
-        //radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, nuevaNormal, escena,
-                                                        coefsPtoIntersec.kd, debug);
+                                                       coefsOrigen.kd, debug);
     }
 
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, wi.d, coefsPtoIntersec, nuevaNormal,
