@@ -13,7 +13,7 @@ constexpr int KD_i = 0;  // coef difuso
 constexpr int KS_i = 1;  // coef especular (reflexión)
 constexpr int KT_i = 2;  // coef transmitancia (refracción)
 
-using FloatArray = std::array<float, 3>;
+using FloatArray = std::array<float, 4>;
 
 
 std::map<string, FloatArray> materiales{

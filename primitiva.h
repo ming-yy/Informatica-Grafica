@@ -20,11 +20,12 @@ class Primitiva {
 public:
     BSDFs coeficientes;
     bool soyLuz;
+    float idxRefraccion;
 
     Primitiva();
     Primitiva(const RGB& color, const string material, const bool _soyLuz);
-    Primitiva(const RGB& color, const array<float, 3> kd,
-              const array<float, 3> ks, const array<float, 3> kt, const bool _soyLuz);
+    Primitiva(const RGB& color, const array<float, 3> kd, const array<float, 3> ks,
+              const array<float, 3> kt, const bool _soyLuz);
     
     // Destructor virtual para asegurar que los destructores de las clases derivadas
     // se llamen correctamente.

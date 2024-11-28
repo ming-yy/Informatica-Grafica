@@ -58,6 +58,7 @@ void cajaDeCornell(){
 
     RGB potencia(1.0f, 1.0f, 1.0f);
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
+    luces.push_back(LuzPuntual({0.0f, 0.0f, -1.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
     
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
@@ -66,7 +67,7 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     
     // Zoom esfera izquierda
-    Camara cam2 = Camara({-0.5f, -0.5f, 0.0f},
+    Camara cam2 = Camara({-0.5f, -0.5f, -0.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});

@@ -23,18 +23,40 @@ enum TipoRayo {
 };
 
 
-// Función que calcula la dirección de la luz reflejada (especular perfecta).
+
+// Función que devuelve un valor aleatorio para azimut y otro para inclinación
+// para muestreo uniforme de ángulo sólido.
+void generarAzimutInclinacion(float& azimut, float& inclinacion);
+
+// Función que devuelve las coordenadas cartesianas correspondientes de (azimut, inclinacion)
+void getCoordenadasCartesianas(const float azimut, const float inclinacion,
+                                float& x, float& y, float& z);
+
+// Función que devuelve un rayo generado aleatoriamente. El origen del rayo es <o> y la dirección
+// del rayo es una aleatoria pero está contenida en el hipotético hemisferio superior que tiene
+// como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
+Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
+
+// Función que calcula la dirección incidente (especular perfecta, hacia donde proviene la luz
+// reflejada).
 // <wo>: dirección luz entrante. Rayo que ha chocado contra un elemento de la escena
 //       en un punto
 // <n>:  normal del objeto por el punto donde ha chocado wo.
 Direccion calcDirEspecular(const Direccion& wo, const Direccion& n);
 
+// Función que calcula la dirección incidente (refractante perfecta, hacia donde proviene
+// la luz refractada) empleando la Ley de Snell.
+// <param1>: ....
+Direccion calcDirRefractante(const Direccion& wo, const Direccion& normal, float ni, float nr);
+
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
 // de la superficie (kd, ks, kt) proporcionados por <coefs>.
-TipoRayo dispararRuletaRusa(const BSDFs& coefs);
+// Devuelve en probRayo la probabilidad de que ese tipo de rayo haya sido disparado.
+TipoRayo dispararRuletaRusa(const BSDFs& coefs, float &probRayo);
 
-// Función que ..
+// Función que dado el tipo de rayo y los parámetros de entrada, devuelve la dirección
+// incidente correspondiente (la que se "aleja" de la cámara).
 Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
                            const Direccion& normal, bool debug);
 
@@ -43,10 +65,14 @@ RGB calcBrdfDifusa(const RGB &kd);
 
 // Función que calcula la reflectancia especular. Devuelve <ks> porque si se invoca esta
 // función, es porque se ha decidido que el rayo va a ser especular.
-RGB calcBrdfEspecular(const RGB& ks);
+// <cosenoAnguloIncidencia>: coseno del ángulo de incidencia. Se usa para anular el coseno que
+//                           se multiplica fuera por la ecuación de render. El sentido que tiene
+//                           es que un rayo especular no se distribuye por todo el hemisferio (coseno)
+//                           y por eso lo dividimos para que "solo haya un rayo" (el especular perfecto).
+RGB calcBrdfEspecular(const RGB& ks, float cosenoAnguloIncidencia = 0.0f);
 
 // Función que calcula BSDF dado todos los coeficientes y el tipo de rayo que es.
-RGB calcBsdf(const BSDFs& coefs, const TipoRayo tipoRayo);
+RGB calcBsdf(const BSDFs& coefs, const TipoRayo tipoRayo, float cosenoAnguloIncidencia = 0.0f);
 
 // Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
 // por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
@@ -65,19 +91,6 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 //
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                         const BSDFs& coefs, bool debug);
-
-// Función que devuelve un valor aleatorio para azimut y otro para inclinación
-// para muestreo uniforme de ángulo sólido.
-void generarAzimutInclinacion(float& azimut, float& inclinacion);
-
-// Función que devuelve las coordenadas cartesianas correspondientes de (azimut, inclinacion)
-void getCoordenadasCartesianas(const float azimut, const float inclinacion,
-                                float& x, float& y, float& z);
-
-// Función que devuelve un rayo generado aleatoriamente. El origen del rayo es <o> y la dirección
-// del rayo es una aleatoria pero está contenida en el hipotético hemisferio superior que tiene
-// como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
-Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
 
 // Función recursiva que calcula la radiancia del punto <origen> y las radiancias de los puntos
 // intersectados tras <rebotesRestantes> rebotes
