@@ -48,7 +48,7 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
     z = cosIncl;
 }
 
-Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
+Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, float& prob) {
     float inclinacion, azimut;
     float x, y, z;
 
@@ -63,6 +63,9 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal) {
     Direccion nuevaDir = normalizar(tangente * wi_local.coord[0] +
                                     bitangente * wi_local.coord[1] +
                                     normal * wi_local.coord[2]);
+    
+    // Probabilidad de un rayo es proporcional al coseno del ángulo de inclinación
+    prob = cos(inclinacion) / M_PI;
     return Rayo(nuevaDir, o);
 }
 
@@ -110,7 +113,7 @@ bool calcDirRefractante(const Direccion& wo, const Direccion& normal, float ni, 
 }
 */
 
-TipoRayo dispararRuletaRusa(const BSDFs& coefs, float &probRayo) {
+TipoRayo dispararRuletaRusa(const BSDFs& coefs) {
     float maxKD = max(coefs.kd);
     float maxKS = max(coefs.ks);
     float maxKT = max(coefs.kt);
@@ -127,31 +130,29 @@ TipoRayo dispararRuletaRusa(const BSDFs& coefs, float &probRayo) {
     float bala = dist(gen);     // Random float entre (0,1)
 
     if (bala <= probDifuso) {
-        probRayo = probDifuso;
         return DIFUSO;  // Rayo difuso
     } else if (bala <= probDifuso + probEspecular) {
-        probRayo = probEspecular;
         return ESPECULAR;  // Rayo especular
     } else if (bala <= probDifuso + probEspecular + probRefractante) {
-        probRayo = probRefractante;
         return REFRACTANTE;  // Rayo refractante
     } else {
-        probRayo = probAbsorbente;
         return ABSORBENTE;   // Absorbente
     }
 }
 
 Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
-                           const Direccion& normal, bool debug) {
+                           const Direccion& normal, float& probRayo, bool debug) {
     Rayo wi;
     if (tipoRayo == DIFUSO) {
-        wi = generarCaminoAleatorio(origen, normal);
+        wi = generarCaminoAleatorio(origen, normal, probRayo);
     } else if (tipoRayo == ESPECULAR) {
         wi.d = calcDirEspecular(wo, normal);
         wi.o = origen;
+        probRayo = 1.0f;
     } else if (tipoRayo == REFRACTANTE){
         //wi.d = calcDirRefractante(wo, normal, 1.0f, 1.5f, wi);
         //wi.o = origen;
+        probRayo = 1.0f;
     }
     return wi;
 }
@@ -161,11 +162,11 @@ RGB calcBrdfDifusa(const RGB& kd){
 }
 
 RGB calcBrdfEspecular(const RGB& ks, float cosenoAnguloIncidencia) {
-    return ks / cosenoAnguloIncidencia;  // no hay pérdida
+    return ks / cosenoAnguloIncidencia;
 }
 
 RGB calcBtdf(const RGB& kt) {
-    return kt;  // no hay pérdida
+    return kt;
 }
 
 RGB calcBsdf(const BSDFs& coefs, TipoRayo tipoRayo, float cosenoAnguloIncidencia) {
@@ -284,12 +285,13 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
         return RGB({0.0f, 0.0f, 0.0f});
     }
     
-    float probRayo;
-    TipoRayo tipoRayo = dispararRuletaRusa(coefsOrigen, probRayo);
+    TipoRayo tipoRayo = dispararRuletaRusa(coefsOrigen);
     if (tipoRayo == ABSORBENTE) {
         return RGB({0.0f, 0.0f, 0.0f});
     }
-    Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo, normal, debug);
+
+    float probRayo;     // Ojo! La probabilidad es para la siguiente llamada recursiva pq es wi, no wo
+    Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo, normal, probRayo, debug);
 
     bool choqueConLuz = false;
     BSDFs coefsPtoIntersec;
@@ -317,20 +319,18 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
     
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
-    if (tipoRayo == DIFUSO) {
-        radianciaSalienteDirecta = nextEventEstimation(origen, normal, escena,
-                                                       coefsOrigen.kd, debug);
-    }
+    if (tipoRayo == DIFUSO) radianciaSalienteDirecta = nextEventEstimation(origen, normal, escena,
+                                                                           coefsOrigen.kd, debug);
 
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, wi.d, coefsPtoIntersec, nuevaNormal,
                                                                     escena, rebotesRestantes - 1, debug);
     float coseno = calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
     RGB bsdf = calcBsdf(coefsOrigen, tipoRayo, coseno);
 
-    radianciaSalienteIndirecta = radianciaSalienteIndirecta * bsdf * coseno;
+    radianciaSalienteIndirecta = (radianciaSalienteIndirecta / probRayo) * bsdf * coseno;
     if (debug) cout << "LUZ INTERSECCION = " << radianciaSalienteDirecta << endl;
 
-    return (radianciaSalienteDirecta + radianciaSalienteIndirecta) / probRayo;
+    return radianciaSalienteDirecta + radianciaSalienteIndirecta;
            
 }
 
@@ -361,19 +361,18 @@ void printPixelActual(unsigned totalPixeles, unsigned numPxlsAncho, unsigned anc
     }
 }
 
-RGB obtenerRadianciaSaliente(const Rayo &rayoIncidente, const Escena &escena, const unsigned maxRebotes, 
+RGB obtenerRadianciaSalienteTotal(const Rayo &rayoIncidente, const Escena &escena, const unsigned maxRebotes, 
                              const unsigned numRayosMontecarlo, bool debug){
     Punto ptoIntersec;
     Direccion normal;
     bool choqueConLuz = false;
     RGB radianciaSalienteTotal(0.0f, 0.0f, 0.0f);
     BSDFs coefsPtoInterseccion;
-    float probRayo;
     
     if (escena.interseccion(rayoIncidente, coefsPtoInterseccion, ptoIntersec, normal, choqueConLuz)) {
         TipoRayo tipoRayo = ABSORBENTE;
         while(tipoRayo == ABSORBENTE) {     // 1º rayo no puede ser absorbente
-            tipoRayo = dispararRuletaRusa(coefsPtoInterseccion, probRayo);
+            tipoRayo = dispararRuletaRusa(coefsPtoInterseccion);
         }
         
         if (tipoRayo == DIFUSO) {    // Radiancia saliente directa
@@ -390,7 +389,7 @@ RGB obtenerRadianciaSaliente(const Rayo &rayoIncidente, const Escena &escena, co
             //cout << "Radiancia Indirecta: " << max(radianciaSalienteIndirecta) << endl;
         }
     }
-    return radianciaSalienteTotal / probRayo;
+    return radianciaSalienteTotal;
 }
 
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
@@ -409,7 +408,7 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
             
             bool debug = false;
-            coloresEscena[alto][ancho] = obtenerRadianciaSaliente(rayo, escena, maxRebotes, numRayosMontecarlo, debug);
+            coloresEscena[alto][ancho] = obtenerRadianciaSalienteTotal(rayo, escena, maxRebotes, numRayosMontecarlo, debug);
         }
     }
 }
@@ -432,7 +431,7 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
                 rayo = camara.obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
                 globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
                 radianciaSalienteTotal = radianciaSalienteTotal +
-                                         obtenerRadianciaSaliente(rayo, escena, maxRebotes, numRayosMontecarlo, debug);
+                                         obtenerRadianciaSalienteTotal(rayo, escena, maxRebotes, numRayosMontecarlo, debug);
             }
             coloresEscena[alto][ancho] = radianciaSalienteTotal / rpp;
         }

@@ -32,10 +32,13 @@ void generarAzimutInclinacion(float& azimut, float& inclinacion);
 void getCoordenadasCartesianas(const float azimut, const float inclinacion,
                                 float& x, float& y, float& z);
 
-// Función que devuelve un rayo generado aleatoriamente. El origen del rayo es <o> y la dirección
-// del rayo es una aleatoria pero está contenida en el hipotético hemisferio superior que tiene
-// como centro al punto <o> y como altura a la dirección <normal> (|normal| == radio hemisferio).
-Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal);
+// Función que devuelve un rayo generado aleatoriamente empleando muestreo por importancia
+// basado en el coseno. El origen del rayo es <o> y la dirección del rayo es una aleatoria
+// pero está contenida en el hipotético hemisferio superior que tiene como centro al punto <o>
+// y como altura a la dirección <normal> (|normal| == radio hemisferio). Devuelve en <prob>
+// la probabilidad de que salga el rayo generado.
+// Disclaimer: solo debería usarse para rayos difusos.
+Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, float& prob);
 
 // Función que calcula la dirección incidente (especular perfecta, hacia donde proviene la luz
 // reflejada).
@@ -52,24 +55,28 @@ Direccion calcDirRefractante(const Direccion& wo, const Direccion& normal, float
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
 // de la superficie (kd, ks, kt) proporcionados por <coefs>.
-// Devuelve en probRayo la probabilidad de que ese tipo de rayo haya sido disparado.
-TipoRayo dispararRuletaRusa(const BSDFs& coefs, float &probRayo);
+TipoRayo dispararRuletaRusa(const BSDFs& coefs);
 
 // Función que dado el tipo de rayo y los parámetros de entrada, devuelve la dirección
-// incidente correspondiente (la que se "aleja" de la cámara).
+// incidente correspondiente (la que se "aleja" de la cámara). Devuelve en <probRayo> la
+// probabilidad de que salga el rayo que se ha decidido que salga.
 Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
-                           const Direccion& normal, bool debug);
+                           const Direccion& normal, float& probRayo, bool debug);
 
 // Función que calcula la reflectancia difusa de Lambert.
 RGB calcBrdfDifusa(const RGB &kd);
 
-// Función que calcula la reflectancia especular. Devuelve <ks> porque si se invoca esta
-// función, es porque se ha decidido que el rayo va a ser especular.
-// <cosenoAnguloIncidencia>: coseno del ángulo de incidencia. Se usa para anular el coseno que
-//                           se multiplica fuera por la ecuación de render. El sentido que tiene
-//                           es que un rayo especular no se distribuye por todo el hemisferio (coseno)
-//                           y por eso lo dividimos para que "solo haya un rayo" (el especular perfecto).
+// Función que calcula la reflectancia especular perfecta. Devuelve <ks> porque si se invoca
+// esta función, es porque se ha decidido que el rayo va a ser especular y no hay pérdidas.
+// <cosenoAnguloIncidencia>: coseno del ángulo de incidencia. Se usa para anular el coseno
+//                  que se multiplica fuera por la ecuación de render. El sentido que tiene
+//                  es que un rayo especular no se distribuye por todo el hemisferio (coseno)
+//                  y por eso lo dividimos para que "solo haya un rayo" (el especular perfecto).
 RGB calcBrdfEspecular(const RGB& ks, float cosenoAnguloIncidencia = 0.0f);
+
+// Función que calcula la refracción perfecta. Devuelve <kt> porque si se invoca esta
+// función, es porque se ha decidido que el rayo va a ser refractante y no hay pérdidas.
+RGB calcBtdf(const RGB& kt);
 
 // Función que calcula BSDF dado todos los coeficientes y el tipo de rayo que es.
 RGB calcBsdf(const BSDFs& coefs, const TipoRayo tipoRayo, float cosenoAnguloIncidencia = 0.0f);
@@ -88,7 +95,7 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 //
 //           CAMBIAR CAMBAIR CAMBIAR
 //
-//
+// Disclaimer: solo debería usarse para rayos difusos. Si no lo es, debe devolver RGB(0,0,0).
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                         const BSDFs& coefs, bool debug);
 
@@ -109,8 +116,8 @@ RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRe
 // rebotando un máximo de <maxRebotes> veces y calculada a través de la media de <numRayosMontecarlo> rayos
 // Cabe aclarar que el primer punto de intersección es siempre el mismo, los rayos "Montecarlo" comienzan
 // aleatoriamente siempre desde este primer punto.
-RGB obtenerRadianciaSaliente(const Rayo &rayo, const Escena &escena, const unsigned maxRebotes, 
-                             const unsigned numRayosMontecarlo, bool debug);
+RGB obtenerRadianciaSalienteTotal(const Rayo &rayo, const Escena &escena, const unsigned maxRebotes,
+                                  const unsigned numRayosMontecarlo, bool debug);
 
 // Método que muestra por pantalla el número de píxeles procesados (cada 100 píxeles)
 void printPixelActual(unsigned totalPixeles, unsigned numPxlsAncho, unsigned ancho, unsigned alto);
