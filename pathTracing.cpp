@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <random>
 #include <stack>
+#include <optional>
 
 constexpr float INDICE_REFRACCION_AIRE = 1.0f;
 constexpr float INDICE_REFRACCION_OBJETO = 1.5f;
@@ -48,7 +49,7 @@ void getCoordenadasCartesianas(const float azimut, const float inclinacion,
     z = cosIncl;
 }
 
-Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, float& prob) {
+Direccion generarDireccionAleatoria(const Direccion& normal, float& prob) {
     float inclinacion, azimut;
     float x, y, z;
 
@@ -66,52 +67,84 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, float& prob
     
     // Probabilidad de un rayo es proporcional al coseno del ángulo de inclinación
     prob = cos(inclinacion) / M_PI;
-    return Rayo(nuevaDir, o);
+    return nuevaDir;
 }
 
 Direccion calcDirEspecular(const Direccion& wo, const Direccion& n) {
     return normalizar(wo - n * 2.0f * dot(wo, n));
 }
 
-bool calcDirRefractante(const Direccion& wo, const Direccion& normal) {
-    return false;
-}
-/*
-bool calcDirRefractante(const Direccion& wo, const Direccion& normal, float ni, float nr, Direccion& wi) {
-
-    // wi = eta * wo + (eta * cos(0_o) - cos(0_i)) * n
-
-
-
+std::optional<Direccion> calcDirRefractante(const Direccion& wo, const Direccion& normal,
+                                            const float ni, const float nr) {
+    // intento 1: sin libro --> se ve en espejo pero al revés y algo negro
+    /*
     Direccion n = normal;
     float eta = ni / nr;
-    float cosThetaI = dot(wo * (-1), n);
-    
-    // Verificar si el rayo está saliendo del objeto
-    if (cosThetaI < 0) {
-        n = n * (-1);
-        eta = nr / ni;
-        cosThetaI = -cosThetaI;
+    float cosThetaI = dot(wo, n);
+
+    if (cosThetaI < 0) {        // Rayo entrando al material
+        cosThetaI = -cosThetaI; // Hacemos cosThetaI positivo
+    } else {                    // Rayo saliendo del material
+        n = normal * (-1);      // Invertimos la normal
+        //eta = nr / ni;          // Cambiamos relación de índices
     }
-    
-    // Verificar reflexión total interna
+
+    // Calculamos el discriminante para determinar si hay refracción
     float sin2ThetaT = eta * eta * (1 - cosThetaI * cosThetaI);
-    if (sin2ThetaT > 1.0f) {
-        // Reflexión total interna: no hay refracción
-        return false;
+    if (sin2ThetaT >= 1.0f) {   // Reflexión Interna Total
+        return std::nullopt;
     }
 
-    // Calcular cosThetaT usando la relación trigonométrica
+    // Dirección refractada usando la ley de Snell
     float cosThetaT = sqrt(1.0f - sin2ThetaT);
-
-    // Calcular la dirección refractada
-    wi = wo * eta + n * (eta * cosThetaI - cosThetaT);
-
-    // Asegurarse de que la dirección refractada esté normalizada
-    wi = normalizar(wi);
-    return true;
+    Direccion wi = wo * (-1) * eta + n * (eta * cosThetaI - cosThetaT);
+    return normalizar(wi);
+    */
+    
+    // Intento 2: con libro --> sale negro y bastante RIT (rarete)
+    
+    Direccion woo = wo * (-1);      // woo apunta hacia la cámara
+    Direccion n = normal;
+    float eta = ni / nr;
+    float cosThetaI = dot(n, woo);
+    if (cosThetaI < 0) {    // potentially flip interface orientation for Snell's Law
+        //eta = 1 / eta;
+        cosThetaI = - cosThetaI;
+        n = n * (-1);
+    }
+    
+    float sin2ThetaI = max(0.0f, 1 - sqrt(cosThetaI));
+    float sin2ThetaT = sin2ThetaI / sqrt(eta);
+    if (sin2ThetaT >= 1) {      // Reflexión interna total
+        return std::nullopt;
+    }
+    
+    float cosThetaT = sqrt(max(0.0f, 1.0f - sin2ThetaT));
+    Direccion wt = (woo * (-1)) / eta + n * (cosThetaI / eta - cosThetaT);
+    return normalizar(wt);
+    
 }
-*/
+
+Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
+                           const Direccion& normal, float& probRayo, bool debug) {
+    Rayo wi;
+    wi.o = origen;
+    probRayo = 1.0f;
+    if (tipoRayo == DIFUSO) {
+        wi.d = generarDireccionAleatoria(normal, probRayo);
+    } else if (tipoRayo == ESPECULAR) {
+        wi.d = calcDirEspecular(wo, normal);
+    } else if (tipoRayo == REFRACTANTE){
+        auto wt = calcDirRefractante(wo, normal, 1.0f, 1.5f);
+        if (wt) {       // Hay refracción
+            wi.d = *wt;
+        } else {        // Reflexión interna total
+            cerr << "eyeyeyey" << endl;
+            wi.d = calcDirEspecular(wo, normal);
+        }
+    }
+    return wi;
+}
 
 TipoRayo dispararRuletaRusa(const BSDFs& coefs) {
     float maxKD = max(coefs.kd);
@@ -138,23 +171,6 @@ TipoRayo dispararRuletaRusa(const BSDFs& coefs) {
     } else {
         return ABSORBENTE;   // Absorbente
     }
-}
-
-Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
-                           const Direccion& normal, float& probRayo, bool debug) {
-    Rayo wi;
-    if (tipoRayo == DIFUSO) {
-        wi = generarCaminoAleatorio(origen, normal, probRayo);
-    } else if (tipoRayo == ESPECULAR) {
-        wi.d = calcDirEspecular(wo, normal);
-        wi.o = origen;
-        probRayo = 1.0f;
-    } else if (tipoRayo == REFRACTANTE){
-        //wi.d = calcDirRefractante(wo, normal, 1.0f, 1.5f, wi);
-        //wi.o = origen;
-        probRayo = 1.0f;
-    }
-    return wi;
 }
 
 RGB calcBrdfDifusa(const RGB& kd){

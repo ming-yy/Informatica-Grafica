@@ -32,13 +32,13 @@ void generarAzimutInclinacion(float& azimut, float& inclinacion);
 void getCoordenadasCartesianas(const float azimut, const float inclinacion,
                                 float& x, float& y, float& z);
 
-// Función que devuelve un rayo generado aleatoriamente empleando muestreo por importancia
-// basado en el coseno. El origen del rayo es <o> y la dirección del rayo es una aleatoria
-// pero está contenida en el hipotético hemisferio superior que tiene como centro al punto <o>
-// y como altura a la dirección <normal> (|normal| == radio hemisferio). Devuelve en <prob>
-// la probabilidad de que salga el rayo generado.
+// Función que devuelve una dirección generada aleatoriamente empleando muestreo por importancia
+// basado en el coseno. La dirección es aleatoria pero está contenida en el hipotético hemisferio
+// superior que tiene como centro al punto por el que sale la normal <normal> y como altura a la
+// dirección <normal> (|normal| == radio hemisferio). Devuelve en <prob> la probabilidad de que
+// salga el rayo generado.
 // Disclaimer: solo debería usarse para rayos difusos.
-Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, float& prob);
+Direccion generarDireccionAleatoria(const Direccion& normal, float& prob);
 
 // Función que calcula la dirección incidente (especular perfecta, hacia donde proviene la luz
 // reflejada).
@@ -47,21 +47,26 @@ Rayo generarCaminoAleatorio(const Punto& o, const Direccion& normal, float& prob
 // <n>:  normal del objeto por el punto donde ha chocado wo.
 Direccion calcDirEspecular(const Direccion& wo, const Direccion& n);
 
-// Función que calcula la dirección incidente (refractante perfecta, hacia donde proviene
-// la luz refractada) empleando la Ley de Snell.
-// <param1>: ....
-Direccion calcDirRefractante(const Direccion& wo, const Direccion& normal, float ni, float nr);
-
-// Función que realiza una selección probabilística del tipo de rayo que
-// será disparado (difuso, especular o refractante) basándose en los coeficientes
-// de la superficie (kd, ks, kt) proporcionados por <coefs>.
-TipoRayo dispararRuletaRusa(const BSDFs& coefs);
+// Función que calcula la dirección incidente del rayo refractado empleando la Ley de Snell.
+// Devuelve std::nullopt si y solo si ocurre Reflexión Interna Total. En caso contrario,
+// devuelve la dirección refractada.
+// <wo>: dirección entrante (que parte de la cámara o rebote anterior)
+// <normal>: normal de la superficie por el punto en el que ha intersecado <wo>
+// <ni>: índice de refracción del medio incidente
+// <nr>: índice de refracción del medio de transmisión
+std::optional<Direccion> calcDirRefractante(const Direccion& wo, const Direccion& normal,
+                                            const float ni, const float nr);
 
 // Función que dado el tipo de rayo y los parámetros de entrada, devuelve la dirección
 // incidente correspondiente (la que se "aleja" de la cámara). Devuelve en <probRayo> la
 // probabilidad de que salga el rayo que se ha decidido que salga.
 Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
                            const Direccion& normal, float& probRayo, bool debug);
+
+// Función que realiza una selección probabilística del tipo de rayo que
+// será disparado (difuso, especular o refractante) basándose en los coeficientes
+// de la superficie (kd, ks, kt) proporcionados por <coefs>.
+TipoRayo dispararRuletaRusa(const BSDFs& coefs);
 
 // Función que calcula la reflectancia difusa de Lambert.
 RGB calcBrdfDifusa(const RGB &kd);
