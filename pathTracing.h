@@ -67,7 +67,7 @@ Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const D
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
 // de la superficie (kd, ks, kt) proporcionados por <coefs>.
-TipoRayo dispararRuletaRusa(const BSDFs& coefs);
+TipoRayo dispararRuletaRusa(const BSDFs& coefs, float& probRuleta);
 
 // Función que calcula la reflectancia difusa de Lambert.
 RGB calcBrdfDifusa(const RGB &kd);
@@ -78,14 +78,14 @@ RGB calcBrdfDifusa(const RGB &kd);
 //                  que se multiplica fuera por la ecuación de render. El sentido que tiene
 //                  es que un rayo especular no se distribuye por todo el hemisferio (coseno)
 //                  y por eso lo dividimos para que "solo haya un rayo" (el especular perfecto).
-RGB calcBrdfEspecular(const RGB& ks, float cosenoAnguloIncidencia = 0.0f);
+RGB calcBrdfEspecular(const RGB& ks);
 
 // Función que calcula la refracción perfecta. Devuelve <kt> porque si se invoca esta
 // función, es porque se ha decidido que el rayo va a ser refractante y no hay pérdidas.
 RGB calcBtdf(const RGB& kt);
 
 // Función que calcula BSDF dado todos los coeficientes y el tipo de rayo que es.
-RGB calcBsdf(const BSDFs& coefs, const TipoRayo tipoRayo, float cosenoAnguloIncidencia = 0.0f);
+RGB calcBsdf(const BSDFs& coefs, const TipoRayo tipoRayo);
 
 // Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
 // por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
