@@ -113,9 +113,9 @@ std::optional<Direccion> calcDirRefractante(const Direccion& wo, const Direccion
         n = n * (-1);
     }
     
-    float sin2ThetaI = max(0.0f, 1 - sqrt(cosThetaI));
+    float sin2ThetaI = max(0.0f, 1.0f - static_cast<float>(sqrt(cosThetaI)));
     float sin2ThetaT = sin2ThetaI / sqrt(eta);
-    if (sin2ThetaT >= 1) {      // Reflexión interna total
+    if (sin2ThetaT >= 1.0f) {      // Reflexión interna total
         return std::nullopt;
     }
     
