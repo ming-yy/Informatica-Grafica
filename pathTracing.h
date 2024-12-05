@@ -13,6 +13,7 @@
 #include "rgb.h"
 #include "camara.h"
 #include "utilidades.h"
+#include <optional>
 
 
 enum TipoRayo {
