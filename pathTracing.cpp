@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <random>
 #include <stack>
-#include <optional>
 
 constexpr float INDICE_REFRACCION_AIRE = 1.0f;
 constexpr float INDICE_REFRACCION_OBJETO = 1.5f;
@@ -137,6 +136,7 @@ std::optional<Direccion> calcDirRefractante(const Direccion& wo, const Direccion
     float sin2ThetaI = max(0.0f, 1 - cosThetaI * cosThetaI);
     float sin2ThetaT = sin2ThetaI / (eta * eta);
     if (sin2ThetaT >= 1) {      // Reflexión interna total
+        cout << "EYEYEYYEEEYE" << endl;
         return std::nullopt;
     }
     
