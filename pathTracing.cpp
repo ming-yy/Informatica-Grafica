@@ -102,7 +102,7 @@ std::optional<Direccion> calcDirRefractante(const Direccion& wo, const Direccion
     */
     
     // Intento 2: con libro --> sale negro y bastante RIT (rarete)
-    
+    /*
     Direccion woo = wo * (-1);      // woo apunta hacia la cámara
     Direccion n = normal;
     float eta = ni / nr;
@@ -116,6 +116,27 @@ std::optional<Direccion> calcDirRefractante(const Direccion& wo, const Direccion
     float sin2ThetaI = max(0.0f, 1.0f - static_cast<float>(sqrt(cosThetaI)));
     float sin2ThetaT = sin2ThetaI / sqrt(eta);
     if (sin2ThetaT >= 1.0f) {      // Reflexión interna total
+        return std::nullopt;
+    }
+    
+    float cosThetaT = sqrt(max(0.0f, 1.0f - sin2ThetaT));
+    Direccion wt = (woo * (-1)) / eta + n * (cosThetaI / eta - cosThetaT);
+    return normalizar(wt);
+    */
+    
+    // intento 3: a mano
+    Direccion woo = wo * (-1);      // woo apunta hacia la cámara
+    Direccion n = normal;
+    float eta = nr / ni;
+    float cosThetaI = dot(n, woo);
+    if (cosThetaI < 0) {    // Rayo entrando al material
+        eta = 1 / eta;
+        cosThetaI = - cosThetaI;
+        n = n * (-1);
+    }
+    float sin2ThetaI = max(0.0f, 1 - cosThetaI * cosThetaI);
+    float sin2ThetaT = sin2ThetaI / (eta * eta);
+    if (sin2ThetaT >= 1) {      // Reflexión interna total
         return std::nullopt;
     }
     
