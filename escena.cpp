@@ -83,7 +83,7 @@ bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
 
 bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& origenLuz) const {
     bool iluminar = false;
-    int numIters = 1000;     // Tiene que ir en función del tamaño del plano
+    int numIters = 50;     // Tiene que ir en función del tamaño del plano
     for (int i = 0; i < numIters && !iluminar; ++i) {
         Punto origen = luz->generarPuntoAleatorio();
         Direccion d = normalizar(origen - p0);
