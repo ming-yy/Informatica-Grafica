@@ -192,11 +192,6 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n){
 
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
                         const RGB& kd) {
-    RGB powerLuzArea;
-    if (escena.puntoPerteneceALuz(p0, powerLuzArea)) {   // p0 es de una fuente de luz (de área)
-        return powerLuzArea;
-    }
-    
     RGB radianciaSaliente(0.0f, 0.0f, 0.0f);
     for (LuzPuntual luz : escena.luces) {
         if (!escena.luzIluminaPunto(p0, luz)) {
@@ -209,13 +204,9 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         radianciaIncidente = radianciaIncidente * (reflectanciaBrdfDifusa * cosAnguloIncidencia);
         
         radianciaSaliente += radianciaIncidente;
-        //for (int i = 0; i < 3; ++i) {
-        //    radianciaSaliente.rgb[i] += radianciaIncidente.rgb[i];
-        //}
     }
     
-    //  Para luz de área
-    for (const Primitiva* objeto : escena.primitivas) {
+    for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
         if (!(objeto->soyFuenteDeLuz()) || !escena.luzIluminaPunto(p0, objeto, origenLuz, prob)) {
@@ -229,13 +220,9 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         //RGB radianciaIncidente(aux.coord);
         //radianciaIncidente = radianciaIncidente * (reflectanciaBRDFDifusa * cosAnguloIncidencia);
         float cosNLuzWiLuz = calcCosenoAnguloIncidencia(normalizar(-dirIncidente), objeto->getNormal(origenLuz));
-        RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosAnguloIncidencia * cosNLuzWiLuz /
+        RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosAnguloIncidencia /
                                  (modulo(dirIncidente) * modulo(dirIncidente) * prob);
-        
         radianciaSaliente += radianciaIncidente;
-        //for (int i = 0; i < 3; ++i) {
-        //    radianciaSaliente.rgb[i] += radianciaIncidente.rgb[i];
-        //}
     }
     
     return radianciaSaliente;
@@ -244,29 +231,31 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
 RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const BSDFs &coefsOrigen, 
                                     const Direccion& normal, const Escena& escena,
                                     const unsigned rebotesRestantes) {
-    if (rebotesRestantes == 0) {     // Condición terminal: alcanzado max rebotes
+    if (rebotesRestantes == 0) {     // TERMINAL: alcanzado max rebotes
         return RGB({0.0f, 0.0f, 0.0f});
+    }
+    
+    RGB powerLuzArea;
+    if (escena.puntoPerteneceALuz(origen, powerLuzArea)) {   // TERMINAL: somos una fuente de luz
+        return powerLuzArea;
     }
     
     float probRuleta;
     TipoRayo tipoRayo = dispararRuletaRusa(coefsOrigen, probRuleta);
-    if (tipoRayo == ABSORBENTE) {
+    if (tipoRayo == ABSORBENTE) {       // TERMINAL: rayo absorbente
         return RGB({0.0f, 0.0f, 0.0f});
     }
 
     float probRayo;     // Ojo! La probabilidad es para la siguiente llamada recursiva pq es wi, no wo
     Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo, normal, probRayo);
 
-    RGB powerLuzArea;
     BSDFs coefsPtoIntersec;
     Punto ptoIntersec;
     Direccion nuevaNormal;
     bool hayIntersec = escena.interseccion(wi, coefsPtoIntersec, ptoIntersec, nuevaNormal, powerLuzArea);
 
-    if (!hayIntersec) {    // Condición terminal: rayo no choca contra nada, devuelve (0,0,0)
+    if (!hayIntersec) {    // TERMINAL: rayo no choca contra nada, devuelve (0,0,0)
         return RGB({0.0f, 0.0f, 0.0f});
-    } else if (hayIntersec && !valeCero(powerLuzArea)) {   // Condición terminal: rayo choca con luz de área
-        return powerLuzArea;
     }
     
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
@@ -289,20 +278,15 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
 }
 
 RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRebotes, 
-                                        const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
-                                        const Direccion& wo, const BSDFs &coefsPtoInterseccion,
-                                        const Direccion& normal) {
-    RGB sumaRadianciasIndirectas;
-    if (maxRebotes > 0) {
-        for (unsigned i = 0; i < numRayosMontecarlo; ++i) {   // Emisión media de N rayos por Montecarlo
-            sumaRadianciasIndirectas = sumaRadianciasIndirectas +
-                                        recursividadRadianciaIndirecta(ptoIntersec, wo, coefsPtoInterseccion,
-                                                                        normal, escena, maxRebotes);
-        }
-        return sumaRadianciasIndirectas / numRayosMontecarlo;       // Media de todas
-    } else {
-        return RGB(0.0f, 0.0f, 0.0f);
+                                      const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
+                                      const Direccion& wo, const BSDFs &coefsPtoInterseccion,
+                                      const Direccion& normal) {
+    RGB sumaRadianciasIndirectas(0.0f, 0.0f, 0.0f);
+    for (unsigned i = 0; i < numRayosMontecarlo; ++i) {   // Emisión media de N rayos por Montecarlo
+        sumaRadianciasIndirectas += recursividadRadianciaIndirecta(ptoIntersec, wo, coefsPtoInterseccion,
+                                                                    normal, escena, maxRebotes);
     }
+    return sumaRadianciasIndirectas / numRayosMontecarlo;       // Media de todas
 }
 
 RGB obtenerRadianciaSalienteTotal(const Rayo &rayoIncidente, const Escena &escena, const unsigned maxRebotes, 
@@ -310,32 +294,26 @@ RGB obtenerRadianciaSalienteTotal(const Rayo &rayoIncidente, const Escena &escen
     Punto ptoIntersec;
     Direccion normal;
     RGB powerLuzArea;
-    RGB radianciaSalienteTotal(0.0f, 0.0f, 0.0f);
+    RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
+    RGB radianciaSalienteIndirecta(0.0f, 0.0f, 0.0f);
     BSDFs coefsPtoInterseccion;
-    float probRuleta = 1.0f;
     
     if (escena.interseccion(rayoIncidente, coefsPtoInterseccion, ptoIntersec, normal, powerLuzArea)) {
-        TipoRayo tipoRayo = ABSORBENTE;
-        while(tipoRayo == ABSORBENTE) {     // 1º rayo no puede ser absorbente
-            tipoRayo = dispararRuletaRusa(coefsPtoInterseccion, probRuleta);
+        if (!valeCero(powerLuzArea)) {  // Primer rayo de la cam se choca con luz de área
+            return powerLuzArea;
         }
         
-        if (tipoRayo == DIFUSO) {    // Radiancia saliente directa
-            radianciaSalienteTotal = nextEventEstimation(ptoIntersec, normal, escena,
-                                                         coefsPtoInterseccion.kd);
-        }
-
-        if (valeCero(powerLuzArea)) {    // Radiancia saliente indirecta
-            RGB radianciaSalienteIndirecta = obtenerRadianciaSalienteIndirecta(escena, maxRebotes, numRayosMontecarlo,
-                                                                               ptoIntersec, rayoIncidente.d,
-                                                                               coefsPtoInterseccion,
-                                                                               normal);
-            radianciaSalienteTotal = radianciaSalienteTotal + radianciaSalienteIndirecta;
-        } else {
-            radianciaSalienteTotal = powerLuzArea;
+        if (maxRebotes == 0) {  // Solo luz directa
+            radianciaSalienteDirecta = nextEventEstimation(ptoIntersec, normal, escena,
+                                                           coefsPtoInterseccion.kd);
+        } else {    // Luz directa e indirecta
+            radianciaSalienteIndirecta = obtenerRadianciaSalienteIndirecta(escena, maxRebotes,
+                                                                           numRayosMontecarlo, ptoIntersec,
+                                                                           rayoIncidente.d,
+                                                                           coefsPtoInterseccion, normal);
         }
     }
-    return radianciaSalienteTotal / probRuleta;
+    return radianciaSalienteDirecta + radianciaSalienteIndirecta;
 }
 
 void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
@@ -346,10 +324,9 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
     
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
-            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
-            
             if (printPixelesProcesados) printPixelActual(totalPixeles, numPxlsAncho, ancho, alto);
             
+            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
             rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
             coloresEscena[alto][ancho] = obtenerRadianciaSalienteTotal(rayo, escena, maxRebotes, numRayosMontecarlo);
@@ -365,16 +342,14 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
 
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
-            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());            
-            
             if (printPixelesProcesados) printPixelActual(totalPixeles, numPxlsAncho, ancho, alto);
-
+            
+            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
             RGB radianciaSalienteTotal;
-            for(unsigned i = 0; i < rpp; ++i){
+            for (unsigned i = 0; i < rpp; ++i) {
                 rayo = camara.obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
                 globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
-                radianciaSalienteTotal = radianciaSalienteTotal +
-                                         obtenerRadianciaSalienteTotal(rayo, escena, maxRebotes, numRayosMontecarlo);
+                radianciaSalienteTotal += obtenerRadianciaSalienteTotal(rayo, escena, maxRebotes, numRayosMontecarlo);
             }
             coloresEscena[alto][ancho] = radianciaSalienteTotal / rpp;
         }

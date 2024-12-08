@@ -67,7 +67,7 @@ RGB& RGB::operator=(const init_list<float>& r) {
 
 RGB& RGB::operator+=(const RGB& d) {
     for (int i=0; i < 3; ++i) {
-        this->rgb[i] = d.rgb[i];
+        this->rgb[i] += d.rgb[i];
     }
     return *this;
 }

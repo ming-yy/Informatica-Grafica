@@ -73,14 +73,14 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    // Zoom esfera izquierda
+    // Zoom esfera izquierda parte derecha
     Camara cam3 = Camara({-0.25f, -0.5f, -0.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 3;
-    const unsigned rpp = 256;
+    const unsigned maxRebotes = 8;
+    const unsigned rpp = 64;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
