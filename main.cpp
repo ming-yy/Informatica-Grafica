@@ -46,17 +46,18 @@ void liberarMemoriaDePrimitivas(vector<Primitiva*>& objetos) {
 
 void cajaDeCornell(){
     vector<Primitiva*> objetos;
-    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso", false)); // plano izquierdo, rojo
-    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso", false)); // plano derecho, verde
-    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano suelo, blanco
-    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", true)); // plano techo, blanco
-    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // plano fondo, blanco
-    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.89f, 0.45f, 0.82f}), "muy_difuso", false)); // esfera izquierda, rosa
-    //objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico", false)); // esfera derecha, azul
-    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", false)); // esfera derecha, azul
+    objetos.push_back(new Plano(Direccion(1.0f, 0.0f, 0.0f), 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
+    objetos.push_back(new Plano(Direccion(-1.0f, 0.0f, 0.0f), 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
+    objetos.push_back(new Plano(Direccion(0.0f, 1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, -1.0f, 0.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1})); // plano techo, blanco
+    objetos.push_back(new Plano(Direccion(0.0f, 0.0f, -1.0f), 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
+    //objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
+    objetos.push_back(new Esfera(Punto(-0.5f, -0.7f, 0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}), "plastico")); // esfera izquierda, azul
+    //objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
+    objetos.push_back(new Esfera(Punto(0.5f, -0.7f, -0.25f), 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, azul
     vector<LuzPuntual> luces;
 
-    RGB potencia(1.0f, 1.0f, 1.0f);
+    //RGB potencia(1.0f, 1.0f, 1.0f);
     //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     //luces.push_back(LuzPuntual({0.0f, 0.0f, -1.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
@@ -79,7 +80,7 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
 
     const unsigned maxRebotes = 3;
-    const unsigned rpp = 16;
+    const unsigned rpp = 256;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -432,7 +433,7 @@ int main() {
         sh_ptr<Punto> pto = std::make_shared<Punto>(1,0,0);
         vector<Punto> ptosIntersec;
         sh_ptr<Esfera> esfera = std::make_shared<Esfera>(*planeta);
-        bool choqueConLuz = false;
+        RGB choqueConLuz;
         esfera->interseccion(Rayo(*dir, *pto), ptosIntersec, emision, choqueConLuz);
 
         if (!ptosIntersec.empty()) {

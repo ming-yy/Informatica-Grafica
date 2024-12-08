@@ -13,11 +13,11 @@
 Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f) {}
 
 Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia,
-             const string _material, const bool _soyLuz) :
-             Primitiva(_reflectancia, _material, _soyLuz), n(normalizar(_n)), d(_d){}
+             const string _material, const RGB& _power) :
+             Primitiva(_reflectancia, _material, _power), n(normalizar(_n)), d(_d){}
 
 void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                        BSDFs& coefs, bool& choqueConLuz) const {
+                        BSDFs& coefs, RGB& powerLuzArea) const {
     float denominador = dot(rayo.d, n);
     if (fabs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;
@@ -34,14 +34,7 @@ void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos,
     Punto aux = rayo.o + rayo.d * t;
     ptos.push_back(aux);
     coefs = this->coeficientes;
-    choqueConLuz = this->soyLuz;
-    
-    // DEBUG
-    // cout << "Numerador: " << numerador << endl;
-    // cout << "Denominador: " << denominador << endl;
-    // cout << "t: " << t << endl;
-    // cout << "Hay interseccion en el punto: " << aux << endl;
-    
+    powerLuzArea = this->power;
 }
 
 bool Plano::pertenece(const Punto& p0) const {
@@ -53,29 +46,25 @@ Direccion Plano::getNormal(const Punto& punto) const {
     return this->n;
 }
 
-bool Plano::soyFuenteDeLuz() const {
-    return this->soyLuz;
-}
-
-
-Punto Plano::generarPuntoAleatorio() const {
+Punto Plano::generarPuntoAleatorio(float& prob) const {
     Direccion u, v;  // Vectores ortogonales en el plano
     construirBaseOrtonormal(this->n, u, v);
     
-    // Generador de números aleatorios en el rango de la superficie del plano
     float minLimite = -0.5f;
     float maxLimite = 0.5f;
+    float areaPlano = (maxLimite - minLimite) * (maxLimite - minLimite);
+    prob = 1.0f / areaPlano;
 
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dist(minLimite, maxLimite);
 
-    // Genera coordenadas aleatorias en el plano usando u y v
+    // Generamos coordenadas aleatorias en el plano usando u y v
     float randomU = dist(gen);
     float randomV = dist(gen);
 
-    // Calcula el punto en el sistema global
-    Punto puntoAleatorio = c + u * randomU + v * randomV;
+    // En UCS
+    Punto puntoAleatorio = this->c + u * randomU + v * randomV;
     return puntoAleatorio;
 }
 
@@ -83,7 +72,7 @@ Punto Plano::generarPuntoAleatorio() const {
 ostream& operator<<(ostream& os, const Plano& r)
 {
     os << "\nNormal: " << r.n << "\nDistancia: " << r.d;
-    os << "\nCoeficientes: " << r.coeficientes << endl << "\nSoyLuz: " << r.soyLuz << endl;
+    os << "\nCoeficientes: " << r.coeficientes << endl << "\nPower: " << r.power << endl;
     return os;
 }
 

@@ -5,6 +5,7 @@
 // Coms:   Práctica 1 de Informática Gráfica
 //*****************************************************************
 
+#include <random>
 #include "triangulo.h"
 #include "utilidades.h"
 
@@ -12,11 +13,11 @@
 Triangulo::Triangulo() : Primitiva(), v0(Punto()), v1(Punto()), v2(Punto()) {}
 
 Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const RGB& _reflectancia,
-                     const string _material, const bool _soyLuz):
-                     Primitiva(_reflectancia, _material, _soyLuz), v0(_v0), v1(_v1), v2(_v2){}
+                     const string _material, const RGB& _power):
+                     Primitiva(_reflectancia, _material, _power), v0(_v0), v1(_v1), v2(_v2){}
 
 void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                             BSDFs& coefs, bool& choqueConLuz) const {
+                             BSDFs& coefs, RGB& powerLuzArea) const {
     Direccion edge1 = v1 - v0;
     Direccion edge2 = v2 - v0;
     Direccion h = cross(rayo.d, edge2);
@@ -46,11 +47,10 @@ void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos,
     if (t > MARGEN_ERROR) {
         ptos.push_back(Punto(rayo.o + rayo.d * t));
         coefs = this->coeficientes;
-        choqueConLuz = soyLuz;
-        return;
-    } else {
-        return ; // No hay intersección en la dirección del rayo
-    }
+        powerLuzArea = this->power;
+    } //else {
+        //return ; // No hay intersección en la dirección del rayo
+    //}
 }
 
 bool Triangulo::pertenece(const Punto& p0) const {
@@ -63,12 +63,33 @@ Direccion Triangulo::getNormal(const Punto& punto) const {
     return normalizar(cross(d1, d2));
 }
 
-bool Triangulo::soyFuenteDeLuz() const {
-    return this->soyLuz;
-}
+Punto Triangulo::generarPuntoAleatorio(float& prob) const {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
-Punto Triangulo::generarPuntoAleatorio() const {
-    return Punto();
+    float r1 = dist(gen);
+    float r2 = dist(gen);
+
+    // r1 + r2 <= 1.0 (si no, reflejamos el punto en el triángulo)
+    if (r1 + r2 > 1.0f) {
+        r1 = 1.0f - r1;
+        r2 = 1.0f - r2;
+    }
+
+    // Coordenadas baricéntricas
+    float a = 1.0f - r1 - r2;
+    float b = r1;
+    float c = r2;
+
+    // Coordenadas baricéntricas --> coordenadas cartesianas
+    Punto puntoAleatorio = v0 * a + v1 * b + v2 * c;
+
+    Direccion crossProd = cross(v1 - v0, v2 - v0);
+    float areaTriangulo = modulo(crossProd) * 0.5f;
+    prob = 1.0f / areaTriangulo;
+
+    return puntoAleatorio;
 }
 
 void Triangulo::diHola() const {
