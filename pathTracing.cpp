@@ -15,9 +15,7 @@
 #include <algorithm>
 #include <random>
 #include <stack>
-
-constexpr float INDICE_REFRACCION_AIRE = 1.0f;
-constexpr float INDICE_REFRACCION_OBJETO = 1.5f;
+#include <thread>
 
 
 void imprimirImagen(const vector<vector<RGB>>& imagen) {
@@ -391,3 +389,62 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
     pintarEscenaEnPPM(nombreEscena, coloresEscena);
 }
 
+void renderizarRangoFilas(Camara& camara, unsigned inicioFila, unsigned finFila,
+                          unsigned numPxlsAncho, const Escena& escena, float anchoPorPixel, float altoPorPixel,
+                          const unsigned maxRebotes, const unsigned numRayosMontecarlo, vector<vector<RGB>>& coloresEscena,
+                          const unsigned rpp) {
+    for (unsigned alto = inicioFila; alto < finFila; ++alto) {
+        for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
+            Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
+            RGB radianciaSalienteTotal;
+            if (rpp == 1) {  // Sin antialiasing
+                rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+                globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
+                coloresEscena[alto][ancho] = obtenerRadianciaSalienteTotal(rayo, escena, maxRebotes, numRayosMontecarlo);
+            } else {  // Con antialiasing
+                for (unsigned i = 0; i < rpp; ++i) {
+                    rayo = camara.obtenerRayoAleatorioPixel(ancho, anchoPorPixel, alto, altoPorPixel);
+                    globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);
+                    radianciaSalienteTotal += obtenerRadianciaSalienteTotal(rayo, escena, maxRebotes, numRayosMontecarlo);
+                }
+                coloresEscena[alto][ancho] = radianciaSalienteTotal / rpp;
+            }
+        }
+    }
+}
+
+void renderizarEscenaConThreads(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+                                const Escena& escena, const string& nombreEscena, const unsigned rpp,
+                                const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                                const bool printPixelesProcesados, unsigned numThreads) {
+    float anchoPorPixel = camara.calcularAnchoPixel(numPxlsAncho);
+    float altoPorPixel = camara.calcularAltoPixel(numPxlsAlto);
+    
+    unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
+    cout << "Numero de threads a usar: " << numThreads << endl;
+    //if (printPixelesProcesados) cout << "Procesando pixeles..." << endl << "0 pixeles de " << totalPixeles << endl;
+
+    // Inicializado todo a color negro
+    vector<vector<RGB>> coloresEscena(numPxlsAlto, vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
+
+    unsigned filasPorThread = numPxlsAlto / numThreads;
+    unsigned filasRestantes = numPxlsAlto % numThreads;
+
+    std::vector<std::thread> threads;
+    unsigned inicioFila = 0;
+
+    for (unsigned t = 0; t < numThreads; ++t) {
+        // Distribuir filas extra entre los primeros threads
+        unsigned finFila = inicioFila + filasPorThread + (t < filasRestantes ? 1 : 0);
+        threads.emplace_back(renderizarRangoFilas, std::ref(camara), inicioFila, finFila, numPxlsAncho,
+                             std::ref(escena), anchoPorPixel, altoPorPixel, maxRebotes, numRayosMontecarlo,
+                             std::ref(coloresEscena), rpp);
+        inicioFila = finFila;
+    }
+
+    for (auto& thread : threads) {  // Esperar a que todos los threads terminen
+        thread.join();
+    }
+
+    pintarEscenaEnPPM(nombreEscena, coloresEscena);
+}

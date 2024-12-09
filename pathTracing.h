@@ -14,6 +14,7 @@
 #include "camara.h"
 #include "utilidades.h"
 #include <optional>
+#include <thread>
 
 
 enum TipoRayo {
@@ -150,3 +151,18 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
 void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
                       const Escena& escena, const string& nombreEscena, const unsigned rpp,
                       const unsigned maxRebotes, const unsigned numRayosMontecarlo, const bool printPixelesProcesados);
+
+// Función auxiliar para renderizar un rango específico de filas
+void renderizarRangoFilas(Camara& camara, unsigned inicioFila, unsigned finFila,
+                          unsigned numPxlsAncho, const Escena& escena, float anchoPorPixel, float altoPorPixel,
+                          const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                          vector<vector<RGB>>& coloresEscena, const unsigned rpp);
+
+// Función principal de renderizado con threads. Si no se indica el número de threads, se usará el máximo
+// número disponible.
+// Disclaimer: no poner un número de threads que sobrepase los núcleos lógicos del pc; no mejorará rendimiento
+void renderizarEscenaConThreads(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlto,
+                                const Escena& escena, const string& nombreEscena, const unsigned rpp,
+                                const unsigned maxRebotes, const unsigned numRayosMontecarlo,
+                                const bool printPixelesProcesados,
+                                unsigned numThreads = std::thread::hardware_concurrency());
