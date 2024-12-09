@@ -16,8 +16,7 @@ Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const
                      const string _material, const RGB& _power):
                      Primitiva(_reflectancia, _material, _power), v0(_v0), v1(_v1), v2(_v2){}
 
-void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                             BSDFs& coefs, RGB& powerLuzArea) const {
+void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     Direccion edge1 = v1 - v0;
     Direccion edge2 = v2 - v0;
     Direccion h = cross(rayo.d, edge2);
@@ -47,20 +46,46 @@ void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos,
     if (t > MARGEN_ERROR) {
         ptos.push_back(Punto(rayo.o + rayo.d * t));
         coefs = this->coeficientes;
-        powerLuzArea = this->power;
     } //else {
         //return ; // No hay intersección en la dirección del rayo
     //}
 }
 
 bool Triangulo::pertenece(const Punto& p0) const {
-    return false;
+    // Vectores de los lados del triángulo
+    Direccion v0v1 = this->v1 - this->v0;
+    Direccion v0v2 = this->v2 - this->v0;
+    Direccion v0p = p0 - this->v0;
+
+    // Calculamos los productos escalares necesarios
+    float dotV1V1 = dot(v0v1, v0v1);
+    float dotV1V2 = dot(v0v1, v0v2);
+    float dotV2V2 = dot(v0v2, v0v2);
+    float dotVPV1 = dot(v0p, v0v1);
+    float dotVPV2 = dot(v0p, v0v2);
+
+    // Calculamos el determinante para las coordenadas baricéntricas
+    float denom = dotV1V1 * dotV2V2 - dotV1V2 * dotV1V2;
+    if (denom == 0.0f) {
+        return false; // Los vértices son colineales
+    }
+
+    // Coordenadas baricéntricas
+    float u = (dotV2V2 * dotVPV1 - dotV1V2 * dotVPV2) / denom;
+    float v = (dotV1V1 * dotVPV2 - dotV1V2 * dotVPV1) / denom;
+
+    // Comprobamos si están dentro del rango [0, 1] y que u + v <= 1
+    return (u >= 0.0f && v >= 0.0f && u + v <= 1.0f);
 }
 
 Direccion Triangulo::getNormal(const Punto& punto) const {
     Direccion d1 = v0 - v1;
     Direccion d2 = v1 - v2;
     return normalizar(cross(d1, d2));
+}
+
+bool Triangulo::puntoEsFuenteDeLuz(const Punto& punto) const {
+    return pertenece(punto) && soyFuenteDeLuz();
 }
 
 Punto Triangulo::generarPuntoAleatorio(float& prob) const {

@@ -18,9 +18,7 @@ Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _reflectanc
 
 Esfera::Esfera(const Planeta& p) : Primitiva(), centro(p.centro), radio(p.radio) {}
 
-void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                          BSDFs& coefs, RGB& powerLuzArea) const {
-
+void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     float a = modulo(rayo.d);
     a *= a;
     float b = 2 * dot(rayo.d, rayo.o - this->centro);
@@ -53,8 +51,6 @@ void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos,
         }
         
         coefs = this->coeficientes;
-        powerLuzArea = this->power;
- 
         // DEBUG
         //cout << "Hay 2 puntos de interseccion: " << endl;
         //cout << "t1 = " << t1 << " --> " << p1 << endl;
@@ -67,7 +63,6 @@ void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos,
         if (t > MARGEN_ERROR) {
             ptos.push_back(puntoInterseccion);
             coefs = this->coeficientes;
-            powerLuzArea = this->power;
         }
         // DEBUG
         //cout << "Hay 1 punto de interseccion (tngente): " << endl;
@@ -81,11 +76,16 @@ void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos,
 }
 
 bool Esfera::pertenece(const Punto& p0) const {
-    return false;
+    float distancia = modulo(p0 - this->centro);
+    return abs(distancia - this->radio) <= MARGEN_ERROR;
 }
 
 Direccion Esfera::getNormal(const Punto& punto) const {
     return normalizar(punto - centro);
+}
+
+bool Esfera::puntoEsFuenteDeLuz(const Punto& punto) const {
+    return pertenece(punto) && soyFuenteDeLuz();
 }
 
 Punto Esfera::generarPuntoAleatorio(float& prob) const {

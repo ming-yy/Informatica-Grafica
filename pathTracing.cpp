@@ -250,7 +250,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     BSDFs coefsPtoIntersec;
     Punto ptoIntersec;
     Direccion nuevaNormal;
-    bool hayIntersec = escena.interseccion(wi, coefsPtoIntersec, ptoIntersec, nuevaNormal, powerLuzArea);
+    bool hayIntersec = escena.interseccion(wi, coefsPtoIntersec, ptoIntersec, nuevaNormal);
 
     if (!hayIntersec) {    // TERMINAL: rayo no choca contra nada, devuelve (0,0,0)
         return RGB({0.0f, 0.0f, 0.0f});
@@ -291,13 +291,13 @@ RGB obtenerRadianciaSalienteTotal(const Rayo &rayoIncidente, const Escena &escen
                                   const unsigned numRayosMontecarlo){
     Punto ptoIntersec;
     Direccion normal;
-    RGB powerLuzArea;
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
     RGB radianciaSalienteIndirecta(0.0f, 0.0f, 0.0f);
     BSDFs coefsPtoInterseccion;
     
-    if (escena.interseccion(rayoIncidente, coefsPtoInterseccion, ptoIntersec, normal, powerLuzArea)) {
-        if (!valeCero(powerLuzArea)) {  // Primer rayo de la cam se choca con luz de área
+    if (escena.interseccion(rayoIncidente, coefsPtoInterseccion, ptoIntersec, normal)) {
+        RGB powerLuzArea;
+        if (escena.puntoPerteneceALuz(ptoIntersec, powerLuzArea)) {  // 1º Rayo (de la cam) choca con luz de área
             return powerLuzArea;
         }
         
@@ -392,7 +392,7 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
 void renderizarRangoFilas(Camara& camara, unsigned inicioFila, unsigned finFila,
                           unsigned numPxlsAncho, const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo, vector<vector<RGB>>& coloresEscena,
-                          const unsigned rpp) {
+                          const unsigned rpp, const unsigned thread) {
     for (unsigned alto = inicioFila; alto < finFila; ++alto) {
         for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
             Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
@@ -409,6 +409,10 @@ void renderizarRangoFilas(Camara& camara, unsigned inicioFila, unsigned finFila,
                 }
                 coloresEscena[alto][ancho] = radianciaSalienteTotal / rpp;
             }
+            
+            //if (((alto - inicioFila) * ancho) % 1000 == 0) {
+            //    cout << "Thead " << thread << ": renderizados " << (alto - inicioFila) * ancho << " pixeles." << endl;
+            //}
         }
     }
 }
@@ -422,7 +426,7 @@ void renderizarEscenaConThreads(Camara& camara, unsigned numPxlsAncho, unsigned 
     
     unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
     cout << "Numero de threads a usar: " << numThreads << endl;
-    //if (printPixelesProcesados) cout << "Procesando pixeles..." << endl << "0 pixeles de " << totalPixeles << endl;
+    if (printPixelesProcesados) cout << "Procesando pixeles..." << endl << "0 pixeles de " << totalPixeles << endl;
 
     // Inicializado todo a color negro
     vector<vector<RGB>> coloresEscena(numPxlsAlto, vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
@@ -438,7 +442,7 @@ void renderizarEscenaConThreads(Camara& camara, unsigned numPxlsAncho, unsigned 
         unsigned finFila = inicioFila + filasPorThread + (t < filasRestantes ? 1 : 0);
         threads.emplace_back(renderizarRangoFilas, std::ref(camara), inicioFila, finFila, numPxlsAncho,
                              std::ref(escena), anchoPorPixel, altoPorPixel, maxRebotes, numRayosMontecarlo,
-                             std::ref(coloresEscena), rpp);
+                             std::ref(coloresEscena), rpp, t);
         inicioFila = finFila;
     }
 

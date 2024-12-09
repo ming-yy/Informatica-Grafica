@@ -156,7 +156,7 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
 void renderizarRangoFilas(Camara& camara, unsigned inicioFila, unsigned finFila,
                           unsigned numPxlsAncho, const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          vector<vector<RGB>>& coloresEscena, const unsigned rpp);
+                          vector<vector<RGB>>& coloresEscena, const unsigned rpp, const unsigned thread);
 
 // Función principal de renderizado con threads. Si no se indica el número de threads, se usará el máximo
 // número disponible.

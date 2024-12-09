@@ -10,14 +10,26 @@
 #include <random>
 
 
-Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f) {}
+Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f), minLimite(0.0f), maxLimite(0.0f) {}
 
-Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia,
-             const string _material, const RGB& _power) :
-             Primitiva(_reflectancia, _material, _power), n(normalizar(_n)), d(_d){}
+Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia, const string _material,
+             const RGB& _power, const float _minLimite, const float _maxLimite) :
+             Primitiva(_reflectancia, _material, _power), n(normalizar(_n)), d(_d) {
+    try {
+        if (!valeCero(_power) && (_minLimite >= _maxLimite)) {
+            throw invalid_argument("Error: Limites incorrectos de la luz del plano [" +
+                                   to_string(_n.coord[0]) + ", " + to_string(_n.coord[1]) +
+                                   ", " + to_string(_n.coord[2]) + "]");
+        } else {
+            this->minLimite = _minLimite;
+            this->maxLimite = _maxLimite;
+        }
+    } catch (const invalid_argument& e) {
+        cerr << e.what() << endl;
+    }
+}
 
-void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                        BSDFs& coefs, RGB& powerLuzArea) const {
+void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     float denominador = dot(rayo.d, n);
     if (fabs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;
@@ -34,30 +46,58 @@ void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos,
     Punto aux = rayo.o + rayo.d * t;
     ptos.push_back(aux);
     coefs = this->coeficientes;
-    powerLuzArea = this->power;
 }
 
 bool Plano::pertenece(const Punto& p0) const {
-    Direccion aux(this->c.coord);
-    return (dot(p0,this->n) + modulo(aux) == 0);
+    //Direccion aux(this->c.coord);
+    //return abs(dot(p0 - this->c, this->n) + modulo(aux)) < MARGEN_ERROR;
+    
+    //float distancia = dot(p0 - this->c, this->n);
+    //return abs(distancia) < MARGEN_ERROR;
+    return abs(dot(this->n, p0) + this->d) < MARGEN_ERROR;
 }
 
 Direccion Plano::getNormal(const Punto& punto) const {
     return this->n;
 }
 
+bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
+    if (!this->soyFuenteDeLuz()) {
+        return false;
+    }
+    
+    if (!this->pertenece(punto)) {
+        return false;
+    }
+
+    Direccion u, v;
+    construirBaseOrtonormal(normalizar(this->n), u, v);
+
+    // Proyectar el punto en la base del plano
+    float coordU = dot(punto - this->c, u);
+    float coordV = dot(punto - this->c, v);
+
+    // Verificar si las coordenadas proyectadas están dentro de los límites
+    bool dentroLimites = (coordU >= this->minLimite && coordU <= this->maxLimite) &&
+                         (coordV >= this->minLimite && coordV <= this->maxLimite);
+    
+    //cout << "Proyección U: " << coordU << ", Proyección V: " << coordV << endl;
+    //cout << "Límites U/V: [" << this->minLimite << ", " << this->maxLimite << "]" << endl;
+
+    return dentroLimites;
+}
+
 Punto Plano::generarPuntoAleatorio(float& prob) const {
     Direccion u, v;  // Vectores ortogonales en el plano
     construirBaseOrtonormal(this->n, u, v);
     
-    float minLimite = -0.5f;
-    float maxLimite = 0.5f;
-    float areaPlano = (maxLimite - minLimite) * (maxLimite - minLimite);
+    float limite = this->maxLimite - this->minLimite;
+    float areaPlano = limite * limite;
     prob = 1.0f / areaPlano;
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dist(minLimite, maxLimite);
+    std::uniform_real_distribution<float> dist(this->minLimite, this->maxLimite);
 
     // Generamos coordenadas aleatorias en el plano usando u y v
     float randomU = dist(gen);
@@ -77,5 +117,5 @@ ostream& operator<<(ostream& os, const Plano& r)
 }
 
 void Plano::diHola() const {
-    cout << "Soy plano: centro = " << this->c << ", normal = " << this->n << ", distancia = " << this->d << endl;
+    cout << "Soy plano: normal = " << this->n << ", distancia = " << this->d << endl;
 }

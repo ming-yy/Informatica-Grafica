@@ -34,11 +34,9 @@ public:
     // Devuelve en <ptos> un vector con los puntos de intersección en UCS del rayo <rayo>
     // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
     // en el vector será el primer punto de intersección. Si hay intersección, también
-    // devuelve los BSDFs del objeto en <coefs> y si el objeto intersecado es luz,
-    // devuelve en <powerLuzArea> su power.
+    // devuelve los BSDFs del objeto en <coefs>.
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
-    virtual void interseccion(const Rayo& rayo, vector<Punto>& ptos,
-                              BSDFs& coefs, RGB& powerLuzArea) const = 0;
+    virtual void interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const = 0;
     
     // Método virtual que devuelve "True" si y solo si el punto <p0> pertecene a la primitiva.
     virtual bool pertenece(const Punto& p0) const = 0;
@@ -48,6 +46,10 @@ public:
     
     // Método que devuelve <True> si y solo si esta primitiva es una fuente de luz.
     bool soyFuenteDeLuz() const;
+    
+    // Método virtual que devuelve "True" si y solo si <punto> pertenece a la primitiva
+    // y además, es un punto lumínico de la primitiva.
+    virtual bool puntoEsFuenteDeLuz(const Punto& punto) const = 0;
     
     // Método virtual que devuelve un punto aleatorio de la primitiva.
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
