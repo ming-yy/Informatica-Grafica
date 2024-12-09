@@ -10,11 +10,11 @@
 #include <random>
 
 
-Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f), minLimite(0.0f), maxLimite(0.0f) {}
+Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f), minLimite(), maxLimite(), centro() {}
 
-Plano::Plano(const Direccion& _n, float _d, const RGB& _reflectancia, const string _material,
-             const RGB& _power, const float _minLimite, const float _maxLimite) :
-             Primitiva(_reflectancia, _material, _power), n(normalizar(_n)), d(_d) {
+Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, const string _material,
+             const RGB& _power, const float _minLimite, const float _maxLimite, const Punto& _c) :
+             Primitiva(_reflectancia, _material, _power), n(normalizar(_n)), d(_d), centro(_c) {
     try {
         if (!valeCero(_power) && (_minLimite >= _maxLimite)) {
             throw invalid_argument("Error: Limites incorrectos de la luz del plano [" +
@@ -69,8 +69,8 @@ bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
     construirBaseOrtonormal(normalizar(this->n), u, v);
 
     // Proyectar el punto en la base del plano
-    float coordU = dot(punto - this->c, u);
-    float coordV = dot(punto - this->c, v);
+    float coordU = dot(punto - this->centro, u);
+    float coordV = dot(punto - this->centro, v);
 
     // Verificar si las coordenadas proyectadas están dentro de los límites
     bool dentroLimites = (coordU >= this->minLimite && coordU <= this->maxLimite) &&
@@ -99,7 +99,7 @@ Punto Plano::generarPuntoAleatorio(float& prob) const {
     float randomV = dist(gen);
 
     // En UCS
-    Punto puntoAleatorio = this->c + u * randomU + v * randomV;
+    Punto puntoAleatorio = this->centro + u * randomU + v * randomV;
     return puntoAleatorio;
 }
 
