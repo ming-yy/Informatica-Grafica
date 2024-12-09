@@ -49,11 +49,6 @@ void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) co
 }
 
 bool Plano::pertenece(const Punto& p0) const {
-    //Direccion aux(this->c.coord);
-    //return abs(dot(p0 - this->c, this->n) + modulo(aux)) < MARGEN_ERROR;
-    
-    //float distancia = dot(p0 - this->c, this->n);
-    //return abs(distancia) < MARGEN_ERROR;
     return abs(dot(this->n, p0) + this->d) < MARGEN_ERROR;
 }
 

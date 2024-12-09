@@ -214,12 +214,9 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         Direccion dirIncidente = origenLuz - p0;
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(normalizar(dirIncidente), normal);
         RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
-        //Direccion aux = Direccion(powerLuzArea.rgb) / (modulo(dirIncidente) * modulo(dirIncidente));
-        //RGB radianciaIncidente(aux.coord);
-        //radianciaIncidente = radianciaIncidente * (reflectanciaBRDFDifusa * cosAnguloIncidencia);
         float cosNLuzWiLuz = calcCosenoAnguloIncidencia(normalizar(-dirIncidente), objeto->getNormal(origenLuz));
-        RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosAnguloIncidencia /
-                                 (modulo(dirIncidente) * modulo(dirIncidente) * prob);
+        RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosNLuzWiLuz * cosAnguloIncidencia * prob /
+                                 (modulo(dirIncidente) * modulo(dirIncidente));
         radianciaSaliente += radianciaIncidente;
     }
     
