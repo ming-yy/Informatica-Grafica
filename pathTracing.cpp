@@ -249,6 +249,10 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     Direccion nuevaNormal;
     bool hayIntersec = escena.interseccion(wi, coefsPtoIntersec, ptoIntersec, nuevaNormal);
 
+    // MIRAR, CUIDADO: creo que debería devolverse radianciaSalienteDirecta siemore, 
+    // y si no hay interseccion devolver ese valor sin recursividad, no cortarlo a 0 aquí
+    // porque esto hace que si en el siguiente rebote no interseca, tampoco se cuenta el rebote actual
+
     if (!hayIntersec) {    // TERMINAL: rayo no choca contra nada, devuelve (0,0,0)
         return RGB({0.0f, 0.0f, 0.0f});
     }
