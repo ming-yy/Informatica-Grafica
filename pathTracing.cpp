@@ -195,6 +195,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         if (!escena.luzIluminaPunto(p0, luz)) {
             continue;     // Si el punto no está iluminado, nos saltamos la iteración
         }
+
         Direccion dirIncidente = luz.c - p0;
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(dirIncidente, normal);
         RGB reflectanciaBrdfDifusa = calcBrdfDifusa(kd);
@@ -262,6 +263,8 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     if (tipoRayo == DIFUSO) {
         radianciaSalienteDirecta = nextEventEstimation(origen, normal, escena, coefsOrigen.kd);
         // El coseno sirve para compensar la probabilidad de que se elija ese preciso rayo de todos los del hemisferio
+        
+        //MIRAR, CUIDADO, quizas deberia ser wi.d en vez de origen - ptointersec
         coseno = calcCosenoAnguloIncidencia(origen - ptoIntersec, normal);
     } else {  // tipoRayo == ESPECULAR || tipoRayo == REFRACTANTE
         coseno = 1.0f;      // El coseno se anula porque el rayo solamente puede ir en una dirección
