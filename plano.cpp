@@ -49,8 +49,7 @@ void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) co
 }
 
 bool Plano::pertenece(const Punto& p0) const {
-    float aux = dot(this->n, p0) + this->d;
-    return aux < MARGEN_ERROR && aux > (-MARGEN_ERROR);
+    return abs(dot(this->n, p0) + this->d) <= MARGEN_ERROR;
 }
 
 Direccion Plano::getNormal(const Punto& punto) const {
@@ -59,12 +58,10 @@ Direccion Plano::getNormal(const Punto& punto) const {
 
 bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
     if (!this->soyFuenteDeLuz()) {
-        //cout << "No soy fuente" << endl;
         return false;
     }
     
     if (!this->pertenece(punto)) {
-        //cout << "Punto: " << punto << " no pertenece" << endl;
         return false;
     }
 
@@ -78,9 +75,6 @@ bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
     // Verificar si las coordenadas proyectadas están dentro de los límites
     bool dentroLimites = (coordU >= this->minLimite - MARGEN_ERROR && coordU <= this->maxLimite + MARGEN_ERROR) &&
                          (coordV >= this->minLimite - MARGEN_ERROR && coordV <= this->maxLimite + MARGEN_ERROR);
-    
-    //cout << "Proyección U: " << coordU << ", Proyección V: " << coordV << endl;
-    //cout << "Límites U/V: [" << this->minLimite << ", " << this->maxLimite << "]" << endl;
 
     return dentroLimites;
 }
@@ -105,12 +99,6 @@ Punto Plano::generarPuntoAleatorio(float& prob) const {
     Punto puntoAleatorio = this->centro + u * randomU + v * randomV;
     puntoAleatorio = puntoAleatorio + this->n * (-1) * this->d;
     
-    /*
-    if (!puntoEsFuenteDeLuz(puntoAleatorio)) {
-        cout << "MIERDA" << endl;
-        cout << puntoAleatorio << endl;
-    }
-    */
     return puntoAleatorio;
 }
 

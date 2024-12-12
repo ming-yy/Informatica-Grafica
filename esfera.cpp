@@ -85,7 +85,7 @@ Direccion Esfera::getNormal(const Punto& punto) const {
 }
 
 bool Esfera::puntoEsFuenteDeLuz(const Punto& punto) const {
-    return pertenece(punto) && soyFuenteDeLuz();
+    return soyFuenteDeLuz() && pertenece(punto);
 }
 
 Punto Esfera::generarPuntoAleatorio(float& prob) const {
@@ -102,9 +102,13 @@ Punto Esfera::generarPuntoAleatorio(float& prob) const {
     float y = radio * sin(theta) * sin(phi);
     float z = radio * cos(theta);
 
-    Punto puntoAleatorio(this->centro.coord[0] + x, this->centro.coord[1] + y, this->centro.coord[2] + z);
+    Punto puntoAleatorio(this->centro + Punto(x,y,z));
     float areaSuperficie = 4.0f * M_PI * radio * radio;
     prob = 1.0f / areaSuperficie;
+    
+    if (!pertenece(puntoAleatorio)) {
+        cout << "MIERDA" << endl;
+    }
 
     return puntoAleatorio;
 }

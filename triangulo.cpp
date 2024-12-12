@@ -85,7 +85,7 @@ Direccion Triangulo::getNormal(const Punto& punto) const {
 }
 
 bool Triangulo::puntoEsFuenteDeLuz(const Punto& punto) const {
-    return pertenece(punto) && soyFuenteDeLuz();
+    return soyFuenteDeLuz() && pertenece(punto);
 }
 
 Punto Triangulo::generarPuntoAleatorio(float& prob) const {
