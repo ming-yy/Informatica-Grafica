@@ -44,6 +44,15 @@ void liberarMemoriaDePrimitivas(vector<Primitiva*>& objetos) {
     objetos.clear(); // Limpia el vector para evitar punteros colgantes
 }
 
+// INSTRUCCIONES SOBRE LOS VECTORES
+// (x, y, z)
+// +x = derecha
+// -x = izquierda
+// +y = arriba
+// -y = abajo
+// +z = lejos
+// -z = cerca
+
 void cajaDeCornell(){
     vector<Primitiva*> objetos;
     objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
@@ -55,7 +64,7 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "plastico")); // esfera izquierda, azul
-    objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1})); // esfera izquierda, azul
+    objetos.push_back(new Esfera({0.0f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera izquierda, azul
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
     objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, azul
     vector<LuzPuntual> luces;
@@ -88,7 +97,7 @@ void cajaDeCornell(){
     const bool printPixelesProcesados = true;
     
     auto inicio = std::chrono::high_resolution_clock::now();
-    renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscena(cam, 64, 64, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     //renderizarEscenaConThreads(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);

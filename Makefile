@@ -1,6 +1,6 @@
 # Definir el compilador y las opciones de compilación
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=gnu++20
+CXXFLAGS = -O3 -Wall -Wextra -std=gnu++20
 
 # Definir el ejecutable
 TARGET = main
