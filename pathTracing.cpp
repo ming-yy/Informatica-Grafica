@@ -204,13 +204,15 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         
         radianciaSaliente += radianciaIncidente;
     }
-
+    
+    int num_luces = 0;
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
         if (!(objeto->soyFuenteDeLuz()) || !escena.luzIluminaPunto(p0, objeto, origenLuz, prob)) {
             continue;     // Si el punto no está iluminado, nos saltamos la iteración
         }
+        num_luces += 1;
         RGB powerLuzArea = objeto->power;
         Direccion dirIncidente = origenLuz - p0;
         float distanciaCuadrado = modulo(dirIncidente) * modulo(dirIncidente);
@@ -243,7 +245,8 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         */
     }
     
-    return radianciaSaliente;
+    num_luces = max(num_luces, 1);
+    return radianciaSaliente / num_luces;
 }
 
 RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const BSDFs &coefsOrigen, 
