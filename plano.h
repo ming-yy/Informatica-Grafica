@@ -37,7 +37,7 @@ public:
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const override;
     
-    // Mëtodo que devuelve "True" si y solo si el punto <p0> pertecene al plano.
+    // Método que devuelve "True" si y solo si el punto <p0> pertecene al plano.
     bool pertenece(const Punto& p0) const override;
     
     // Método que devuelve la normal de la primitiva en el punto <punto>
