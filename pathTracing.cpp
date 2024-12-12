@@ -123,7 +123,7 @@ TipoRayo dispararRuletaRusa(const BSDFs& coefs, float& probTipoRayo) {
     float probDifuso = maxKD / total;
     float probEspecular = maxKS / total;
     float probRefractante = maxKT / total;
-    float probAbsorbente = 1.0f - probDifuso - probEspecular - probRefractante;
+    //float probAbsorbente = 1.0f - probDifuso - probEspecular - probRefractante;
     
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -204,7 +204,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         
         radianciaSaliente += radianciaIncidente;
     }
-    /*
+
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
@@ -213,14 +213,19 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         }
         RGB powerLuzArea = objeto->power;
         Direccion dirIncidente = origenLuz - p0;
+        float distanciaCuadrado = modulo(dirIncidente) * modulo(dirIncidente);
+        if (modulo(dirIncidente) < MARGEN_ERROR) {
+            continue;   // No contribuye, evitamos un valor explosivo
+        }
+        
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(normalizar(dirIncidente), normal);
         RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
         float cosNLuzWiLuz = calcCosenoAnguloIncidencia(normalizar(-dirIncidente), objeto->getNormal(origenLuz));
         RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosNLuzWiLuz * cosAnguloIncidencia * prob /
-                                 (modulo(dirIncidente) * modulo(dirIncidente));
+        //RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosAnguloIncidencia /
+                                distanciaCuadrado;
         radianciaSaliente += radianciaIncidente;
     }
-     */
     
     return radianciaSaliente;
 }
