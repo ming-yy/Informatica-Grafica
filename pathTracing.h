@@ -60,15 +60,16 @@ std::optional<Direccion> calcDirRefractante(const Direccion& wo, const Direccion
                                             const float ni, const float nr);
 
 // Función que dado el tipo de rayo y los parámetros de entrada, devuelve la dirección
-// incidente correspondiente (la que se "aleja" de la cámara). Devuelve en <probRayo> la
-// probabilidad de que salga el rayo que se ha decidido que salga.
+// incidente correspondiente (la que se "aleja" de la cámara). Devuelve en <probDirRayo> la
+// probabilidad de que salga el rayo en la dirección que se ha decidido que salga.
 Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const Direccion& wo,
-                           const Direccion& normal, float& probRayo);
+                           const Direccion& normal, float& probDirRayo);
 
 // Función que realiza una selección probabilística del tipo de rayo que
 // será disparado (difuso, especular o refractante) basándose en los coeficientes
-// de la superficie (kd, ks, kt) proporcionados por <coefs>.
-TipoRayo dispararRuletaRusa(const BSDFs& coefs, float& probRuleta);
+// de la superficie (kd, ks, kt) proporcionados por <coefs>. Devuelve en <probTipoRayo>
+// la probabilidad de que se haya elegido el tipo de rayo devuelto.
+TipoRayo dispararRuletaRusa(const BSDFs& coefs, float& probTipoRayo);
 
 // Función que calcula la reflectancia difusa de Lambert.
 RGB calcBrdfDifusa(const RGB &kd);
