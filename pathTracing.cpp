@@ -228,7 +228,8 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
                                  distanciaCuadrado;
         radianciaSaliente += radianciaIncidente;
         
-        
+        /*
+        // Debug
         if (radianciaSaliente.rgb[0] >= 9.0f || radianciaSaliente.rgb[1] >= 9.0f || radianciaSaliente.rgb[2] >= 9.0f) {
             cout << "p0: " << p0 << endl;
             cout << "rad: " << radianciaSaliente << endl;
@@ -239,7 +240,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
             cout << "prob:  " << prob << endl;
             cout << "distancia:  " << distanciaCuadrado << endl;
         }
-        
+        */
     }
     
     return radianciaSaliente;
