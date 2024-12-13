@@ -131,7 +131,7 @@ void probarCosas() {
 }
 
 int main() {
-    int test = 13;
+    int test = 12;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
