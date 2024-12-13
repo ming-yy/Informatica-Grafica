@@ -59,14 +59,14 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
     objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
     objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
-    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso",
-                                  {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo, blanco
+    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -1.0, 1.0, {0.0f, 0.0f, 0.0f})); // plano techo luz
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
     objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "plastico")); // esfera izquierda, azul
-    //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.8f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera izquierda, azul
+    //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz centro
+    //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz izquierda
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
-    objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, azul
+    //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, azul
     vector<LuzPuntual> luces;
 
     //RGB potencia(1.0f, 1.0f, 1.0f);
@@ -91,8 +91,8 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 6;
-    const unsigned rpp = 256;
+    const unsigned maxRebotes = 4;
+    const unsigned rpp = 32;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -111,9 +111,27 @@ void cajaDeCornell(){
     transformarFicheroPPM("./cornell.ppm", 5);
 }
 
+void probarCosas() {
+    vector<LuzPuntual> luces;
+    vector<Primitiva*> objetos;
+    objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso"));
+    objetos.push_back(new Esfera({1.0f, 0.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso"));
+    Escena escena = Escena(objetos, luces);
+    
+    Rayo rayo = Rayo(Direccion(1.0f, 0.0f, 0.0f), Punto(-0.3f, 0.0f, 0.0f));
+    BSDFs coefs;
+    Punto pto;
+    Direccion normal;
+    bool interseca = escena.interseccion(rayo, coefs, pto, normal);
+    cout << "Interseca?: " << interseca << endl;
+    cout << "Rayo: " << rayo << endl;
+    cout << "Coefs: " << coefs << endl;
+    cout << "PtoIntersec: " << pto << endl;
+    cout << "Normal: " << normal << endl;
+}
 
 int main() {
-    int test = 12;
+    int test = 13;
     
     if (test == 1) {
         array<float, 3> arrCoord = {4.44,5.55,6.66};
@@ -567,6 +585,8 @@ int main() {
 
         cajaDeCornell();
 
+    } else if (test == 13) {
+        probarCosas();
     } else {
         printf("ERROR: No se ha encontrado el numero de prueba.\n");
     }

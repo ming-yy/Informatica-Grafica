@@ -105,10 +105,6 @@ Punto Esfera::generarPuntoAleatorio(float& prob) const {
     Punto puntoAleatorio(this->centro + Punto(x,y,z));
     float areaSuperficie = 4.0f * M_PI * radio * radio;
     prob = 1.0f / areaSuperficie;
-    
-    if (!pertenece(puntoAleatorio)) {
-        cout << "MIERDA" << endl;
-    }
 
     return puntoAleatorio;
 }

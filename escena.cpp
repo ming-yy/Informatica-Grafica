@@ -70,16 +70,17 @@ bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& orige
     bool iluminar = false;
     int numIters = NUM_MUESTRAS_LUZ_AREA;     // Tiene que ir en función del tamaño del plano
     for (int i = 0; i < numIters && !iluminar; ++i) {
-        Punto origen = luz->generarPuntoAleatorio(prob);
-        Direccion d = normalizar(origen - p0);
+        Punto ptoRandom = luz->generarPuntoAleatorio(prob);
+        Direccion d = normalizar(ptoRandom - p0);
         Punto ptoMasCerca;
         BSDFs coefs;
         Direccion normal;
+        // Rayo desde punto a iluminar (p0) --> ptoRandom de la luz
         bool chocaObjeto = this->interseccion(Rayo(d, p0), coefs, ptoMasCerca, normal);
         
-        if (chocaObjeto) {
-            iluminar = modulo(origen - p0) <= modulo(ptoMasCerca - p0);
-            origenLuz = origen;
+        if (chocaObjeto) {  // Miramos si el objeto más cercano contra el que choca es esa luz en <ptoRandom>
+            iluminar = modulo(ptoRandom - p0) <= modulo(ptoMasCerca - p0);
+            origenLuz = ptoRandom;
         }
     }
     
