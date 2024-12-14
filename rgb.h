@@ -45,6 +45,9 @@ public:
     // Operación de +=
     RGB& operator+=(const RGB& d);
     
+    // Función que devuelve la multiplicación entre escalar por cada componente rgb de <color>
+    friend RGB operator*(const float escalar, const RGB& color);
+    
     // Función que devuelve el valor máximo del RGB
     friend float max(const RGB& a);
     
