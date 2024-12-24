@@ -32,7 +32,7 @@ public:
     
     // Función que devuelve "True" si y solo si el punto p0 pertenece a una fuente de luz. Además,
     // si devuelve "True", también devolverá en <powerLuzArea> el power de dicha luz.
-    bool puntoPerteneceALuz(const Punto& p0, RGB& powerLuzArea, bool debug) const;
+    bool puntoPerteneceALuz(const Punto& p0, RGB& powerLuzArea) const;
     
     // Método que devuelve "True" si y solo si el punto <p0> es iluminado por la fuente de luz <luz>
     bool luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const;

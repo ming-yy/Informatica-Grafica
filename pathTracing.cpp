@@ -258,7 +258,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
     
     RGB powerLuzArea;
-    if (escena.puntoPerteneceALuz(origen, powerLuzArea, false)) {   // TERMINAL: somos una fuente de luz
+    if (escena.puntoPerteneceALuz(origen, powerLuzArea)) {   // TERMINAL: somos una fuente de luz
         return powerLuzArea;
     }
     
@@ -324,7 +324,7 @@ RGB obtenerRadianciaSalienteTotal(const Rayo &rayoIncidente, const Escena &escen
     
     if (escena.interseccion(rayoIncidente, coefsPtoInterseccion, ptoIntersec, normal)) {
         RGB powerLuzArea;
-        if (escena.puntoPerteneceALuz(ptoIntersec, powerLuzArea, false)) {  // 1º Rayo (de la cam) choca con luz de área
+        if (escena.puntoPerteneceALuz(ptoIntersec, powerLuzArea)) {  // 1º Rayo (de la cam) choca con luz de área
             return powerLuzArea;
         }
         
