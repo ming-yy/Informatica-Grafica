@@ -39,13 +39,56 @@ bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCer
     return resVal;
 }
 
-bool Escena::puntoPerteneceALuz(const Punto& p0, RGB& powerLuzArea) const {
+#include "esfera.h"
+
+bool Escena::puntoPerteneceALuz(const Punto& p0, RGB& powerLuzArea, bool debug) const {
     bool resVal = false;
-    for (const Primitiva* primitiva : this->primitivas) {
-        if (primitiva->puntoEsFuenteDeLuz(p0)) {
-            resVal = true;
-            powerLuzArea = primitiva->power;
-            break;
+    bool aux = false;
+    for (Primitiva* primitiva : this->primitivas) {
+        if (debug) {
+            Esfera* esfera = dynamic_cast<Esfera*>(primitiva);
+            if (esfera) {
+                //esfera->diHola(); // Éxito: figura es realmente una Esfera
+                aux = true;
+            } else {
+                //cout << "El objeto no es una Esfera" << endl;
+            }
+            
+            array<float, 3> xxd = {-0.154196858, -0.179686651, -0.184219122};
+            
+            if (aux && p0.coord[0] == xxd[0] && p0.coord[1] == xxd[1] && p0.coord[2] == xxd[2]) {
+                //cout << "pertenece: " << esfera->pertenece(p0) << endl;
+                Punto pto(0.0f, 0.0f, 0.0f);
+                float distancia = modulo(pto - p0);
+                float total = abs(distancia - 0.3f);
+                
+                cout << "   Esfera es fuente: " << primitiva->soyFuenteDeLuz() << ", distancia: " << distancia
+                    << ", diferencia: " << total << ", pertenece: " << (total <= MARGEN_ERROR) << endl;
+            }
+            
+            if (primitiva->puntoEsFuenteDeLuz(p0)) {
+                resVal = true;
+                array<float, 3> xd = {-0.16, -0.202272, -0.150654};
+
+                if (p0.coord[0] >= xd[0]) {
+                    powerLuzArea = RGB({0.0f, 0.0f, 1.0f});
+                    cout << "     ++++++ AZUL ++++++ Pto: " << p0 << endl << endl;
+                } else {
+                    //powerLuzArea = RGB({0.0f, 0.0f, 1.0f});
+                    powerLuzArea = primitiva->power;
+                    cout << "     ++++++Pto es fuente++++++ Pto: " << p0 << endl << endl;
+                }
+                break;
+            } else if (aux) {
+                cout << "------Pto " << p0 << " debe ser fuente y no lo es." << endl;
+                cout << "Esfera dice: " << esfera->pertenece(p0) << endl << endl;
+            }
+        } else {
+            if (primitiva->puntoEsFuenteDeLuz(p0)) {
+                resVal = true;
+                powerLuzArea = primitiva->power;
+                break;
+            }
         }
     }
     return resVal;

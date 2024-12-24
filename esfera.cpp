@@ -77,7 +77,7 @@ void Esfera::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) c
 
 bool Esfera::pertenece(const Punto& p0) const {
     float distancia = modulo(p0 - this->centro);
-    return abs(distancia - this->radio) <= MARGEN_ERROR;
+    return abs(distancia - this->radio) <= MARGEN_ERROR_PERTENECE_ESFERA;
 }
 
 Direccion Esfera::getNormal(const Punto& punto) const {
@@ -85,7 +85,7 @@ Direccion Esfera::getNormal(const Punto& punto) const {
 }
 
 bool Esfera::puntoEsFuenteDeLuz(const Punto& punto) const {
-    return soyFuenteDeLuz() && pertenece(punto);
+    return soyFuenteDeLuz() && this->pertenece(punto);
 }
 
 Punto Esfera::generarPuntoAleatorio(float& prob) const {
@@ -110,5 +110,6 @@ Punto Esfera::generarPuntoAleatorio(float& prob) const {
 }
 
 void Esfera::diHola() const {
-    cout << "Soy esfera: centro = " << this->centro << ", radio = " << this->radio << endl;
+    cout << "Soy esfera: centro = " << this->centro << ", radio = " << this->radio <<
+            ", power = " << this->power << endl;
 }

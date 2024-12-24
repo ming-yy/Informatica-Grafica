@@ -206,6 +206,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     }
     
     int num_luces = 0;
+    
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
@@ -226,8 +227,8 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(normalizar(dirIncidente), normal);
         RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
         float cosNLuzWiLuz = calcCosenoAnguloIncidencia(normalizar(-dirIncidente), objeto->getNormal(origenLuz));
-        //RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosNLuzWiLuz * cosAnguloIncidencia * prob / distanciaCuadrado;
-        RGB radianciaIncidente = powerLuzArea * cosAnguloIncidencia / (distanciaCuadrado * prob);
+        RGB radianciaIncidente = powerLuzArea * reflectanciaBRDFDifusa * cosNLuzWiLuz * cosAnguloIncidencia / (distanciaCuadrado * prob);
+        //RGB radianciaIncidente = powerLuzArea * cosAnguloIncidencia / (distanciaCuadrado * prob);
         radianciaSaliente += radianciaIncidente;
         
         /*
@@ -257,7 +258,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
     
     RGB powerLuzArea;
-    if (escena.puntoPerteneceALuz(origen, powerLuzArea)) {   // TERMINAL: somos una fuente de luz
+    if (escena.puntoPerteneceALuz(origen, powerLuzArea, false)) {   // TERMINAL: somos una fuente de luz
         return powerLuzArea;
     }
     
@@ -323,7 +324,7 @@ RGB obtenerRadianciaSalienteTotal(const Rayo &rayoIncidente, const Escena &escen
     
     if (escena.interseccion(rayoIncidente, coefsPtoInterseccion, ptoIntersec, normal)) {
         RGB powerLuzArea;
-        if (escena.puntoPerteneceALuz(ptoIntersec, powerLuzArea)) {  // 1º Rayo (de la cam) choca con luz de área
+        if (escena.puntoPerteneceALuz(ptoIntersec, powerLuzArea, false)) {  // 1º Rayo (de la cam) choca con luz de área
             return powerLuzArea;
         }
         
@@ -345,7 +346,6 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                           vector<vector<RGB>>& coloresEscena, const unsigned totalPixeles,
                           const bool printPixelesProcesados) {
-    
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
             if (printPixelesProcesados) printPixelActual(totalPixeles, numPxlsAncho, ancho, alto);
@@ -363,7 +363,6 @@ void renderizarEscenaConAntialiasing(Camara& camara, unsigned numPxlsAncho, unsi
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                           vector<vector<RGB>>& coloresEscena, const bool printPixelesProcesados,
                           const unsigned totalPixeles, const unsigned rpp) {
-
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
             if (printPixelesProcesados) printPixelActual(totalPixeles, numPxlsAncho, ancho, alto);
