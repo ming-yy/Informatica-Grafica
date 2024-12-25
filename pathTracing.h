@@ -108,10 +108,12 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
                         const BSDFs& coefs);
 
 // Función recursiva que calcula la radiancia del punto <origen> y las radiancias de los puntos
-// intersectados tras <rebotesRestantes> rebotes
-RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const BSDFs &coefsPtoInterseccion, 
-                                    const Direccion& normal, const Escena& escena,
-                                    const unsigned rebotesRestantes);
+// intersectados tras <rebotesRestantes> rebotes. <wo> es el vector que choca contra un objecto
+// en el punto <origen> y <coefsOrigen> son los coeficientes BSDF del objeto en el punto <origen>.
+// 
+RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const BSDFs &coefsOrigen,
+                                   const Direccion& normal, const Escena& escena,
+                                   const unsigned rebotesRestantes, const bool woEsDifuso = false);
 
 // Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
 // para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.
@@ -157,7 +159,8 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
 void renderizarRangoFilas(Camara& camara, unsigned inicioFila, unsigned finFila,
                           unsigned numPxlsAncho, const Escena& escena, float anchoPorPixel, float altoPorPixel,
                           const unsigned maxRebotes, const unsigned numRayosMontecarlo,
-                          vector<vector<RGB>>& coloresEscena, const unsigned rpp, const unsigned thread);
+                          vector<vector<RGB>>& coloresEscena, const unsigned rpp, const unsigned thread,
+                          const bool printPixelesProcesados, const unsigned totalPixeles);
 
 // Función principal de renderizado con threads. Si no se indica el número de threads, se usará el máximo
 // número disponible.

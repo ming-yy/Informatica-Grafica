@@ -41,7 +41,6 @@ bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCer
 
 bool Escena::puntoPerteneceALuz(const Punto& p0, RGB& powerLuzArea) const {
     bool resVal = false;
-    bool aux = false;
     for (Primitiva* primitiva : this->primitivas) {
         if (primitiva->puntoEsFuenteDeLuz(p0)) {
             resVal = true;
