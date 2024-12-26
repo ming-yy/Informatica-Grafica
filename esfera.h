@@ -20,7 +20,8 @@ public:
     Esfera();
     Esfera(const Punto& _centro, const float& _radio,
            const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
-           const string _material = "difuso", const RGB& _power = RGB());
+           const string _material = "difuso", const RGB& _power = RGB(),
+           const string rutaTextura = "");
     Esfera(const Planeta& p);
     
     // Método para calcular la intersección entre un rayo y la esfera
@@ -45,6 +46,14 @@ public:
     // Método que devuelve un punto aleatorio de la esfera en UCS.
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
     Punto generarPuntoAleatorio(float& prob) const override;
+    
+    // Método que obtiene la posición del punto <pto> de la esfera en el
+    // eje U de la textura correspondiente.
+    float getEjeTexturaU(const Punto& pto) const override;
+    
+    // Método que obtiene la posición del punto <pto> de la esfera en el
+    // eje V de la textura correspondiente.
+    float getEjeTexturaV(const Punto& pto) const override;
     
     // Debug
     void diHola() const override;

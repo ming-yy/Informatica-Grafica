@@ -13,8 +13,9 @@
 Esfera::Esfera(): Primitiva(), centro(Punto()), radio(0.0f) {}
 
 Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _reflectancia,
-               const string _material, const RGB& _power) :
-               Primitiva(_reflectancia, _material, _power), centro(_centro), radio(_radio)  {}
+               const string _material, const RGB& _power, const string rutaTextura) :
+               Primitiva(_reflectancia, _material, _power, rutaTextura), centro(_centro),
+               radio(_radio)  {}
 
 Esfera::Esfera(const Planeta& p) : Primitiva(), centro(p.centro), radio(p.radio) {}
 
@@ -107,6 +108,16 @@ Punto Esfera::generarPuntoAleatorio(float& prob) const {
     prob = 1.0f / areaSuperficie;
 
     return puntoAleatorio;
+}
+
+float Esfera::getEjeTexturaU(const Punto& pto) const {
+    Direccion d = normalizar(pto - this->centro);
+    return 0.5 - asin(d.coord[1]) / M_PI;
+}
+
+float Esfera::getEjeTexturaV(const Punto& pto) const {
+    Direccion d = normalizar(pto - this->centro);
+    return 0.5 + atan2(d.coord[2], d.coord[0]) / (2 * M_PI);
 }
 
 void Esfera::diHola() const {

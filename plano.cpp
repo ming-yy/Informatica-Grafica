@@ -10,11 +10,14 @@
 #include <random>
 
 
-Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), d(0.0f), minLimite(), maxLimite(), centro() {}
+Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), u(0.0f, 0.0f, 0.0f), v(0.0f, 0.0f, 0.0f),
+                d(0.0f), minLimite(), maxLimite(), centro(), centroVeradero() {}
 
 Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, const string _material,
-             const RGB& _power, const float _minLimite, const float _maxLimite, const Punto& _c) :
-             Primitiva(_reflectancia, _material, _power), n(normalizar(_n)), d(_d), centro(_c) {
+             const RGB& _power, const float _minLimite, const float _maxLimite, const Punto& _c,
+             const string rutaTextura) :
+             Primitiva(_reflectancia, _material, _power, rutaTextura), n(normalizar(_n)),
+             d(_d), centro(_c) {
     try {
         if (!valeCero(_power) && (_minLimite >= _maxLimite)) {
             throw invalid_argument("Error: Limites incorrectos de la luz del plano [" +
@@ -23,6 +26,9 @@ Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, cons
         } else {
             this->minLimite = _minLimite;
             this->maxLimite = _maxLimite;
+            this->centroVeradero = _c - _n * d;
+            
+            construirBaseOrtonormal(normalizar(this->n), this->u, this->v);
         }
     } catch (const invalid_argument& e) {
         cerr << e.what() << endl;
@@ -65,12 +71,9 @@ bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
         return false;
     }
 
-    Direccion u, v;
-    construirBaseOrtonormal(normalizar(this->n), u, v);
-
     // Proyectar el punto en la base del plano
-    float coordU = dot(punto - this->centro, u);
-    float coordV = dot(punto - this->centro, v);
+    float coordU = dot(punto - this->centro, this->u);
+    float coordV = dot(punto - this->centro, this->v);
 
     // Verificar si las coordenadas proyectadas están dentro de los límites
     bool dentroLimites = (coordU >= this->minLimite - MARGEN_ERROR && coordU <= this->maxLimite + MARGEN_ERROR) &&
@@ -80,9 +83,6 @@ bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
 }
 
 Punto Plano::generarPuntoAleatorio(float& prob) const {
-    Direccion u, v;  // Vectores ortogonales en el plano
-    construirBaseOrtonormal(normalizar(this->n), u, v);
-    
     float limite = abs(this->maxLimite - this->minLimite);
     float areaPlano = limite * limite;
     prob = 1.0f / areaPlano;
@@ -96,10 +96,25 @@ Punto Plano::generarPuntoAleatorio(float& prob) const {
     float randomV = dist(gen);
 
     // En UCS
-    Punto puntoAleatorio = this->centro + u * randomU + v * randomV;
+    Punto puntoAleatorio = this->centro + this->u * randomU + this->v * randomV;
     puntoAleatorio = puntoAleatorio + this->n * (-1) * this->d;
     
     return puntoAleatorio;
+}
+
+
+float Plano::getEjeTexturaU(const Punto& pto) const {
+    float u_prima = dot(pto - this->centroVeradero, this->u);
+    float u_textura = u_prima - static_cast<int>(u_prima);  // Para efecto infinito, quitar esto
+    return (u_textura < 0) ? u_textura + 1 : u_textura;
+    //return u_prima;
+}
+
+float Plano::getEjeTexturaV(const Punto& pto) const {
+    float v_prima = dot(pto - this->centroVeradero, this->v);
+    float v_textura = v_prima - static_cast<int>(v_prima);  // Para efecto infinito, quitar esto
+    return (v_textura < 0) ? v_textura + 1 : v_textura;
+    //return v_prima;
 }
 
 
@@ -111,5 +126,5 @@ ostream& operator<<(ostream& os, const Plano& r)
 }
 
 void Plano::diHola() const {
-    cout << "Soy plano: normal = " << this->n << ", distancia = " << this->d << endl;
+    cout << "Soy plano: normal = " << this->n << ", distancia = " << this->coeficientes << endl;
 }

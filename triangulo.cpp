@@ -12,9 +12,11 @@
 
 Triangulo::Triangulo() : Primitiva(), v0(Punto()), v1(Punto()), v2(Punto()) {}
 
-Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const RGB& _reflectancia,
-                     const string _material, const RGB& _power):
-                     Primitiva(_reflectancia, _material, _power), v0(_v0), v1(_v1), v2(_v2){}
+Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2,
+                     const RGB& _reflectancia, const string _material, const RGB& _power,
+                     const string rutaTextura):
+                     Primitiva(_reflectancia, _material, _power, rutaTextura), v0(_v0),
+                     v1(_v1), v2(_v2) {}
 
 void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     Direccion edge1 = v1 - v0;
@@ -115,6 +117,14 @@ Punto Triangulo::generarPuntoAleatorio(float& prob) const {
     prob = 1.0f / areaTriangulo;
 
     return puntoAleatorio;
+}
+
+float Triangulo::getEjeTexturaU(const Punto& pto) const {
+    return 0.0f;
+}
+
+float Triangulo::getEjeTexturaV(const Punto& pto) const {
+    return 0.0f;
 }
 
 void Triangulo::diHola() const {

@@ -17,16 +17,19 @@
 
 class Plano : public Primitiva {
 public:
-    Punto centro;        // Centro del plano
+    Punto centro;        // Centro del plano sin tener en cuenta la distancia <d>
+    Punto centroVeradero; // Centro del plano teniendo en cuenta la distancia <d>
     Direccion n;    // Normal respecto al plano (generalmente en UCS)
-    float d;        // Distancia máxima admitida
+    Direccion u, v; // Forman una base ortonormal junto con la normal <n>
+    float d;        // Distancia respecto del centro
     float minLimite, maxLimite;     // Límites para la luz de área
 
     
     Plano();
     Plano(const Direccion& _n, const float _d, const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
           const string _material = "difuso", const RGB& _power = RGB(),
-          const float _minLimite = -0.5, const float _maxLimite = 0.5, const Punto& _c = {0.0f,0.0f,0.0f});
+          const float _minLimite = -0.5, const float _maxLimite = 0.5,
+          const Punto& _c = {0.0f,0.0f,0.0f}, const string rutaTextura = "");
 
     // Método para calcular la intersección entre un rayo y el plano
     //
@@ -50,6 +53,14 @@ public:
     // Método que devuelve un punto aleatorio de la superficie del plano en UCS.
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
     Punto generarPuntoAleatorio(float& prob) const override;
+    
+    // Método que obtiene la posición del punto <pto> del plano en el
+    // eje U de la textura correspondiente.
+    float getEjeTexturaU(const Punto& pto) const override;
+    
+    // Método que obtiene la posición del punto <pto> del plano en el
+    // eje V de la textura correspondiente.
+    float getEjeTexturaV(const Punto& pto) const override;
 
     // Función para mostrar por pantalla la información del plano
     friend ostream& operator<<(ostream& os, const Plano& p);

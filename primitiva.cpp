@@ -11,19 +11,28 @@
 #include <array>
 
 
-Primitiva::Primitiva(): coeficientes(BSDFs()), power(RGB()) {}
+Primitiva::Primitiva(): coeficientes(BSDFs()), power(RGB()), textura(Textura()) {}
 
-Primitiva::Primitiva(const RGB& color, const string material, const RGB& _power) {
-    this->coeficientes = BSDFs(color, material);
-    this->power = _power;
-}
+Primitiva::Primitiva(const RGB& color, const string material, const RGB& _power,
+                     const string& rutaTextura):
+                     coeficientes(color, material), power(_power), textura(Textura(rutaTextura)) {}
 
 Primitiva::Primitiva(const RGB& color, const array<float, 3> kd, const array<float, 3> ks,
-                     const array<float, 3> kt, const RGB& _power) {
-    this->coeficientes = BSDFs(color, kd, ks, kt);
-    this->power = _power;
-}
+                     const array<float, 3> kt, const RGB& _power, const string& rutaTextura):
+                     coeficientes(color, kd, ks, kt), power(_power), textura(Textura(rutaTextura)) {}
 
 bool Primitiva::soyFuenteDeLuz() const {
     return !valeCero(this->power);
+}
+
+bool Primitiva::tengoTextura() const {
+    return !((this->textura.alto == 0) || (this->textura.ancho == 0));
+}
+
+RGB Primitiva::k_d(const Punto& p) const {
+    //int x = floor(this->textura.ancho * this->getEjeTexturaU(p)) + 1;
+    float y = this->getEjeTexturaU(p);
+    //int y = floor(this->textura.alto * this->getEjeTexturaV(p)) + 1;
+    float x = this->getEjeTexturaV(p);
+    return this->textura.obtenerTextura(x, y) * this->coeficientes.kd;
 }

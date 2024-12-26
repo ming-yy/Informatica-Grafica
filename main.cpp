@@ -55,23 +55,25 @@ void liberarMemoriaDePrimitivas(vector<Primitiva*>& objetos) {
 
 void cajaDeCornell(){
     vector<Primitiva*> objetos;
-    objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
-    objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
-    objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
-    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
+    //objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
+    //objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
+    //objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
+    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
-    objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
-    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
+    //objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
+    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
+    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./madera.ppm")); // plano fondo, madera
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
-    objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
+    //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz centro
+    objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({0.0f, 0.0f, 0.0f}), "./madera.ppm")); // esfera centro madera
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz izquierda
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
-    objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
+    //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
     vector<LuzPuntual> luces;
 
-    //RGB potencia(1.0f, 1.0f, 1.0f);
-    //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
+    RGB potencia(1.0f, 1.0f, 1.0f);
+    luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     //luces.push_back(LuzPuntual({0.0f, 0.0f, -1.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
     
@@ -98,8 +100,8 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 4;
-    const unsigned rpp = 16;
+    const unsigned maxRebotes = 1;
+    const unsigned rpp = 8;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -111,7 +113,7 @@ void cajaDeCornell(){
 
     liberarMemoriaDePrimitivas(objetos);
 
-    //transformarFicheroPPM("./cornell.ppm", 1);
+    transformarFicheroPPM("./cornell.ppm", 1);
     //transformarFicheroPPM("./cornell.ppm", 2);
     //transformarFicheroPPM("./cornell.ppm", 3);
     //transformarFicheroPPM("./cornell.ppm", 4);
@@ -130,7 +132,8 @@ void probarCosas() {
     BSDFs coefs;
     Punto pto;
     Direccion normal;
-    bool interseca = escena.interseccion(rayo, coefs, pto, normal);
+    Primitiva* prim = nullptr;
+    bool interseca = escena.interseccion(rayo, coefs, pto, normal, &prim);
     cout << "Interseca?: " << interseca << endl;
     cout << "Rayo: " << rayo << endl;
     cout << "Coefs: " << coefs << endl;

@@ -20,7 +20,8 @@ public:
     Triangulo();
     Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, 
               const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
-              const string _material = "difuso", const RGB& _power = RGB());
+              const string _material = "difuso", const RGB& _power = RGB(),
+              const string rutaTextura = "");
 
     // Método para calcular la intersección entre un rayo y el triángulo
     // Algoritmo usado: Möller–Trumbore
@@ -45,6 +46,14 @@ public:
     // Método que devuelve un punto aleatorio del triángulo en UCS.
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
     Punto generarPuntoAleatorio(float& prob) const override;
+    
+    // Método que obtiene la posición del punto <pto> del triángulo en el
+    // eje U de la textura correspondiente.
+    float getEjeTexturaU(const Punto& pto) const override;
+    
+    // Método que obtiene la posición del punto <pto> del triángulo en el
+    // eje V de la textura correspondiente.
+    float getEjeTexturaV(const Punto& pto) const override;
     
     // Debug
     void diHola() const override;

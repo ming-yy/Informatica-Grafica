@@ -26,9 +26,9 @@ public:
     // devuelta en <coefsObjeto>, el punto mencionado es devuelto en <ptoMasCerca> y en
     // <powerLuzArea> devolverá el power de la fuente de luz si y solo si el objeto se trata
     // de una fuente de luz. También devuelve la normal del punto más cercano respecto del
-    // objeto al que pertenece.
+    // objeto al que pertenece. También devuelve el objeto contra el que se ha intersecado.
     bool interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCerca,
-                      Direccion& normal) const;
+                      Direccion& normal, Primitiva** objIntersecado) const;
     
     // Función que devuelve "True" si y solo si el punto p0 pertenece a una fuente de luz. Además,
     // si devuelve "True", también devolverá en <powerLuzArea> el power de dicha luz.
