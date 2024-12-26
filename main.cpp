@@ -111,11 +111,12 @@ void cajaDeCornell(){
 
     liberarMemoriaDePrimitivas(objetos);
 
-    transformarFicheroPPM("./cornell.ppm", 1);
-    transformarFicheroPPM("./cornell.ppm", 2);
-    transformarFicheroPPM("./cornell.ppm", 3);
-    transformarFicheroPPM("./cornell.ppm", 4);
+    //transformarFicheroPPM("./cornell.ppm", 1);
+    //transformarFicheroPPM("./cornell.ppm", 2);
+    //transformarFicheroPPM("./cornell.ppm", 3);
+    //transformarFicheroPPM("./cornell.ppm", 4);
     transformarFicheroPPM("./cornell.ppm", 5);
+    transformarFicheroPPM("./cornell.ppm", 6);
 }
 
 void probarCosas() {

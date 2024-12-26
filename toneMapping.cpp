@@ -51,3 +51,15 @@ void gammaAndClamp(vector<float>& valores, const float threshold){
         }
     }
 }
+
+void reinhard(vector<float>& valores, const float lmax){
+    
+    equalize(valores, lmax/2.5);
+   
+    for(size_t i = 0; i < valores.size(); i++){
+            float c = valores[i];
+            //cout << c << endl;
+            valores[i] = (c * (1 + (c / pow(lmax, 2)))) / (1 + c);
+    }
+   
+}
