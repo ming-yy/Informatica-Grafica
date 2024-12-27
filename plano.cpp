@@ -11,13 +11,13 @@
 
 
 Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), u(0.0f, 0.0f, 0.0f), v(0.0f, 0.0f, 0.0f),
-                d(0.0f), minLimite(), maxLimite(), centro(), centroVeradero() {}
+                d(0.0f), minLimite(), maxLimite(), centro(), centroVeradero(), escalaTexturaX(1), escalaTexturaY(1) {}
 
 Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, const string _material,
              const RGB& _power, const float _minLimite, const float _maxLimite, const Punto& _c,
-             const string rutaTextura) :
+             const string rutaTextura, const float _escalaX, const float _escalaY) :
              Primitiva(_reflectancia, _material, _power, rutaTextura), n(normalizar(_n)),
-             d(_d), centro(_c) {
+             d(_d), centro(_c), escalaTexturaX(_escalaX), escalaTexturaY(_escalaY == -1.0f ? _escalaX : _escalaY) {
     try {
         if (!valeCero(_power) && (_minLimite >= _maxLimite)) {
             throw invalid_argument("Error: Limites incorrectos de la luz del plano [" +
@@ -34,6 +34,9 @@ Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, cons
         cerr << e.what() << endl;
     }
 }
+
+
+
 
 void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     float denominador = dot(rayo.d, n);
@@ -104,14 +107,14 @@ Punto Plano::generarPuntoAleatorio(float& prob) const {
 
 
 float Plano::getEjeTexturaU(const Punto& pto) const {
-    float u_prima = dot(pto - this->centroVeradero, this->u);
+    float u_prima = (-dot(pto - this->centroVeradero, this->u)) / this->escalaTexturaY;
     float u_textura = u_prima - static_cast<int>(u_prima);  // Para efecto infinito, quitar esto
     return (u_textura < 0) ? u_textura + 1 : u_textura;
     //return u_prima;
 }
 
 float Plano::getEjeTexturaV(const Punto& pto) const {
-    float v_prima = dot(pto - this->centroVeradero, this->v);
+    float v_prima = dot(pto - this->centroVeradero, this->v) / this->escalaTexturaX;
     float v_textura = v_prima - static_cast<int>(v_prima);  // Para efecto infinito, quitar esto
     return (v_textura < 0) ? v_textura + 1 : v_textura;
     //return v_prima;

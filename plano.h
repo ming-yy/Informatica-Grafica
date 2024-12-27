@@ -23,13 +23,16 @@ public:
     Direccion u, v; // Forman una base ortonormal junto con la normal <n>
     float d;        // Distancia respecto del centro
     float minLimite, maxLimite;     // Límites para la luz de área
-
+    float escalaTexturaX;
+    float escalaTexturaY;
     
     Plano();
+
     Plano(const Direccion& _n, const float _d, const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
           const string _material = "difuso", const RGB& _power = RGB(),
           const float _minLimite = -0.5, const float _maxLimite = 0.5,
-          const Punto& _c = {0.0f,0.0f,0.0f}, const string rutaTextura = "");
+          const Punto& _c = {0.0f,0.0f,0.0f}, const string rutaTextura = "",
+          const float _escalaX = 1.0f, const float _escalaY = -1.0f);
 
     // Método para calcular la intersección entre un rayo y el plano
     //
