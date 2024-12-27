@@ -26,6 +26,20 @@
 #include "pathTracing.h"
 
 
+void comprobarNoHayDosTiposDeLuces(auto objetos, auto luces) {
+    bool hayLuzArea = true;
+    for (auto primitiva : objetos) {
+        if (primitiva.soyFuenteDeLuz()) {
+            hayLuzArea = true;
+            break;
+        }
+    }
+    
+    if (luces.size() > 0 && hayLuzArea) {
+        cerr << "No puede haber luces puntuales y luces de área a la vez." << endl;
+        std::exit(EXIT_FAILURE);
+    }
+}
 
 void printTiempo(auto inicio, auto fin) {
     auto duracion_total = std::chrono::duration_cast<std::chrono::seconds>(fin - inicio);
@@ -58,9 +72,9 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
     objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
     objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
-    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
-    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
-    //objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
+    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
+    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
+    objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.5f, 0.5f, 0.0f}, "./apple.ppm", 1)); // plano fondo, madera
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
@@ -73,7 +87,7 @@ void cajaDeCornell(){
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
-    luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
+    //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     //luces.push_back(LuzPuntual({0.0f, 0.0f, -1.0f}, potencia));
     Escena cornell = Escena(objetos, luces);
     
@@ -105,9 +119,11 @@ void cajaDeCornell(){
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
+    comprobarNoHayDosTiposDeLuces(objetos, luces);
+    
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(cam, 1024, 1024, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 

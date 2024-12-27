@@ -210,6 +210,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     }
     
     int num_luces = 0;
+    
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
@@ -230,7 +231,6 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
 
         radianciaSaliente += radianciaIncidente;
     }
-    
     
     num_luces = max(num_luces, 1);
     return radianciaSaliente / num_luces;
