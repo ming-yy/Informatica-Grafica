@@ -4,7 +4,7 @@
 /ppms
 .vscode
 .DS_Store
-*.ppm#
+*~(_tex).ppm#
 .vscode/settings.json
 .DS_Store
-*.ppm
+*~(_tex).ppm

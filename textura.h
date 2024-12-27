@@ -16,6 +16,7 @@ public:
     int ancho, alto;
     float c;
     float nuevoC = 255.0f;   // porque es RGB
+    float ratioConversion;   // ratio para pasar a RGB
     vector<unsigned char> imagen;   // 8 bits, más eficiente que float
     
     Textura();
@@ -31,7 +32,7 @@ public:
     // Por default, efecto infinito.
     RGB obtenerTextura(float u, float v) const;
     
-    // Método que...
+    // Método que muestra los valores almacenados de la textura.
     void mostrarContenido() const;
     
     // Debug

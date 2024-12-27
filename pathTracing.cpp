@@ -210,8 +210,6 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     }
     
     int num_luces = 0;
-    
-    /*
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
@@ -222,29 +220,17 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
         RGB powerLuzArea = objeto->power;
         Direccion dirIncidente = origenLuz - p0;
         float distanciaCuadrado = modulo(dirIncidente) * modulo(dirIncidente);
-        //if (distanciaCuadrado <= LIMITE_DISTANCIA_RAYO) {    // evitamos un valor explosivo
-            // radianciaSaliente += RGB(1.0f, 1.0f, 1.0f);      // Alternativa: clamping
-            // Alternativa 2: añadir algún tipo de función que disminuya el valor
-            // Alternativa 3: añadir un flag que si entra a este "if", disminuya a la mitad la radianciaSaliente al devolver
-            //continue;
-        //}
-        distanciaCuadrado = max(distanciaCuadrado, LIMITE_DISTANCIA_RAYO);
+        distanciaCuadrado = max(distanciaCuadrado, LIMITE_DISTANCIA_RAYO);  // evitamos un valor explosivo
         
         float cosAnguloIncidencia = calcCosenoAnguloIncidencia(normalizar(dirIncidente), normal);
-        RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd);
+        RGB reflectanciaBRDFDifusa = calcBrdfDifusa(kd, objOrigen, p0);
         float cosNLuzWiLuz = calcCosenoAnguloIncidencia(normalizar(-dirIncidente), objeto->getNormal(origenLuz));
         RGB radianciaIncidente = (powerLuzArea * reflectanciaBRDFDifusa * cosNLuzWiLuz * cosAnguloIncidencia)
                                  / (distanciaCuadrado * prob);
-        if (max(radianciaIncidente) > 8) {
-            cout << "Radiancia: " << radianciaIncidente << endl;
-            cout << "   cosNormal-Luz: " << cosNLuzWiLuz << endl;
-            cout << "   cosAnguloIndicencia: " << cosAnguloIncidencia << endl;
-            cout << "   DistanciaCuadrado: " << distanciaCuadrado << endl;
-            cout << "   Prob: " << prob << endl;
-        }
+
         radianciaSaliente += radianciaIncidente;
     }
-    */
+    
     
     num_luces = max(num_luces, 1);
     return radianciaSaliente / num_luces;

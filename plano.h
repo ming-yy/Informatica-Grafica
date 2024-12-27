@@ -17,8 +17,8 @@
 
 class Plano : public Primitiva {
 public:
-    Punto centro;        // Centro del plano sin tener en cuenta la distancia <d>
-    Punto centroVeradero; // Centro del plano teniendo en cuenta la distancia <d>
+    Punto centro;             // Centro del plano teniendo en cuenta la distancia <d>
+    Punto centroSinDistancia; // Centro del plano sin tener en cuenta la distancia <d>
     Direccion n;    // Normal respecto al plano (generalmente en UCS)
     Direccion u, v; // Forman una base ortonormal junto con la normal <n>
     float d;        // Distancia respecto del centro
@@ -46,7 +46,7 @@ public:
     // Método que devuelve "True" si y solo si el punto <p0> pertecene al plano.
     bool pertenece(const Punto& p0) const override;
     
-    // Método que devuelve la normal de la primitiva en el punto <punto>
+    // Método que devuelve la normal de la primitiva en el punto <punto>. En UCS!
     Direccion getNormal(const Punto& punto) const override;
     
     // Método que devuelve "True" si y solo si <punto> pertenece al plano
