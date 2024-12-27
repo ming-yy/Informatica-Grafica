@@ -29,7 +29,7 @@
 void comprobarNoHayDosTiposDeLuces(auto objetos, auto luces) {
     bool hayLuzArea = true;
     for (auto primitiva : objetos) {
-        if (primitiva.soyFuenteDeLuz()) {
+        if (primitiva->soyFuenteDeLuz()) {
             hayLuzArea = true;
             break;
         }
