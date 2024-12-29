@@ -8,3 +8,4 @@
 .vscode/settings.json
 .DS_Store
 *~(_tex).ppm
+*.ppm

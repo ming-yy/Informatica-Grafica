@@ -130,3 +130,8 @@ float Triangulo::getEjeTexturaV(const Punto& pto) const {
 void Triangulo::diHola() const {
     cout << "Soy triangulo: p1 = " << this->v0 << endl;
 }
+
+ostream& operator<<(ostream& os, const Triangulo& t) {
+    os << t.v0 << ", " << t.v1 << ", " << t.v2;
+    return os;
+}

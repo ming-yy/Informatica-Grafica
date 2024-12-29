@@ -24,7 +24,8 @@
 #include "esfera.h"
 #include "luzpuntual.h"
 #include "pathTracing.h"
-
+#include "gestorPLY.h"
+#include <algorithm>
 
 void comprobarNoHayDosTiposDeLuces(auto objetos, auto luces) {
     bool hayLuzArea = true;
@@ -78,12 +79,25 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.5f, 0.5f, 0.0f}, "./apple.ppm", 1)); // plano fondo, madera
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
-    objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "espejo")); // esfera izquierda, azul
+    //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz centro
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({0.0f, 0.0f, 0.0f}), "./madera.ppm")); // esfera centro madera
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz izquierda
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
-    objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, azul
+    //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
+
+    
+    vector<Triangulo> conejo = generarModeloPLY("./bun_zipper.ply", 10);
+
+    cout << endl << "Triangulos generados: " << conejo.size() << endl << endl;
+
+
+    for (const auto& t : conejo){
+        objetos.push_back(new Triangulo(t));
+    }
+    
+    cout << endl << "Objetos generados: " << objetos.size() << endl << endl;
+
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
@@ -114,16 +128,16 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 3;
-    const unsigned rpp = 32;
+    const unsigned maxRebotes = 0;
+    const unsigned rpp = 8;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
     comprobarNoHayDosTiposDeLuces(objetos, luces);
-    
+
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(cam, 1024, 1024, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(cam, 128, 128, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
