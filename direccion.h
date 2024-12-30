@@ -20,7 +20,7 @@ public:
     Direccion(float x, float y, float z);
     Direccion(array<float,3> _coord);
     Matriz<4,1> getCoordHomo() const override;
-
+    
     // Operación de suma de dos direcciones
     Direccion operator+(const Direccion& d) const;
     

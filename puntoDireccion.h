@@ -26,10 +26,16 @@ public:
     // Función para calcular producto escalar entre d1 y d2
     friend float dot(const PuntoDireccion& d1, const PuntoDireccion& d2);
 
+    // Función global para calcular el módulo
+    friend float modulo(const PuntoDireccion& d);
+
     // Función para mostrar por pantalla el contenido del punto o dirección
     friend ostream& operator<<(ostream& os, const PuntoDireccion& pd);
 
 private:
+    // Método privado para calcular el módulo de la dirección
+    float modulo() const;
+    
     // Método privado para calcular el producto escalar
     float productoEscalar(const PuntoDireccion& d) const;
 };

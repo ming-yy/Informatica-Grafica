@@ -12,7 +12,6 @@
 #include "matriz.h"
 #include "utilidades.h"
 
-
 class Punto : public PuntoDireccion {
 public:
     array<float, 3> o;
@@ -32,7 +31,7 @@ public:
     
     // Operación de resta de un punto con otro punto
     Direccion operator-(const Punto& p) const;
-    
+
     // Operación de multiplicación entre un escalar y el punto
     Punto operator*(const float escalar) const;
     
@@ -42,4 +41,6 @@ public:
     // Operador de asignación
     Punto& operator=(const Punto& p);
 
+    Punto puntoMedio(const Punto& p) const;
 };
+
