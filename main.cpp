@@ -77,8 +77,8 @@ void cajaDeCornell(){
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano techo textura
     //objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
-    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
-    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano fondo, textura
+    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
+    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano fondo, textura
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
     objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "espejo")); // esfera izq, espejo

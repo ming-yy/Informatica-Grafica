@@ -63,8 +63,10 @@ void Textura::cargarPPM(const string& ruta) {
 }
 
 RGB Textura::obtenerTextura(float u, float v) const {
-    int x = static_cast<int>(u * this->ancho) % this->ancho;
-    int y = static_cast<int>(v * this->alto) % this->alto;
+    //int x = static_cast<int>(u * this->ancho) % this->ancho;
+    //int y = static_cast<int>(v * this->alto) % this->alto;
+    int x = (static_cast<int>(u * this->ancho) % this->ancho + this->ancho) % this->ancho;
+    int y = (static_cast<int>(v * this->alto) % this->alto + this->alto) % this->alto;
     int indice = (y * this->ancho + x) * 3;
     
     return RGB(static_cast<float>(this->imagen[indice]) / this->c,

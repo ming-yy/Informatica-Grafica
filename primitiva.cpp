@@ -30,8 +30,19 @@ bool Primitiva::tengoTextura() const {
 
 RGB Primitiva::kd_Textura(const Punto& p) const {
     //int x = floor(this->textura.ancho * this->getEjeTexturaU(p)) + 1;
-    float y = this->getEjeTexturaU(p);
     //int y = floor(this->textura.alto * this->getEjeTexturaV(p)) + 1;
+    
+    
+    float y = this->getEjeTexturaU(p);
     float x = this->getEjeTexturaV(p);
-    return this->textura.obtenerTextura(x, y) * this->coeficientes.sinEmision[KD_i];
+    
+    float angulo = 0.0f; // 0.0f * M_PI / 2.0f;    // pi/2 -> 90º, pi -> 180º, 3*pi/2 -> 270º, 0 -> 0º
+    // Esto se puede optimizar
+    if (angulo != 0) {
+        float x_1 = x * cos(angulo) - y * sin(angulo);
+        float y_1 = x * sin(angulo) + y * cos(angulo);
+        return this->textura.obtenerTextura(x_1, y_1) * this->coeficientes.sinEmision[KD_i];
+    } else {
+        return this->textura.obtenerTextura(x, y) * this->coeficientes.sinEmision[KD_i];
+    }
 }
