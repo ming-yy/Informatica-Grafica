@@ -9,3 +9,5 @@
 .DS_Store
 *~(_tex).ppm
 *.ppm
+!texturas/
+!texturas/*.ppm
