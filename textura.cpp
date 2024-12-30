@@ -36,7 +36,6 @@ void Textura::cargarPPM(const string& ruta) {
     int maxVal;
     file >> maxVal;
     this->c = static_cast<float>(maxVal);
-    this->ratioConversion = this->nuevoC / this->c;
     file.get();     // Consumimos el salto de línea
 
     vector<unsigned char> data(this->ancho * this->alto * 3);
@@ -68,14 +67,9 @@ RGB Textura::obtenerTextura(float u, float v) const {
     int y = static_cast<int>(v * this->alto) % this->alto;
     int indice = (y * this->ancho + x) * 3;
     
-    if (this->c == this->nuevoC) {
-        return RGB(static_cast<float>(this->imagen[indice]),
-                   static_cast<float>(this->imagen[indice + 1]),
-                   static_cast<float>(this->imagen[indice + 2]));
-    }
-    return RGB(this->ratioConversion * static_cast<float>(this->imagen[indice]),
-               this->ratioConversion * static_cast<float>(this->imagen[indice + 1]),
-               this->ratioConversion * static_cast<float>(this->imagen[indice + 2]));
+    return RGB(static_cast<float>(this->imagen[indice]) / this->c,
+               static_cast<float>(this->imagen[indice + 1]) / this->c,
+               static_cast<float>(this->imagen[indice + 2]) / this->c);
 }
 
 void Textura::mostrarContenido() const {

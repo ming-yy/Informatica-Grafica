@@ -14,9 +14,7 @@
 class Textura {
 public:
     int ancho, alto;
-    float c;
-    float nuevoC = 255.0f;   // porque es RGB
-    float ratioConversion;   // ratio para pasar a RGB
+    float c;    // Valor máximo de las tripletas RGB del ppm
     vector<unsigned char> imagen;   // 8 bits, más eficiente que float
     
     Textura();
@@ -28,8 +26,8 @@ public:
     // Nota: esperamos tener solo valores de hasta 255 (8 bits)
     void cargarPPM(const string& ruta);
     
-    // Método que devuelve el RGB que tiene la textura en la posición (u,v).
-    // Por default, efecto infinito.
+    // Método que devuelve el RGB (valores de 0.0f a 1.0f que tiene la textura en
+    // la posición (u,v). Por default, efecto infinito.
     RGB obtenerTextura(float u, float v) const;
     
     // Método que muestra los valores almacenados de la textura.

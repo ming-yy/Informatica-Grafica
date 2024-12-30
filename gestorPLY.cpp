@@ -35,6 +35,7 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, Esfera& boundingSp
     }
 
     cout << "Archivo = " << rutaArchivo << ", Vertices = " << numVertices << ", Triangulos = " << numCaras << endl;
+    cout << "Procesando archivo " << rutaArchivo << endl;
 
     // Leer los vértices
     for (size_t i = 0; i < numVertices; ++i) {

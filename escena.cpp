@@ -14,8 +14,8 @@ Escena::Escena(vector<Primitiva*> _primitivas, vector<LuzPuntual> _luces):
                primitivas(_primitivas), luces(_luces) {}
 
 
-bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCerca,
-                          Direccion& normal, Primitiva** objIntersecado) const {
+bool Escena::interseccion(const Rayo& rayo, Punto& ptoMasCerca, Direccion& normal,
+                          Primitiva** objIntersecado) const {
     bool resVal = false;
     bool primerIntersec = true;  // Flag: la primera intersección encontrada
 
@@ -31,7 +31,6 @@ bool Escena::interseccion(const Rayo& rayo, BSDFs& coefsObjeto, Punto& ptoMasCer
                 *objIntersecado = objeto;
                 ptoMasCerca = interseciones[0];
                 normal = objeto->getNormal(ptoMasCerca);
-                coefsObjeto = coefsAux;
                 primerIntersec = false;
             }
         }
@@ -56,10 +55,9 @@ bool Escena::luzIluminaPunto(const Punto& p0, const LuzPuntual& luz) const {
     bool iluminar = true;
     Direccion d = normalizar(luz.c - p0);
     Punto ptoMasCerca;
-    BSDFs coefs;
     Direccion normal;
     Primitiva* primitiva = nullptr;
-    bool chocaObjeto = this->interseccion(Rayo(d, p0), coefs, ptoMasCerca, normal, &primitiva);
+    bool chocaObjeto = this->interseccion(Rayo(d, p0), ptoMasCerca, normal, &primitiva);
     
     if (chocaObjeto) {
         iluminar = modulo(luz.c - p0) <= modulo(ptoMasCerca - p0);
@@ -75,18 +73,16 @@ bool Escena::luzIluminaPunto(const Punto& p0, const Primitiva* luz, Punto& orige
         Punto ptoRandom = luz->generarPuntoAleatorio(prob);
         Direccion d = normalizar(ptoRandom - p0);
         Punto ptoMasCerca;
-        BSDFs coefs;
         Direccion normal;
         Primitiva* primitiva = nullptr;
         // Rayo desde punto a iluminar (p0) --> ptoRandom de la luz
-        bool chocaObjeto = this->interseccion(Rayo(d, p0), coefs, ptoMasCerca, normal, &primitiva);
+        bool chocaObjeto = this->interseccion(Rayo(d, p0), ptoMasCerca, normal, &primitiva);
         
         if (chocaObjeto) {  // Miramos si el objeto más cercano contra el que choca es esa luz en <ptoRandom>
             iluminar = modulo(ptoRandom - p0) <= modulo(ptoMasCerca - p0);
             origenLuz = ptoRandom;
         }
     }
-    
     return iluminar;
 }
 

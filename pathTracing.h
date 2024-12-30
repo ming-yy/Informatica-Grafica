@@ -72,7 +72,7 @@ Rayo obtenerRayoRuletaRusa(const TipoRayo tipoRayo, const Punto& origen, const D
 TipoRayo dispararRuletaRusa(const BSDFs& coefs, float& probTipoRayo);
 
 // Función que calcula la reflectancia difusa de Lambert.
-RGB calcBrdfDifusa(const RGB &kd, Primitiva* objeto, const Punto& p0);
+RGB calcBrdfDifusa(const Primitiva* objeto, const Punto& p0);
 
 // Función que calcula la reflectancia especular perfecta. Devuelve <ks> porque si se invoca
 // esta función, es porque se ha decidido que el rayo va a ser especular y no hay pérdidas.
@@ -87,7 +87,7 @@ RGB calcBrdfEspecular(const RGB& ks);
 RGB calcBtdf(const RGB& kt);
 
 // Función que calcula BSDF dado todos los coeficientes y el tipo de rayo que es.
-RGB calcBsdf(const BSDFs& coefs, const TipoRayo tipoRayo, Primitiva* objeto, const Punto& p0);
+RGB calcBsdf(const TipoRayo tipoRayo, const Primitiva* objeto, const Punto& p0);
 
 // Función que calcula el coseno del ángulo de incidencia, es decir, el ángulo formado
 // por <n> y <d>. En general, <n> será la normal y <d> la otra dirección.
@@ -103,23 +103,23 @@ float calcCosenoAnguloIncidencia(const Direccion& d, const Direccion& n);
 //
 //           CAMBIAR CAMBAIR CAMBIAR
 //
-// Disclaimer: solo debería usarse para rayos difusos. Si no lo es, debe devolver RGB(0,0,0).
+// Disclaimer: solo debería usarse para rayos difusos. Si no lo es, debe devolver RGB(0,0,0) o no usarse.
 RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& escena,
-                        const BSDFs& coefs, Primitiva* objOrigen);
+                        const Primitiva* objOrigen);
 
 // Función recursiva que calcula la radiancia del punto <origen> y las radiancias de los puntos
-// intersectados tras <rebotesRestantes> rebotes. <wo> es el vector que choca contra un objecto
-// en el punto <origen> y <coefsOrigen> son los coeficientes BSDF del objeto en el punto <origen>.
-RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const BSDFs &coefsOrigen,
-                                   const Direccion& normal, const Escena& escena,
-                                   const unsigned rebotesRestantes, Primitiva* objOrigen);
+// intersectados tras <rebotesRestantes> rebotes. <wo> es el vector que choca contra el objecto
+// <objOrigen> en el punto <origen> (que pertenece al objeto mencionado).
+RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const Direccion& normal,
+                                   const Escena& escena, const unsigned rebotesRestantes,
+                                   const Primitiva* objOrigen);
 
 // Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
 // para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.
 RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRebotes, 
-                                        const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
-                                        const Direccion& wo, const BSDFs &coefsPtoInterseccion,
-                                        const Direccion& normal, Primitiva* objOrigen);
+                                      const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
+                                      const Direccion& wo, const Direccion& normal,
+                                      const Primitiva* objOrigen);
 
 // Función que devuelve la radiancia saliente total (directa + indirecta) dado un rayo y una escena,
 // rebotando un máximo de <maxRebotes> veces y calculada a través de la media de <numRayosMontecarlo> rayos

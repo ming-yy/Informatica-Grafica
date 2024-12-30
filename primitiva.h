@@ -21,7 +21,6 @@ class Primitiva {
 public:
     BSDFs coeficientes;
     RGB power;
-    float idxRefraccion;
     Textura textura;
 
     Primitiva();
@@ -70,7 +69,7 @@ public:
     bool tengoTextura() const;
     
     // Método que devuelve el coeficiente kd de la primitiva teniendo en cuenta la textura.
-    RGB k_d(const Punto& p) const;
+    RGB kd_Textura(const Punto& p) const;
     
     // Debug
     virtual void diHola() const = 0;

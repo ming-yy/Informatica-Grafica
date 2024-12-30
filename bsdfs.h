@@ -11,11 +11,17 @@
 #include "utilidades.h"
 
 
+constexpr int KD_i = 0;  // coef difuso
+constexpr int KS_i = 1;  // coef especular (reflexión)
+constexpr int KT_i = 2;  // coef transmitancia (refracción)
+
+
 class BSDFs {
 public:
     RGB kd;
     RGB ks;
     RGB kt;
+    array<float, 3> sinEmision;
 
     BSDFs();
     BSDFs(const RGB& _color, const string _material);

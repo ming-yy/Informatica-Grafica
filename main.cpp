@@ -74,32 +74,32 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
     objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
     objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
-    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
+    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
+    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano techo textura
     //objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
-    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.5f, 0.5f, 0.0f}, "./apple.ppm", 1)); // plano fondo, madera
+    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.5f, 0.5f, 0.0f}, "./apple.ppm", 1)); // plano fondo, textura
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
-    //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz centro
+    objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "espejo")); // esfera izq, espejo
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({0.0f, 0.0f, 0.0f}), "./madera.ppm")); // esfera centro madera
-    //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz izquierda
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
-    //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
+    objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
 
     
-    Mesh conejoMesh("./bun_zipper.ply", 8.0f, Punto(0.0f, -0.5f, 0.0f), 0.0f, true, 180.0f, false, 0.0f, false);
+    //Mesh conejoMesh("./modelos/bun_zipper.ply", 8.0f, Punto(0.0f, -0.5f, 0.0f), 0.0f, true, 180.0f, false, 0.0f, false);
 
     //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
-    for (auto& t : conejoMesh.triangulos){
-        objetos.push_back(new Triangulo(t));
-    }
+    //for (auto& t : conejoMesh.triangulos){
+    //    objetos.push_back(new Triangulo(t));
+    //}
     //cout << "Total objetos: " << objetos.size() << endl;
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
     luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
-    //luces.push_back(LuzPuntual({0.0f, 0.0f, -1.0f}, potencia));
+    
     Escena cornell = Escena(objetos, luces);
     
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
@@ -131,8 +131,8 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 0;
-    const unsigned rpp = 1;
+    const unsigned maxRebotes = 3;
+    const unsigned rpp = 16;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -162,14 +162,13 @@ void probarCosas() {
     Escena escena = Escena(objetos, luces);
     
     Rayo rayo = Rayo(Direccion(1.0f, 0.0f, 0.0f), Punto(-0.3f, 0.0f, 0.0f));
-    BSDFs coefs;
     Punto pto;
     Direccion normal;
     Primitiva* prim = nullptr;
-    bool interseca = escena.interseccion(rayo, coefs, pto, normal, &prim);
+    bool interseca = escena.interseccion(rayo, pto, normal, &prim);
     cout << "Interseca?: " << interseca << endl;
     cout << "Rayo: " << rayo << endl;
-    cout << "Coefs: " << coefs << endl;
+    cout << "Coefs: " << prim->coeficientes << endl;
     cout << "PtoIntersec: " << pto << endl;
     cout << "Normal: " << normal << endl;
 }
