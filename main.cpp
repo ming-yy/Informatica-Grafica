@@ -128,7 +128,7 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     
     // Zoom centro
-    Camara cam4 = Camara({0.0f, 0.0f, -2.5f},
+    Camara cam4 = Camara({0.0f, 0.0f, -0.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
