@@ -63,6 +63,7 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
         if(invertirZ){ p.coord[2] = -p.coord[2]; d.coord[2] = -d.coord[2];}
 
         vertices.emplace_back(p);
+        if(modulo(d) != 0.0f) normalizar(d);
         normales.emplace_back(d);
     }
 
@@ -83,6 +84,7 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
     
     // Leer las caras (triángulos)
     for (size_t i = 0; i < numCaras; ++i) {
+        cout << i << endl;
         getline(archivo, linea);
         std::stringstream ss(linea);
         size_t numIndices, i0, i1, i2;

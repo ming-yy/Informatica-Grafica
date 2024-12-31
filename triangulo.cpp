@@ -9,7 +9,6 @@
 #include "triangulo.h"
 #include "utilidades.h"
 
-
 Triangulo::Triangulo() : Primitiva(), p0(Punto()), p1(Punto()), p2(Punto()),
                                         n0(Direccion()), n1(Direccion()), n2(Direccion()),
                                         u0(0.0f), u1(0.0f), u2(0.0f),
@@ -68,11 +67,11 @@ void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs
     //}
 }
 
-bool Triangulo::pertenece(const Punto& p0) const {
-    // Vectores de los lados del triángulo
-    Direccion p0p1 = this->p1 - this->p0;
-    Direccion p0p2 = this->p2 - this->p0;
-    Direccion p0p = p0 - this->p0;
+bool Triangulo::getCoordBaricentricas(const Punto& punto, float& u, float& v) const {
+     // Vectores de los lados del triángulo
+    Direccion p0p1 = p1 - p0;
+    Direccion p0p2 = p2 - p0;
+    Direccion p0p = punto - p0;
 
     // Calculamos los productos escalares necesarios
     float dotp1p1 = dot(p0p1, p0p1);
@@ -81,24 +80,48 @@ bool Triangulo::pertenece(const Punto& p0) const {
     float dotVPp1 = dot(p0p, p0p1);
     float dotVPp2 = dot(p0p, p0p2);
 
-    // Calculamos el determinante para las coordenadas baricéntricas
+    // Determinante
     float denom = dotp1p1 * dotp2p2 - dotp1p2 * dotp1p2;
     if (denom == 0.0f) {
-        return false; // Los vértices son colineales
+        u = 0.0f;
+        v = 0.0f;
+        return false; // Vértices colineales
     }
 
     // Coordenadas baricéntricas
-    float u = (dotp2p2 * dotVPp1 - dotp1p2 * dotVPp2) / denom;
-    float v = (dotp1p1 * dotVPp2 - dotp1p2 * dotVPp1) / denom;
+    u = (dotp2p2 * dotVPp1 - dotp1p2 * dotVPp2) / denom;
+    v = (dotp1p1 * dotVPp2 - dotp1p2 * dotVPp1) / denom;
+
+    return true;
+}
+
+
+bool Triangulo::pertenece(const Punto& punto) const {
+    float u, v;
+    bool esValido = getCoordBaricentricas(punto, u, v);
+    
+    if(!esValido) return false;
 
     // Comprobamos si están dentro del rango [0, 1] y que u + v <= 1
     return (u >= 0.0f && v >= 0.0f && u + v <= 1.0f);
 }
 
 Direccion Triangulo::getNormal(const Punto& punto) const {
-    Direccion d1 = p0 - p1;
-    Direccion d2 = p1 - p2;
-    return normalizar(cross(d1, d2));
+    return getNormalInterpolada(punto);
+}
+
+Direccion Triangulo::getNormalInterpolada(const Punto& punto) const {
+    float u, v;
+    bool esValido = getCoordBaricentricas(punto, u, v);
+
+    if(!esValido) cout << "ERROR: normal interpolada invalida" << endl; return Direccion(1.0f, 1.0f, 1.0f);
+
+    float w = 1.0f - u - v;
+
+    // Interpolación de la normal
+    Direccion normalInterpolada = (n0 * u) + (n1 * v) + (n2 * w);
+    if(modulo(normalInterpolada) != 0.0f) normalizar(normalInterpolada);
+    return normalInterpolada;
 }
 
 bool Triangulo::puntoEsFuenteDeLuz(const Punto& punto) const {
@@ -135,11 +158,25 @@ Punto Triangulo::generarPuntoAleatorio(float& prob) const {
 }
 
 float Triangulo::getEjeTexturaU(const Punto& pto) const {
-    return (u0 + u1 + u2) / 3;
+    float u, v;
+    bool esValido = getCoordBaricentricas(pto, u, v);
+
+    if(!esValido) cout << "ERROR: eje U invalido" << endl; return 0.0f;
+    
+    float w = 1.0f - u - v;
+
+    return u0 * u + u1 * v + u2 * w;
 }
 
 float Triangulo::getEjeTexturaV(const Punto& pto) const {
-    return (v0 + v1 + v2) / 3;
+    float u, v;
+    bool esValido = getCoordBaricentricas(pto, u, v);
+
+    if(!esValido) cout << "ERROR: eje U invalido" << endl; return 0.0f;
+    
+    float w = 1.0f - u - v;
+
+    return v0 * u + v1 * v + v2 * w;
 }
 
 void Triangulo::diHola() const {

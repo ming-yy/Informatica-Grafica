@@ -31,7 +31,7 @@ public:
               const string _material = "difuso", const string rutaTextura = "",
               const RGB& _power = RGB());
 
-              Triangulo::Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2,
+    Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2,
                      const float _u0, const float _u1, const float _u2,
                      const float _v0, const float _v1, const float _v2,
                      const Direccion& _n0, const Direccion& _n1, const Direccion& _n2,
@@ -49,11 +49,16 @@ public:
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const override;
     
+
+    bool getCoordBaricentricas(const Punto& punto, float& u, float& v) const;
+
     // Método que devuelve "True" si y solo si el punto <p0> pertecene al triángulo.
-    bool pertenece(const Punto& p0) const override;
+    bool pertenece(const Punto& punto) const override;
     
     // Método que devuelve la normal de la primitiva en el punto <punto>
     Direccion getNormal(const Punto& punto) const override;
+
+    Direccion getNormalInterpolada(const Punto& punto) const;
     
     // Método que devuelve "True" si y solo si <punto> pertenece al triángulo
     // y además, es un punto lumínico del triángulo.
