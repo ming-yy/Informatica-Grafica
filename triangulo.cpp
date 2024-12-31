@@ -161,9 +161,12 @@ float Triangulo::getEjeTexturaU(const Punto& pto) const {
     float u, v;
     bool esValido = getCoordBaricentricas(pto, u, v);
 
-    if(!esValido) cout << "ERROR: eje U invalido" << endl; return 0.0f;
-    
+    if(!esValido){
+        cout << "ERROR: eje U invalido" << endl;
+        return 0.0f;
+    }
     float w = 1.0f - u - v;
+    //cout << "U Textura = " << u << " (con v = "<< v << " y esValido = " << esValido << ")" << endl;
 
     return u0 * u + u1 * v + u2 * w;
 }
@@ -172,9 +175,13 @@ float Triangulo::getEjeTexturaV(const Punto& pto) const {
     float u, v;
     bool esValido = getCoordBaricentricas(pto, u, v);
 
-    if(!esValido) cout << "ERROR: eje U invalido" << endl; return 0.0f;
-    
+    if(!esValido){
+        cout << "ERROR: eje V invalido" << endl;
+        return 0.0f;
+    }
+
     float w = 1.0f - u - v;
+    //cout << "V Textura = " << v << " (con u = "<< u << " y esValido = " << esValido << ")" << endl;
 
     return v0 * u + v1 * v + v2 * w;
 }

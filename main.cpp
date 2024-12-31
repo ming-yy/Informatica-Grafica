@@ -70,8 +70,8 @@ void liberarMemoriaDePrimitivas(vector<Primitiva*>& objetos) {
 
 void cajaDeCornell(){
     vector<Primitiva*> objetos;
-    objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
-    objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
+    objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "difuso")); // plano izquierdo, rojo
+    objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "difuso")); // plano derecho, verde
     objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
     objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
@@ -87,10 +87,11 @@ void cajaDeCornell(){
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
 
-    //objetos.push_back(new Esfera({0.2f, -0.5f, -0.8f}, 0.05f, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera izquierda, rosa
+    //objetos.push_back(new Esfera({0.0f, -0.5f, 0.0f}, 0.05f, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera izquierda, rosa
 
-    Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false);
-    //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 0.0f, false, -90.0f, false, 0.0f, false);
+
+    //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOSgirada.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false); // patata girada
+    Mesh patataMesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -1.0f, 0.0f), -90.0f, false, 0.0f, false, 0.0f, false);
     
     //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
     for (auto& t : patataMesh.triangulos){
@@ -100,9 +101,12 @@ void cajaDeCornell(){
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
+
     //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
-    luces.push_back(LuzPuntual({0.0f, 0.5f, -0.25f}, potencia));
-    luces.push_back(LuzPuntual({0.2f, -0.5f, -0.8}, potencia));
+    //luces.push_back(LuzPuntual({0.0f, 0.5f, -0.25f}, potencia));
+    
+    //luces.push_back(LuzPuntual({0.2f, -0.5f, -0.8}, potencia));
+    luces.push_back(LuzPuntual({0.0f, -0.60f, 0.0}, potencia));
 
     Escena cornell = Escena(objetos, luces);
     
@@ -135,8 +139,8 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 0;
-    const unsigned rpp = 1;
+    const unsigned maxRebotes = 6;
+    const unsigned rpp = 64;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -144,7 +148,7 @@ void cajaDeCornell(){
 
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(cam, 512, 512, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
