@@ -77,28 +77,28 @@ void cajaDeCornell(){
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano techo textura
     //objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
-    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
-    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano fondo, textura
+    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
+    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano fondo, textura
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
-    objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "espejo")); // esfera izq, espejo
+    //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "espejo")); // esfera izq, espejo
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1})); // esfera izq, luz
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({0.0f, 0.0f, 0.0f}), "./madera.ppm")); // esfera centro madera
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
-    objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
+    //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
 
     
-    //Mesh conejoMesh("./modelos/bun_zipper.ply", 8.0f, Punto(0.0f, -0.5f, 0.0f), 0.0f, true, 180.0f, false, 0.0f, false);
+    Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false);
 
     //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
-    //for (auto& t : conejoMesh.triangulos){
-    //    objetos.push_back(new Triangulo(t));
-    //}
-    //cout << "Total objetos: " << objetos.size() << endl;
+    for (auto& t : patataMesh.triangulos){
+        objetos.push_back(new Triangulo(t));
+    }
+    cout << "Total objetos: " << objetos.size() << endl;
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
-    luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
+    luces.push_back(LuzPuntual({0.0f, 0.5f, -0.25f}, potencia));
     
     Escena cornell = Escena(objetos, luces);
     
@@ -131,8 +131,8 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 3;
-    const unsigned rpp = 16;
+    const unsigned maxRebotes = 8;
+    const unsigned rpp = 128;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -140,7 +140,7 @@ void cajaDeCornell(){
 
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(cam, 1024, 1024, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 

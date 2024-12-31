@@ -10,14 +10,14 @@
 
 Mesh::Mesh() : Primitiva(), triangulos(vector<Triangulo>()) {}
 
-Mesh::Mesh(const string rutaModelo,  const float escala, const Punto& centro, 
+Mesh::Mesh(const string rutaModelo,   const string rutaTextura, const float escala, const Punto& centro, 
             const float rotacionX, const bool invertirX, 
             const float rotacionY, const bool invertirY, 
             const float rotacionZ, const bool invertirZ, 
-            const RGB& _reflectancia,  const string _material, const RGB& _power, const string rutaTextura):
+            const RGB& _reflectancia,  const string _material, const RGB& _power):
                                         Primitiva(_reflectancia, _material, _power, rutaTextura) {
 
-    triangulos = generarModeloPLY(rutaModelo, esferaLimite, vertices, escala, centro,
+    triangulos = generarModeloPLY(rutaModelo, rutaTextura, esferaLimite, vertices, escala, centro,
                                     rotacionX, invertirX, rotacionY, invertirY, rotacionZ, invertirZ);
 }
 

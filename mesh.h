@@ -16,13 +16,12 @@ public:
     Esfera esferaLimite;
 
     Mesh();
-    Mesh(const string rutaModelo, const float escala = 1.0f, const Punto& centro = Punto(0.0f, 0.0f, 0.0f),
+    Mesh(const string rutaModelo, const string rutaTextura = "", const float escala = 1.0f, const Punto& centro = Punto(0.0f, 0.0f, 0.0f),
         const float rotacionX = 0.0f, const bool invertirX = false, 
         const float rotacionY = 0.0f, const bool invertirY = false, 
         const float rotacionZ = 0.0f, const bool invertirZ = false,
         const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
-        const string _material = "difuso", const RGB& _power = RGB(),
-        const string rutaTextura = "");
+        const string _material = "difuso", const RGB& _power = RGB());
 
 
     // Método para calcular la intersección entre un rayo y el triángulo

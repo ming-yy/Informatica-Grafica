@@ -16,13 +16,20 @@
 class Triangulo : public Primitiva {
 public:
     Punto v0, v1, v2;
+    Direccion n;    // Normal respecto al plano (generalmente en UCS)
+    float u, v;
 
     Triangulo();
     Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, 
               const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
-              const string _material = "difuso", const RGB& _power = RGB(),
-              const string rutaTextura = "");
+              const string _material = "difuso", const string rutaTextura = "",
+              const RGB& _power = RGB());
 
+    Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2,
+              const float _u, const float _v, const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
+              const string _material = "difuso", const string rutaTextura = "",
+              const RGB& _power = RGB());
+    
     // Método para calcular la intersección entre un rayo y el triángulo
     // Algoritmo usado: Möller–Trumbore
     //
