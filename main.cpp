@@ -124,7 +124,7 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
     
     // Zoom centro
-    Camara cam4 = Camara({0.0f, 0.0f, -2.5f},
+    Camara cam4 = Camara({0.0f, 0.0f, -0.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
@@ -136,7 +136,7 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
 
     const unsigned maxRebotes = 0;
-    const unsigned rpp = 1;
+    const unsigned rpp = 8;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -144,7 +144,7 @@ void cajaDeCornell(){
 
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(cam4, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
