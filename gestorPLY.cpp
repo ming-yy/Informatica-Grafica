@@ -21,10 +21,12 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
 
     string linea;
     size_t numVertices = 0, numCaras = 0;
-    vector<Punto> vertices;
     vector<Triangulo> triangulos;
+    vector<Punto> vertices;
+    vector<Direccion> normales;
     vector<float> us;
     vector<float> vs;
+
     // Leer el encabezado
     while (getline(archivo, linea)) {
         if (linea.find("element vertex") != std::string::npos) {
@@ -45,20 +47,23 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
         std::stringstream ss(linea);
         float x, y, z, nX, nY, nZ, u, v;
         ss >> x >> y >> z >> nX >> nY >> nZ >> u >> v;
-        Punto p(x,y,z);
+        Punto p(x,y,z); // vértice
+        Direccion d(nX, nY, nZ); // normal del vértice
         us.emplace_back(u);
         vs.emplace_back(v);
 
-        if(escala != 1.0f) { p = scale(p, escala, escala, escala); }
+        if(escala != 1.0f) { p = scale(p, escala, escala, escala); d = scale(d, escala, escala, escala); }
 
-        if(rotacionX != 0.0f) {p = rotateX(p, rotacionX); }
-        if(rotacionY != 0.0f) { p = rotateY(p, rotacionY); }
-        if(rotacionZ != 0.0f) { p = rotateZ(p, rotacionZ); }
+        if(rotacionX != 0.0f) { p = rotateX(p, rotacionX); d = rotateX(d, rotacionX); }
+        if(rotacionY != 0.0f) { p = rotateY(p, rotacionY); d = rotateY(d, rotacionY); }
+        if(rotacionZ != 0.0f) { p = rotateZ(p, rotacionZ); d = rotateZ(d, rotacionZ);}
 
-        if(invertirX){ p = Punto(-p.coord[0], p.coord[1], p.coord[2]); }
-        if(invertirY){ p = Punto(p.coord[0], -p.coord[1], p.coord[2]); }
-        if(invertirZ){ p = Punto(p.coord[0], p.coord[1], -p.coord[2]); }
+        if(invertirX){ p.coord[0] = -p.coord[0]; d.coord[0] = -d.coord[0];}
+        if(invertirY){ p.coord[1] = -p.coord[1]; d.coord[1] = -d.coord[1];}
+        if(invertirZ){ p.coord[2] = -p.coord[2]; d.coord[2] = -d.coord[2];}
+
         vertices.emplace_back(p);
+        normales.emplace_back(d);
     }
 
     Esfera esferaActual = minimumBoundingSphere(vertices);
@@ -68,6 +73,10 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
                             centro.coord[2] - esferaActual.centro.coord[2]);
     for (auto& p : vertices) {
         p = translate(p, desplazamiento.coord[0], desplazamiento.coord[1], desplazamiento.coord[2]);
+    }
+
+    for(auto& n : normales) {
+        n = translate(n, desplazamiento.coord[0], desplazamiento.coord[1], desplazamiento.coord[2]);
     }
 
     boundingSphere = Esfera(centro, esferaActual.radio);
@@ -80,8 +89,8 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
         ss >> numIndices >> i0 >> i1 >> i2;
         if (numIndices == 3) { // Verificamos que sea un triángulo
             triangulos.emplace_back(vertices[i0], vertices[i1], vertices[i2],
-                                    (us[i0] + us[i1] + us[i2]) / 3,
-                                    (vs[i0] + vs[i1] + vs[i2]) / 3,
+                                    us[i0], us[i1], us[i2], vs[i0], vs[i1], vs[i2],
+                                    normales[i0], normales[i1], normales[i2],
                                     RGB(1.0f, 1.0f, 1.0f), "muy_difuso", rutaTextura);
 
         }

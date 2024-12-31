@@ -25,6 +25,16 @@ Punto rotateY(const Punto& pd, float d);
 
 Punto rotateZ(const Punto& pd, float d);
 
+Direccion translate(const Direccion& pd, float x, float y, float z);
+
+Direccion scale(const Direccion& pd, float x, float y, float z);
+
+Direccion rotateX(const Direccion& pd, float d);
+
+Direccion rotateY(const Direccion& pd, float d);
+
+Direccion rotateZ(const Direccion& pd, float d);
+
 // Función que cambia el punto <p> a la base <b> con origen <o> y devuelve el nuevo punto
 Punto cambioBase(const Punto& p, const Base& b, const Punto& o, const bool& invertir = true);
 

@@ -108,6 +108,99 @@ Punto rotateZ(const Punto& pd, float d) {
 }
 
 
+Direccion translate(const Direccion& pd, float x, float y, float z) {
+    Matriz<4, 4> m = Matriz<4, 4>(
+            init_list<init_list<float>>{
+                {1.0f, 0.0f, 0.0f, x},
+                {0.0f, 1.0f, 0.0f, y},
+                {0.0f, 0.0f, 1.0f, z},
+                {0.0f, 0.0f, 0.0f, 1.0f}
+            }
+    );
+
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    Matriz<4, 1> res = m * p;
+    return dirFromCoordHomo(res);
+}
+
+
+Direccion scale(const Direccion& pd, float x, float y, float z) {
+    Matriz<4, 4> m = Matriz<4, 4>(
+            init_list<init_list<float>>{
+                {x, 0.0f, 0.0f, 0.0f},
+                {0.0f, y, 0.0f, 0.0f},
+                {0.0f, 0.0f, z, 0.0f},
+                {0.0f, 0.0f, 0.0f, 1.0f}
+            }
+    );
+
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    Matriz<4, 1> res = m * p;
+    return dirFromCoordHomo(res);
+}
+
+
+Direccion rotateX(const Direccion& pd, float d) {
+    float dRad = d * GRAD_A_RAD;
+    float cosD = static_cast<float>(cos(dRad));
+    float sinD = static_cast<float>(sin(dRad));
+
+    Matriz<4, 4> m = Matriz<4, 4>(
+        init_list<init_list<float>>{
+            {1.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, cosD, -sinD, 0.0f},
+            {0.0f, sinD, cosD, 0.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f}
+        }
+    );
+
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    Matriz<4, 1> res = m * p;
+    return dirFromCoordHomo(res);
+}
+
+
+Direccion rotateY(const Direccion& pd, float d) {
+    float dRad = d * GRAD_A_RAD;
+    float cosD = static_cast<float>(cos(dRad));
+    float sinD = static_cast<float>(sin(dRad));
+
+    Matriz<4, 4> m = Matriz<4, 4>(
+        init_list<init_list<float>>{
+            {cosD, 0.0f, sinD, 0.0f},
+            {0.0f, 1.0f, 0.0f, 0.0f},
+            {-sinD, 0.0f, cosD, 0.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f}
+        }
+    );
+
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    Matriz<4, 1> res = m * p;
+    return dirFromCoordHomo(res);
+}
+
+
+Direccion rotateZ(const Direccion& pd, float d) {
+    float dRad = d * GRAD_A_RAD;
+    float cosD = static_cast<float>(cos(dRad));
+    float sinD = static_cast<float>(sin(dRad));
+
+    Matriz<4, 4> m = Matriz<4, 4>(
+        init_list<init_list<float>>{
+            {cosD, -sinD, 0.0f, 0.0f},
+            {sinD, cosD, 0.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f}
+        }
+    );
+
+    Matriz<4, 1> p = Matriz<4, 1>(pd.getCoordHomo());
+    Matriz<4, 1> res = m * p;
+    return dirFromCoordHomo(res);
+}
+
+
+
 //Matriz<4, 1> cambioBase(const Punto& p, const Base& b, const Punto& o) {
 Punto cambioBase(const Punto& p, const Base& b, const Punto& o, const bool& invertir) {
     Matriz<4, 1> res;

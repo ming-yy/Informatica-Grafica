@@ -87,8 +87,10 @@ void cajaDeCornell(){
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
 
-    
-    Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false);
+    //objetos.push_back(new Esfera({0.2f, -0.5f, -0.8f}, 0.05f, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera izquierda, rosa
+
+    //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false);
+    Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 0.0f, false, -90.0f, false, 0.0f, false);
 
     //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
     for (auto& t : patataMesh.triangulos){
@@ -98,8 +100,10 @@ void cajaDeCornell(){
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
+    //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     luces.push_back(LuzPuntual({0.0f, 0.5f, -0.25f}, potencia));
-    
+    luces.push_back(LuzPuntual({0.2f, -0.5f, -0.8}, potencia));
+
     Escena cornell = Escena(objetos, luces);
     
     Camara cam = Camara({0.0f, 0.0f, -3.5f},
@@ -131,8 +135,8 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 8;
-    const unsigned rpp = 128;
+    const unsigned maxRebotes = 0;
+    const unsigned rpp = 1;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     
@@ -140,7 +144,7 @@ void cajaDeCornell(){
 
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(cam, 1024, 1024, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 

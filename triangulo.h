@@ -15,20 +15,29 @@
 
 class Triangulo : public Primitiva {
 public:
-    Punto v0, v1, v2;
-    Direccion n;    // Normal respecto al plano (generalmente en UCS)
-    float u, v;
+    Punto p0, p1, p2;
+    Direccion n0, n1, n2;
+    float u0, u1, u2;
+    float v0, v1, v2;
 
     Triangulo();
-    Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, 
+    Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2, 
               const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
               const string _material = "difuso", const string rutaTextura = "",
               const RGB& _power = RGB());
 
-    Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2,
+    Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2,
               const float _u, const float _v, const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
               const string _material = "difuso", const string rutaTextura = "",
               const RGB& _power = RGB());
+
+              Triangulo::Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2,
+                     const float _u0, const float _u1, const float _u2,
+                     const float _v0, const float _v1, const float _v2,
+                     const Direccion& _n0, const Direccion& _n1, const Direccion& _n2,
+                     const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
+                    const string _material = "difuso", const string rutaTextura = "",
+                    const RGB& _power = RGB());
     
     // Método para calcular la intersección entre un rayo y el triángulo
     // Algoritmo usado: Möller–Trumbore

@@ -10,24 +10,32 @@
 #include "utilidades.h"
 
 
-Triangulo::Triangulo() : Primitiva(), v0(Punto()), v1(Punto()), v2(Punto()) {}
+Triangulo::Triangulo() : Primitiva(), p0(Punto()), p1(Punto()), p2(Punto()),
+                                        n0(Direccion()), n1(Direccion()), n2(Direccion()),
+                                        u0(0.0f), u1(0.0f), u2(0.0f),
+                                        v0(0.0f), v1(0.0f), v2(0.0f) {}
 
-Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2,
+Triangulo::Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2,
                      const RGB& _reflectancia, const string _material,
                      const string rutaTextura, const RGB& _power):
-                     Primitiva(_reflectancia, _material, _power, rutaTextura), v0(_v0),
-                     v1(_v1), v2(_v2), u(0.0f), v(0.0f), n(getNormal(_v0)) {}
+                     Primitiva(_reflectancia, _material, _power, rutaTextura),
+                     p0(_p0), p1(_p1), p2(_p2), u0(0.0f), u1(0.0f), u2(0.0f), v0(0.0f), v1(0.0f), v2(0.0f),
+                     n0(getNormal(_p0)), n1(getNormal(_p0)), n2(getNormal(_p0)) {}
 
-Triangulo::Triangulo(const Punto& _v0, const Punto& _v1, const Punto& _v2, const float _u,
-                     const float _v, const RGB& _reflectancia, const string _material,
+Triangulo::Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2,
+                     const float _u0, const float _u1, const float _u2,
+                     const float _v0, const float _v1, const float _v2,
+                     const Direccion& _n0, const Direccion& _n1, const Direccion& _n2,
+                     const RGB& _reflectancia, const string _material,
                      const string rutaTextura, const RGB& _power):
-                     Primitiva(_reflectancia, _material, _power, rutaTextura), v0(_v0),
-                     v1(_v1), v2(_v2), u(_u), v(_v), n(getNormal(_v0)) {}
+                     Primitiva(_reflectancia, _material, _power, rutaTextura), 
+                     p0(_p0), p1(_p1), p2(_p2), u0(_u0), u1(_u1), u2(_u2), v0(_v0), v1(_v1), v2(_v2),
+                     n0(_n0), n1(_n1), n2(_n2) {}
 
 
 void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
-    Direccion edge1 = v1 - v0;
-    Direccion edge2 = v2 - v0;
+    Direccion edge1 = p1 - p0;
+    Direccion edge2 = p2 - p0;
     Direccion h = cross(rayo.d, edge2);
     float a = dot(edge1, h);
 
@@ -37,7 +45,7 @@ void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs
     }
 
     float f = 1.0f / a;
-    Direccion s = rayo.o - v0;
+    Direccion s = rayo.o - p0;
     float u = f * dot(s, h);
 
     if (u < 0.0f || u > 1.0f) {
@@ -62,34 +70,34 @@ void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs
 
 bool Triangulo::pertenece(const Punto& p0) const {
     // Vectores de los lados del triángulo
-    Direccion v0v1 = this->v1 - this->v0;
-    Direccion v0v2 = this->v2 - this->v0;
-    Direccion v0p = p0 - this->v0;
+    Direccion p0p1 = this->p1 - this->p0;
+    Direccion p0p2 = this->p2 - this->p0;
+    Direccion p0p = p0 - this->p0;
 
     // Calculamos los productos escalares necesarios
-    float dotV1V1 = dot(v0v1, v0v1);
-    float dotV1V2 = dot(v0v1, v0v2);
-    float dotV2V2 = dot(v0v2, v0v2);
-    float dotVPV1 = dot(v0p, v0v1);
-    float dotVPV2 = dot(v0p, v0v2);
+    float dotp1p1 = dot(p0p1, p0p1);
+    float dotp1p2 = dot(p0p1, p0p2);
+    float dotp2p2 = dot(p0p2, p0p2);
+    float dotVPp1 = dot(p0p, p0p1);
+    float dotVPp2 = dot(p0p, p0p2);
 
     // Calculamos el determinante para las coordenadas baricéntricas
-    float denom = dotV1V1 * dotV2V2 - dotV1V2 * dotV1V2;
+    float denom = dotp1p1 * dotp2p2 - dotp1p2 * dotp1p2;
     if (denom == 0.0f) {
         return false; // Los vértices son colineales
     }
 
     // Coordenadas baricéntricas
-    float u = (dotV2V2 * dotVPV1 - dotV1V2 * dotVPV2) / denom;
-    float v = (dotV1V1 * dotVPV2 - dotV1V2 * dotVPV1) / denom;
+    float u = (dotp2p2 * dotVPp1 - dotp1p2 * dotVPp2) / denom;
+    float v = (dotp1p1 * dotVPp2 - dotp1p2 * dotVPp1) / denom;
 
     // Comprobamos si están dentro del rango [0, 1] y que u + v <= 1
     return (u >= 0.0f && v >= 0.0f && u + v <= 1.0f);
 }
 
 Direccion Triangulo::getNormal(const Punto& punto) const {
-    Direccion d1 = v0 - v1;
-    Direccion d2 = v1 - v2;
+    Direccion d1 = p0 - p1;
+    Direccion d2 = p1 - p2;
     return normalizar(cross(d1, d2));
 }
 
@@ -117,9 +125,9 @@ Punto Triangulo::generarPuntoAleatorio(float& prob) const {
     float c = r2;
 
     // Coordenadas baricéntricas --> coordenadas cartesianas
-    Punto puntoAleatorio = v0 * a + v1 * b + v2 * c;
+    Punto puntoAleatorio = p0 * a + p1 * b + p2 * c;
 
-    Direccion crossProd = cross(v1 - v0, v2 - v0);
+    Direccion crossProd = cross(p1 - p0, p2 - p0);
     float areaTriangulo = modulo(crossProd) * 0.5f;
     prob = 1.0f / areaTriangulo;
 
@@ -127,18 +135,18 @@ Punto Triangulo::generarPuntoAleatorio(float& prob) const {
 }
 
 float Triangulo::getEjeTexturaU(const Punto& pto) const {
-    return u;
+    return (u0 + u1 + u2) / 3;
 }
 
 float Triangulo::getEjeTexturaV(const Punto& pto) const {
-    return v;
+    return (v0 + v1 + v2) / 3;
 }
 
 void Triangulo::diHola() const {
-    cout << "Soy triangulo: p1 = " << this->v0 << endl;
+    cout << "Soy triangulo: p1 = " << this->p0 << endl;
 }
 
 ostream& operator<<(ostream& os, const Triangulo& t) {
-    os << t.v0 << ", " << t.v1 << ", " << t.v2;
+    os << t.p0 << ", " << t.p1 << ", " << t.p2;
     return os;
 }
