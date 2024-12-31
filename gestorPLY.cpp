@@ -4,7 +4,7 @@
 #include "transformaciones.h"
 
 vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaTextura,
-                                    Esfera& boundingSphere, vector<Punto>& verticesFinales,
+                                    Esfera& boundingSphere,
                                     const float escala, const Punto& centro,
                                     const float rotacionX, const bool invertirX,
                                     const float rotacionY, const bool invertirY,
@@ -84,7 +84,6 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
     
     // Leer las caras (triángulos)
     for (size_t i = 0; i < numCaras; ++i) {
-        cout << i << endl;
         getline(archivo, linea);
         std::stringstream ss(linea);
         size_t numIndices, i0, i1, i2;
@@ -98,7 +97,6 @@ vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaT
         }
     }
 
-    verticesFinales = vertices;
     return triangulos;
 }
 

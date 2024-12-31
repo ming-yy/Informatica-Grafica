@@ -17,7 +17,9 @@ Mesh::Mesh(const string rutaModelo,   const string rutaTextura, const float esca
             const RGB& _reflectancia,  const string _material, const RGB& _power):
                                         Primitiva(_reflectancia, _material, _power, rutaTextura) {
 
-    triangulos = generarModeloPLY(rutaModelo, rutaTextura, esferaLimite, vertices, escala, centro,
+                                        
+
+    triangulos = generarModeloPLY(rutaModelo, rutaTextura, esferaLimite, escala, centro,
                                     rotacionX, invertirX, rotacionY, invertirY, rotacionZ, invertirZ);
 }
 

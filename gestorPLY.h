@@ -3,7 +3,7 @@
 #include "esfera.h"
 
 vector<Triangulo> generarModeloPLY(const string& rutaArchivo, const string rutaTextura, 
-                                    Esfera& boundingSphere, vector<Punto>& verticesFinales,
+                                    Esfera& boundingSphere,
                                     const float escala = 1.0f, const Punto& centro = Punto(0.0f, 0.0f, 0.0f),
                                     const float rotacionX = 0.0f, const bool invertirX = false, 
                                     const float rotacionY = 0.0f, const bool invertirY = false,

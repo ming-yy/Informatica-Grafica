@@ -89,9 +89,9 @@ void cajaDeCornell(){
 
     //objetos.push_back(new Esfera({0.2f, -0.5f, -0.8f}, 0.05f, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera izquierda, rosa
 
-    //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false);
-    Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 0.0f, false, -90.0f, false, 0.0f, false);
-
+    Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false);
+    //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOS.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 0.0f, false, -90.0f, false, 0.0f, false);
+    
     //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
     for (auto& t : patataMesh.triangulos){
         objetos.push_back(new Triangulo(t));
