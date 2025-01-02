@@ -106,7 +106,7 @@ void cajaDeCornell(){
     //luces.push_back(LuzPuntual({0.0f, 0.5f, -0.25f}, potencia));
     
     //luces.push_back(LuzPuntual({0.2f, -0.5f, -0.8}, potencia));
-    luces.push_back(LuzPuntual({0.0f, -0.60f, 0.0}, potencia));
+    luces.push_back(LuzPuntual({0.0f, -0.50f, 0.0}, potencia));
 
     Escena cornell = Escena(objetos, luces);
     
