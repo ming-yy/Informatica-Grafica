@@ -38,7 +38,7 @@ void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs
     Direccion h = cross(rayo.d, edge2);
     float a = dot(edge1, h);
 
-    if (fabs(a) < MARGEN_ERROR) {
+    if (abs(a) < MARGEN_ERROR) {
         // cout << "No hay intersección, el rayo es paralelo al triángulo." << endl;
         return;
     }

@@ -42,6 +42,17 @@ void comprobarNoHayDosTiposDeLuces(auto objetos, auto luces) {
     }
 }
 
+void comprobarRelacionAspecto(const Camara& camUtilizada, const float ratioPantalla){
+    float ratioCamara = modulo(camUtilizada.l) / modulo(camUtilizada.u);
+
+    if (abs(ratioCamara - ratioPantalla) > MARGEN_ERROR) {
+        cerr << "No coincide el ratio entre la camara y la pantalla." << endl;
+        cerr << "ratioCamara = " << ratioCamara << ", ratioPantalla = " << ratioPantalla << endl;
+        std::exit(EXIT_FAILURE);
+    }
+}
+
+
 void printTiempo(auto inicio, auto fin) {
     auto duracion_total = std::chrono::duration_cast<std::chrono::seconds>(fin - inicio);
     auto mins = std::chrono::duration_cast<std::chrono::minutes>(duracion_total);
@@ -87,14 +98,14 @@ void cajaDeCornell(){
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
 
-    //objetos.push_back(new Esfera({0.0f, -0.5f, 0.0f}, 0.05f, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera izquierda, rosa
+    //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera centro, rosa
 
 
     //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOSgirada.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false); // patata girada
-    Mesh patataMesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -1.0f, 0.0f), -90.0f, false, 0.0f, false, 0.0f, false);
+    Mesh tartaMesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -1.0f, 0.0f), -90.0f, false, 0.0f, false, 0.0f, false);
     
     //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
-    for (auto& t : patataMesh.triangulos){
+    for (auto& t : tartaMesh.triangulos){
         objetos.push_back(new Triangulo(t));
     }
     cout << "Total objetos: " << objetos.size() << endl;
@@ -110,10 +121,21 @@ void cajaDeCornell(){
 
     Escena cornell = Escena(objetos, luces);
     
-    Camara cam = Camara({0.0f, 0.0f, -3.5f},
+    
+    Camara cam = Camara({0.0f, -0.5f, -5.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
+
+    Camara cam16_9 = Camara({0.0f, 0.0f, -3.5f},
+                        {0.0f, 0.0f, 3.0f},
+                        {0.0f, 0.9f, 0.0f},
+                        {-1.6f, 0.0f, 0.0f});
+
+    Camara cam9_16 = Camara({0.0f, 0.0f, -3.5f},
+                        {0.0f, 0.0f, 3.0f},
+                        {0.0f, 1.6f, 0.0f},
+                        {-0.9f, 0.0f, 0.0f});
     
     // Zoom esfera izquierda
     Camara cam2 = Camara({-0.5f, -0.5f, -0.5f},
@@ -139,16 +161,22 @@ void cajaDeCornell(){
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
 
-    const unsigned maxRebotes = 6;
-    const unsigned rpp = 64;
+    const string nombreEscena = "cornell";
+    const unsigned maxRebotes = 0;
+    const unsigned rpp = 1;
     const unsigned numRayosMontecarlo = 1;
-    const bool printPixelesProcesados = true;
-    
+    const bool printPixelesProcesados = false;
+    const unsigned int pixelesAncho = 512;
+    const unsigned int pixelesAlto = 512;
+    Camara camUtilizada = cam;
+
+
     comprobarNoHayDosTiposDeLuces(objetos, luces);
+    comprobarRelacionAspecto(camUtilizada, static_cast<float>(pixelesAncho)/static_cast<float>(pixelesAlto));
 
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(cam, 512, 512, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(camUtilizada, pixelesAncho, pixelesAlto, cornell, nombreEscena, rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 

@@ -39,15 +39,17 @@ Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, cons
 
 void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     float denominador = dot(rayo.d, n);
-    if (fabs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
+    if (abs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;
+        //cout << coefs << endl;
         return;
     }
     
     float numerador = (-1) * (d + dot(rayo.o, n));
     float t = numerador / denominador;
-    if (t <= 0) {
+    if (t <= MARGEN_ERROR) {
         //cout << "No hay intersección en la dirección positiva del rayo." << endl;
+        //cout << coefs << endl;
         return;
     }
     

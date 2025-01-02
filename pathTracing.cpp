@@ -148,8 +148,8 @@ TipoRayo dispararRuletaRusa(const BSDFs& coefs, float& probTipoRayo) {
 
 RGB calcBrdfDifusa(const Primitiva* objeto, const Punto& p0){
     //return kd / M_PI;
-    if (objeto->tengoTextura()) return objeto->kd_Textura(p0) / M_PI;
-    return objeto->coeficientes.kd / M_PI;
+    if (objeto->tengoTextura()) return objeto->kd_Textura(p0);
+    return objeto->coeficientes.kd;
 }
 
 RGB calcBrdfEspecular(const RGB& ks) {
@@ -240,7 +240,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo,
                                    const Direccion& normal, const Escena& escena,
                                    const unsigned rebotesRestantes, const Primitiva* objOrigen) {
     if (rebotesRestantes == 0) {     // TERMINAL: alcanzado max rebotes
-        return RGB({0.0f, 0.0f, 0.0f});
+        return RGB({1.0f, 0.0f, 0.0f});
     }
     
     RGB powerLuzArea;
@@ -252,7 +252,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo,
     float probTipoRayo;
     TipoRayo tipoRayo = dispararRuletaRusa(objOrigen->coeficientes, probTipoRayo);
     if (tipoRayo == ABSORBENTE) {       // TERMINAL: rayo absorbente
-        return RGB({0.0f, 0.0f, 0.0f});
+        return RGB({1.0f, 0.0f, 0.0f});
     }
 
     float probDirRayo;     // Ojo! La probabilidad es para la siguiente llamada recursiva pq es wi, no wo
@@ -272,19 +272,11 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo,
         return radianciaSalienteDirecta / probTipoRayo;
     }
     
-    // ------- Estimación radiancia -------
-    float coseno;
-    if (tipoRayo == DIFUSO) {
-        // Compensa la prob. de que se elija esa dirección del rayo difuso de entre todos los del hemisferio
-        coseno = calcCosenoAnguloIncidencia(wi.d, normal);
-    } else {  // tipoRayo == ESPECULAR || tipoRayo == REFRACTANTE
-        coseno = 1.0f;      // El coseno se anula porque el rayo solamente puede ir en una dirección
-    }
     RGB bsdf = calcBsdf(tipoRayo, objOrigen, origen);
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, wi.d, nuevaNormal, escena,
                                                                     rebotesRestantes - 1, nuevoObjIntersecado);
 
-    radianciaSalienteIndirecta = (radianciaSalienteIndirecta / probDirRayo) * bsdf * coseno;
+    radianciaSalienteIndirecta = radianciaSalienteIndirecta * bsdf;
     return (radianciaSalienteDirecta + radianciaSalienteIndirecta) / probTipoRayo;
 }
 
@@ -381,8 +373,8 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
                       const Escena& escena, const string& nombreEscena, const unsigned rpp,
                       const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                       const bool printPixelesProcesados) {
-    float anchoPorPixel = camara.calcularAnchoPixel(numPxlsAncho);
-    float altoPorPixel = camara.calcularAltoPixel(numPxlsAlto);
+    
+    float tamanoPorPixel = std::min(camara.calcularAnchoPixel(numPxlsAncho), camara.calcularAltoPixel(numPxlsAlto));
    
     unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
     if (printPixelesProcesados) cout << "Procesando pixeles..." << endl << "0 pixeles de " << totalPixeles << endl;
@@ -391,12 +383,12 @@ void renderizarEscena(Camara& camara, unsigned numPxlsAncho, unsigned numPxlsAlt
     vector<vector<RGB>> coloresEscena(numPxlsAlto, vector<RGB>(numPxlsAncho, {0.0f, 0.0f, 0.0f}));
 
     if(rpp == 1){
-        renderizarEscena1RPP(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
-                             altoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena,
+        renderizarEscena1RPP(camara, numPxlsAncho, numPxlsAlto, escena, tamanoPorPixel,
+                             tamanoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena,
                              totalPixeles, printPixelesProcesados);
     } else {
-        renderizarEscenaConAntialiasing(camara, numPxlsAncho, numPxlsAlto, escena, anchoPorPixel,
-                                        altoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena,
+        renderizarEscenaConAntialiasing(camara, numPxlsAncho, numPxlsAlto, escena, tamanoPorPixel,
+                                        tamanoPorPixel, maxRebotes, numRayosMontecarlo, coloresEscena,
                                         printPixelesProcesados, totalPixeles, rpp);
     }
     
@@ -437,8 +429,7 @@ void renderizarEscenaConThreads(Camara& camara, unsigned numPxlsAncho, unsigned 
                                 const unsigned maxRebotes, const unsigned numRayosMontecarlo,
                                 const bool printPixelesProcesados, unsigned numThreads) {
     pixelesProcesados = 0;
-    float anchoPorPixel = camara.calcularAnchoPixel(numPxlsAncho);
-    float altoPorPixel = camara.calcularAltoPixel(numPxlsAlto);
+    float tamanoPorPixel = std::min(camara.calcularAnchoPixel(numPxlsAncho), camara.calcularAltoPixel(numPxlsAlto));
     
     unsigned totalPixeles = numPxlsAlto * numPxlsAncho;
     cout << "Numero de threads a usar: " << numThreads << endl;
@@ -457,7 +448,7 @@ void renderizarEscenaConThreads(Camara& camara, unsigned numPxlsAncho, unsigned 
         // Distribuir filas extra entre los primeros threads
         unsigned finFila = inicioFila + filasPorThread + (t < filasRestantes ? 1 : 0);
         threads.emplace_back(renderizarRangoFilas, std::ref(camara), inicioFila, finFila, numPxlsAncho,
-                             std::ref(escena), anchoPorPixel, altoPorPixel, maxRebotes, numRayosMontecarlo,
+                             std::ref(escena), tamanoPorPixel, tamanoPorPixel, maxRebotes, numRayosMontecarlo,
                              std::ref(coloresEscena), rpp, t, printPixelesProcesados, totalPixeles);
         inicioFila = finFila;
     }
