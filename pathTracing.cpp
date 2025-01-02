@@ -240,7 +240,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo,
                                    const Direccion& normal, const Escena& escena,
                                    const unsigned rebotesRestantes, const Primitiva* objOrigen) {
     if (rebotesRestantes == 0) {     // TERMINAL: alcanzado max rebotes
-        return RGB({1.0f, 0.0f, 0.0f});
+        return RGB({0.0f, 0.0f, 0.0f});
     }
     
     RGB powerLuzArea;
@@ -252,7 +252,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo,
     float probTipoRayo;
     TipoRayo tipoRayo = dispararRuletaRusa(objOrigen->coeficientes, probTipoRayo);
     if (tipoRayo == ABSORBENTE) {       // TERMINAL: rayo absorbente
-        return RGB({1.0f, 0.0f, 0.0f});
+        return RGB({0.0f, 0.0f, 0.0f});
     }
 
     float probDirRayo;     // Ojo! La probabilidad es para la siguiente llamada recursiva pq es wi, no wo
