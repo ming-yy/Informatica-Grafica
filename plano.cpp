@@ -39,7 +39,7 @@ Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, cons
 
 void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     float denominador = dot(rayo.d, n);
-    if (fabs(denominador) < MARGEN_ERROR) {    // Para evitar problemas de imprecision
+    if (fabs(denominador) < MARGEN_ERROR_INTERSEC_PLANO) {    // Para evitar problemas de imprecision
         //cout << "No hay intersección, el rayo es paralelo al plano." << endl;
         //cout << coefs << endl;
         return;
@@ -47,7 +47,7 @@ void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) co
     
     float numerador = (-1) * (d + dot(rayo.o, n));
     float t = numerador / denominador;
-    if (t <= MARGEN_ERROR) {
+    if (t <= MARGEN_ERROR_INTERSEC_PLANO) {
         //cout << "No hay intersección en la dirección positiva del rayo." << endl;
         //cout << coefs << endl;
         return;
@@ -70,6 +70,7 @@ float Plano::distancia(const Punto& p0) const {
 Direccion Plano::getNormal(const Punto& punto) const {
     return this->n;
 }
+
 
 bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
     if (!this->soyFuenteDeLuz()) {
@@ -133,3 +134,5 @@ ostream& operator<<(ostream& os, const Plano& r) {
 void Plano::diHola() const {
     cout << "Soy plano: normal = " << this->n << ", distancia = " << this->coeficientes << endl;
 }
+
+

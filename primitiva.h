@@ -34,7 +34,7 @@ public:
     virtual ~Primitiva() = default;
         
     // Método que devuelve el coeficiente kd de la primitiva en el punto <p>.
-    RGB kd(const Punto& p) const;
+    virtual RGB kd(const Punto& p) const;
     
     // Método que devuelve el coeficiente kd de la primitiva asumiendo que tiene textura.
     RGB kd_Textura(const Punto& p) const;

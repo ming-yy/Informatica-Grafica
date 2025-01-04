@@ -19,11 +19,11 @@ class Cuboide : public Primitiva {
 public:
     vector<Plano> planos; // Los 6 planos que definen el cuboide
     
-    
+    Cuboide(const float tamano, const RGB& color = RGB(), const string& material = "muy_difuso");
     Cuboide(const vector<Plano>& p);
     
     // Método que devuelve el coeficiente kd de la primitiva en el punto <p>.
-    RGB kd(const Punto& p) const;
+    RGB kd(const Punto& p) const override;
 
     // Método para calcular la intersección entre un rayo y el cubo
     //
@@ -58,4 +58,5 @@ public:
     
     // Debug
     void diHola() const override;
+
 };

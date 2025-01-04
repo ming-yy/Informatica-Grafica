@@ -6,7 +6,33 @@
 //*****************************************************************
 
 #include "cuboide.h"
+#include <algorithm>
 
+enum NumPlano {
+    P_DCH = 0,
+    P_IZQ = 1,
+    P_TECHO = 2,
+    P_SUELO = 3,
+    P_FONDO = 4,
+    P_FRENTE = 5,
+};
+
+Cuboide::Cuboide(const float tamano, const RGB& color, const string& material): Primitiva() {
+    vector<Plano> _planos;
+    Plano caraIzq = Plano({1.0f, 0.0f, 0.0f}, tamano, color, material);     // izq
+    Plano caraDer = Plano({-1.0f, 0.0f, 0.0f}, tamano, color, material);    // dcha
+    Plano caraSuelo = Plano({0.0f, 1.0f, 0.0f}, tamano, color, material);   // suelo
+    Plano caraTecho = Plano({0.0f, -1.0f, 0.0f}, tamano, color, material);  // techo
+    Plano caraFondo = Plano({0.0f, 0.0f, -1.0f}, tamano, color, material);  // fondo
+    Plano caraFrente = Plano({0.0f, 0.0f, 1.0f}, tamano, color, material);  // frente
+
+    this->planos.push_back(caraDer);
+    this->planos.push_back(caraIzq);
+    this->planos.push_back(caraTecho);
+    this->planos.push_back(caraSuelo);
+    this->planos.push_back(caraFondo);
+    this->planos.push_back(caraFrente);
+}
 
 Cuboide::Cuboide(const vector<Plano>& p): Primitiva() {
     if (p.size() != 6) {
@@ -25,13 +51,24 @@ RGB Cuboide::kd(const Punto& p) const {
 }
 
 void Cuboide::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
-    BSDFs aux;
+    BSDFs bsdfAux;
+    bool primerIntersec = true;
+    Punto ptoMasCerca;
     //int i = 0;
     for (const auto& plano : this->planos) {
         vector<Punto> interseccionesAux;
-        plano.interseccion(rayo, interseccionesAux, aux);
+        plano.interseccion(rayo, interseccionesAux, bsdfAux);
         if (!interseccionesAux.empty()) {
             bool dentro = true;
+            if(primerIntersec){
+                coefs = bsdfAux;
+                ptoMasCerca = interseccionesAux[0];
+                primerIntersec = false;
+                
+            } else if (modulo(rayo.o - interseccionesAux[0]) < modulo(rayo.o - ptoMasCerca)){
+                ptoMasCerca = interseccionesAux[0];
+                coefs = bsdfAux;
+            }
             
             // Comprobamos si el rayo <rayo>, tras intersecar con <plano>, interseca con otro plano en el
             // sentido del vector otroPlano.normal (está bien) o en su sentido opuesto (está mal, rayo no válido)
@@ -41,6 +78,7 @@ void Cuboide::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) 
                     break;
                 }
             }
+
             if (dentro) {
                 //cout << "Plano :" << i << endl;
                 ptos.push_back(interseccionesAux[0]);
@@ -111,4 +149,3 @@ float Cuboide::getEjeTexturaV(const Punto& pto) const {
 void Cuboide::diHola() const {
     
 }
-

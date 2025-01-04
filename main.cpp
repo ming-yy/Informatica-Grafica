@@ -100,23 +100,27 @@ void cajaDeCornell(){
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera centro, rosa
     
     
+    /*
     vector<Plano> planos;
-    Plano caraIzq = Plano({1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");
-    Plano caraDer = Plano({-1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 0.0f}), "muy_difuso");
-    Plano caraSuelo = Plano({0.0f, 1.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso");
-    Plano caraTecho = Plano({0.0f, -1.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 1.0f}), "muy_difuso");
-    Plano caraFondo = Plano({0.0f, 0.0f, -1.0f}, 0.3f, RGB({0.0f, 0.0f, 1.0f}), "muy_difuso");
-    Plano caraFrente = Plano({0.0f, 0.0f, 1.0f}, 0.3f, RGB({1.0f, 0.0f, 1.0f}), "muy_difuso");
+    Plano caraIzq = Plano({1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");     // izq
+    Plano caraDer = Plano({-1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 0.0f}), "muy_difuso");    // dcha
+    Plano caraSuelo = Plano({0.0f, 1.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso");   // suelo
+    Plano caraTecho = Plano({0.0f, -1.0f, 0.0f}, 0.3, RGB({0.0f, 1.0f, 1.0f}), "muy_difuso");  // techo
+    Plano caraFondo = Plano({0.0f, 0.0f, -1.0f}, 0.3f, RGB({0.0f, 0.0f, 1.0f}), "muy_difuso");  // fondo
+    Plano caraFrente = Plano({0.0f, 0.0f, 1.0f}, 0.3f, RGB({1.0f, 0.0f, 1.0f}), "muy_difuso");  // frente
     
-    planos.push_back(caraFrente);
-    planos.push_back(caraIzq);
     planos.push_back(caraDer);
-    planos.push_back(caraSuelo);
+    planos.push_back(caraIzq);
     planos.push_back(caraTecho);
+    planos.push_back(caraSuelo);
     planos.push_back(caraFondo);
+    planos.push_back(caraFrente);
     
     objetos.push_back(new Cuboide(planos));
+    */
      
+    objetos.push_back(new Cuboide(0.3, {1.0,0.0,0.0}, "muy_difuso"));
+
     //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOSgirada.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false); // patata girada
     //Mesh tartaMesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -1.0f, 0.0f), -90.0f, false, 0.0f, false, 0.0f, false);
     
@@ -130,8 +134,8 @@ void cajaDeCornell(){
 
     RGB potencia(1.0f, 1.0f, 1.0f);
 
-    //luces.push_back(LuzPuntual({0.0f, 0.9f, 0.0f}, {0.5f, 0.5f, 0.5f}));
-    luces.push_back(LuzPuntual({0.5f, 0.0f, -0.5f}, potencia));
+    luces.push_back(LuzPuntual({0.0f, 0.5f, -1.0f}, potencia));
+    //luces.push_back(LuzPuntual({0.5f, 0.0f, -0.5f}, potencia));
     
     //luces.push_back(LuzPuntual({0.2f, -0.5f, -0.8}, potencia));
     //luces.push_back(LuzPuntual({0.0f, -0.50f, 0.0}, potencia));
@@ -139,7 +143,7 @@ void cajaDeCornell(){
     Escena cornell = Escena(objetos, luces);
     
     
-    Camara cam = Camara({0.0f, -0.5f, -5.5f},
+    Camara cam = Camara({0.0f, 0.0f, -3.5f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
@@ -179,10 +183,10 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
 
     const string nombreEscena = "cornell";
-    const unsigned maxRebotes = 3;
-    const unsigned rpp = 64;
+    const unsigned maxRebotes = 0;
+    const unsigned rpp = 1;
     const unsigned numRayosMontecarlo = 1;
-    const bool printPixelesProcesados = true;
+    const bool printPixelesProcesados = false;
     const unsigned int pixelesAncho = 256;
     const unsigned int pixelesAlto = 256;
     Camara camUtilizada = cam;
@@ -193,7 +197,7 @@ void cajaDeCornell(){
 
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(camUtilizada, pixelesAncho, pixelesAlto, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscenaConThreads(camUtilizada, pixelesAncho, pixelesAlto, cornell, nombreEscena, rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscena(camUtilizada, pixelesAncho, pixelesAlto, cornell, nombreEscena, rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
