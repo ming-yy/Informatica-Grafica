@@ -19,7 +19,7 @@ class Plano : public Primitiva {
 public:
     Punto centro;             // Centro del plano teniendo en cuenta la distancia <d>
     Punto centroSinDistancia; // Centro del plano sin tener en cuenta la distancia <d>
-    Direccion n;    // Normal respecto al plano (generalmente en UCS)
+    Direccion n;    // Normal del plano respecto a su CENTRO SIN DISTANCIA! (todo en UCS)
     Direccion u, v; // Forman una base ortonormal junto con la normal <n>
     float d;        // Distancia respecto del centro
     float minLimite, maxLimite;     // Límites para la luz de área
@@ -46,6 +46,9 @@ public:
     // Método que devuelve "True" si y solo si el punto <p0> pertecene al plano.
     bool pertenece(const Punto& p0) const override;
     
+    // Método que devuelve la distancia del punto <p0> al plano. 
+    float distancia(const Punto& p0) const;
+    
     // Método que devuelve la normal de la primitiva en el punto <punto>. En UCS!
     Direccion getNormal(const Punto& punto) const override;
     
@@ -57,12 +60,12 @@ public:
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
     Punto generarPuntoAleatorio(float& prob) const override;
     
-    // Método que obtiene la posición del punto <pto> del plano en el
-    // eje U de la textura correspondiente.
+    // Método que obtiene la posición del punto <pto> del plano en el eje U de la
+    // textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     float getEjeTexturaU(const Punto& pto) const override;
     
-    // Método que obtiene la posición del punto <pto> del plano en el
-    // eje V de la textura correspondiente.
+    // Método que obtiene la posición del punto <pto> del plano en el eje V de la
+    // textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     float getEjeTexturaV(const Punto& pto) const override;
 
     // Función para mostrar por pantalla la información del plano

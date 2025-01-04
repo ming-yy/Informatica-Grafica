@@ -31,7 +31,6 @@ Triangulo::Triangulo(const Punto& _p0, const Punto& _p1, const Punto& _p2,
                      p0(_p0), p1(_p1), p2(_p2), u0(_u0), u1(_u1), u2(_u2), v0(_v0), v1(_v1), v2(_v2),
                      n0(_n0), n1(_n1), n2(_n2) {}
 
-
 void Triangulo::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const {
     Direccion edge1 = p1 - p0;
     Direccion edge2 = p2 - p0;

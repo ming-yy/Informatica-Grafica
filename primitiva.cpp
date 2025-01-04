@@ -28,6 +28,11 @@ bool Primitiva::tengoTextura() const {
     return !((this->textura.alto == 0) || (this->textura.ancho == 0));
 }
 
+RGB Primitiva::kd(const Punto& p) const {
+    if (this->tengoTextura()) return this->kd_Textura(p);
+    return this->coeficientes.kd;
+}
+
 RGB Primitiva::kd_Textura(const Punto& p) const {
     //int x = floor(this->textura.ancho * this->getEjeTexturaU(p)) + 1;
     //int y = floor(this->textura.alto * this->getEjeTexturaV(p)) + 1;

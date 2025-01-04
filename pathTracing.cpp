@@ -65,7 +65,7 @@ Direccion generarDireccionAleatoria(const Direccion& normal, float& prob) {
                                     normal * wi_local.coord[2]);
     
     // Probabilidad de un rayo es proporcional al coseno del ángulo de inclinación
-    prob = cos(inclinacion) / M_PI;
+    //prob = cos(inclinacion) / M_PI;   // Lo comentamos porque se cancela en la ec.render
     return nuevaDir;
 }
 
@@ -147,9 +147,7 @@ TipoRayo dispararRuletaRusa(const BSDFs& coefs, float& probTipoRayo) {
 }
 
 RGB calcBrdfDifusa(const Primitiva* objeto, const Punto& p0){
-    //return kd / M_PI;
-    if (objeto->tengoTextura()) return objeto->kd_Textura(p0);
-    return objeto->coeficientes.kd;
+    return objeto->kd(p0);
 }
 
 RGB calcBrdfEspecular(const RGB& ks) {
@@ -210,7 +208,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     }
     
     int num_luces = 0;
-    
+    /*
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
@@ -231,6 +229,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
 
         radianciaSaliente += radianciaIncidente;
     }
+     */
     
     num_luces = max(num_luces, 1);
     return radianciaSaliente / num_luces;
@@ -324,8 +323,7 @@ void renderizarEscena1RPP(Camara& camara, unsigned numPxlsAncho, unsigned numPxl
                           const bool printPixelesProcesados) {
     for (unsigned ancho = 0; ancho < numPxlsAncho; ++ancho) {
         for (unsigned alto = 0; alto < numPxlsAlto; ++alto) {
-            //if (printPixelesProcesados) printPixelActual(totalPixeles, numPxlsAncho, ancho, alto);
-            
+            //cout << "Alto: " << alto << endl;
             Rayo rayo(Direccion(0.0f, 0.0f, 0.0f), Punto());
             rayo = camara.obtenerRayoCentroPixel(ancho, anchoPorPixel, alto, altoPorPixel);
             globalizarYNormalizarRayo(rayo, camara.o, camara.f, camara.u, camara.l);

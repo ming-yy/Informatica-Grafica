@@ -4,6 +4,8 @@
 // Date:   diciembre 2024
 // Coms:   Práctica 4 de Informática Gráfica
 //*****************************************************************
+
+#pragma once
 #include "primitiva.h"
 #include "utilidades.h"
 #include "triangulo.h"

@@ -68,12 +68,12 @@ public:
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
     Punto generarPuntoAleatorio(float& prob) const override;
     
-    // Método que obtiene la posición del punto <pto> del triángulo en el
-    // eje U de la textura correspondiente.
+    // Método que obtiene la posición del punto <pto> del triángulo en el eje U de la
+    // textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     float getEjeTexturaU(const Punto& pto) const override;
     
-    // Método que obtiene la posición del punto <pto> del triángulo en el
-    // eje V de la textura correspondiente.
+    // Método que obtiene la posición del punto <pto> del triángulo en el eje V de la
+    // textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     float getEjeTexturaV(const Punto& pto) const override;
     
     // Debug

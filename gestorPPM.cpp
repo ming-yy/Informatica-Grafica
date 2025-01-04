@@ -14,7 +14,7 @@
 ifstream abrir_fichero(const string& nombreFich) {
     ifstream fichero(nombreFich);
     if (!fichero.is_open()) {
-        cerr << "Error al abrir el fichero: " << nombreFich << endl;
+        throw runtime_error("Error al abrir el fichero: " + nombreFich);
         exit(1); // Salir del programa si no se puede abrir el fichero
     }
     return fichero;

@@ -9,6 +9,7 @@
 #include <memory>       // para los shared_pointers
 #include <string>
 #include <chrono>
+#include <algorithm>
 #include "base.h"
 #include "punto.h"
 #include "direccion.h"
@@ -24,8 +25,9 @@
 #include "esfera.h"
 #include "luzpuntual.h"
 #include "pathTracing.h"
-#include <algorithm>
 #include "mesh.h"
+#include "cuboide.h"
+
 
 void comprobarNoHayDosTiposDeLuces(auto objetos, auto luces) {
     bool hayLuzArea = false;
@@ -46,12 +48,10 @@ void comprobarRelacionAspecto(const Camara& camUtilizada, const float ratioPanta
     float ratioCamara = modulo(camUtilizada.l) / modulo(camUtilizada.u);
 
     if (abs(ratioCamara - ratioPantalla) > MARGEN_ERROR) {
-        cerr << "No coincide el ratio entre la camara y la pantalla." << endl;
-        cerr << "ratioCamara = " << ratioCamara << ", ratioPantalla = " << ratioPantalla << endl;
-        std::exit(EXIT_FAILURE);
+        throw runtime_error("No coincide el ratio entre la camara y la pantalla. \nratioCamara = "
+                            + to_string(ratioCamara) + ", ratioPantalla = " + to_string(ratioPantalla));
     }
 }
-
 
 void printTiempo(auto inicio, auto fin) {
     auto duracion_total = std::chrono::duration_cast<std::chrono::seconds>(fin - inicio);
@@ -83,12 +83,12 @@ void cajaDeCornell(){
     vector<Primitiva*> objetos;
     objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "difuso")); // plano izquierdo, rojo
     objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "difuso")); // plano derecho, verde
-    objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
-    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
-    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, 0.0f})); // plano techo luz
+    objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
+    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
+    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, -0.75f})); // plano techo luz
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano techo textura
     //objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
-    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
+    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 0.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano fondo, textura
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
@@ -97,27 +97,44 @@ void cajaDeCornell(){
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({0.0f, 0.0f, 0.0f}), "./madera.ppm")); // esfera centro madera
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "dielectrico")); // esfera derecha, azul
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
-
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera centro, rosa
-
-
+    
+    
+    vector<Plano> planos;
+    Plano caraIzq = Plano({1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");
+    Plano caraDer = Plano({-1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 0.0f}), "muy_difuso");
+    Plano caraSuelo = Plano({0.0f, 1.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso");
+    Plano caraTecho = Plano({0.0f, -1.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 1.0f}), "muy_difuso");
+    Plano caraFondo = Plano({0.0f, 0.0f, -1.0f}, 0.3f, RGB({0.0f, 0.0f, 1.0f}), "muy_difuso");
+    Plano caraFrente = Plano({0.0f, 0.0f, 1.0f}, 0.3f, RGB({1.0f, 0.0f, 1.0f}), "muy_difuso");
+    
+    planos.push_back(caraFrente);
+    planos.push_back(caraIzq);
+    planos.push_back(caraDer);
+    planos.push_back(caraSuelo);
+    planos.push_back(caraTecho);
+    planos.push_back(caraFondo);
+    
+    objetos.push_back(new Cuboide(planos));
+     
     //Mesh patataMesh("./modelos/potatOS.ply","./texturas/potatOSgirada.ppm", 0.05f, Punto(0.0f, -0.25f, 0.5f), 55.0f, false, 0.0f, false, 165.0f, false); // patata girada
-    Mesh tartaMesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -1.0f, 0.0f), -90.0f, false, 0.0f, false, 0.0f, false);
+    //Mesh tartaMesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -1.0f, 0.0f), -90.0f, false, 0.0f, false, 0.0f, false);
     
     //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
-    for (auto& t : tartaMesh.triangulos){
-        objetos.push_back(new Triangulo(t));
-    }
+    //for (auto& t : tartaMesh.triangulos){
+        //objetos.push_back(new Triangulo(t));
+    //}
+    
     cout << "Total objetos: " << objetos.size() << endl;
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
 
-    //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
-    //luces.push_back(LuzPuntual({0.0f, 0.5f, -0.25f}, potencia));
+    //luces.push_back(LuzPuntual({0.0f, 0.9f, 0.0f}, {0.5f, 0.5f, 0.5f}));
+    luces.push_back(LuzPuntual({0.5f, 0.0f, -0.5f}, potencia));
     
     //luces.push_back(LuzPuntual({0.2f, -0.5f, -0.8}, potencia));
-    luces.push_back(LuzPuntual({0.0f, -0.50f, 0.0}, potencia));
+    //luces.push_back(LuzPuntual({0.0f, -0.50f, 0.0}, potencia));
 
     Escena cornell = Escena(objetos, luces);
     
@@ -162,12 +179,12 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
 
     const string nombreEscena = "cornell";
-    const unsigned maxRebotes = 0;
-    const unsigned rpp = 1;
+    const unsigned maxRebotes = 3;
+    const unsigned rpp = 64;
     const unsigned numRayosMontecarlo = 1;
-    const bool printPixelesProcesados = false;
-    const unsigned int pixelesAncho = 512;
-    const unsigned int pixelesAlto = 512;
+    const bool printPixelesProcesados = true;
+    const unsigned int pixelesAncho = 256;
+    const unsigned int pixelesAlto = 256;
     Camara camUtilizada = cam;
 
 
@@ -175,14 +192,14 @@ void cajaDeCornell(){
     comprobarRelacionAspecto(camUtilizada, static_cast<float>(pixelesAncho)/static_cast<float>(pixelesAlto));
 
     auto inicio = std::chrono::high_resolution_clock::now();
-    //renderizarEscena(cam, 256, 256, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    //renderizarEscena(camUtilizada, pixelesAncho, pixelesAlto, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     renderizarEscenaConThreads(camUtilizada, pixelesAncho, pixelesAlto, cornell, nombreEscena, rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
     liberarMemoriaDePrimitivas(objetos);
 
-    //transformarFicheroPPM("./cornell.ppm", 1);
+    transformarFicheroPPM("./cornell.ppm", 1);
     //transformarFicheroPPM("./cornell.ppm", 2);
     //transformarFicheroPPM("./cornell.ppm", 3);
     //transformarFicheroPPM("./cornell.ppm", 4);
@@ -191,22 +208,40 @@ void cajaDeCornell(){
 }
 
 void probarCosas() {
-    vector<LuzPuntual> luces;
-    vector<Primitiva*> objetos;
-    objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso"));
-    objetos.push_back(new Esfera({1.0f, 0.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso"));
-    Escena escena = Escena(objetos, luces);
+    vector<Plano> planos;
+    Plano caraIzq = Plano({-1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");
+    Plano caraDer = Plano({1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 0.0f}), "muy_difuso");
+    Plano caraSuelo = Plano({0.0f, -1.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso");
+    Plano caraTecho = Plano({0.0f, 1.0f, 0.0f}, 0.3f, RGB({0.0f, 1.0f, 1.0f}), "muy_difuso");
+    Plano caraFondo = Plano({0.0f, 0.0f, 1.0f}, 0.3f, RGB({0.0f, 0.0f, 1.0f}), "muy_difuso");
+    Plano caraFrente = Plano({0.0f, 0.0f, -1.0f}, 0.3f, RGB({1.0f, 0.0f, 1.0f}), "muy_difuso");
     
-    Rayo rayo = Rayo(Direccion(1.0f, 0.0f, 0.0f), Punto(-0.3f, 0.0f, 0.0f));
-    Punto pto;
-    Direccion normal;
-    Primitiva* prim = nullptr;
-    bool interseca = escena.interseccion(rayo, pto, normal, &prim);
+    planos.push_back(caraIzq);
+    planos.push_back(caraDer);
+    planos.push_back(caraSuelo);
+    planos.push_back(caraTecho);
+    planos.push_back(caraFondo);
+    planos.push_back(caraFrente);
+    
+    Cuboide cubo(planos);
+    
+    Rayo rayo = Rayo(Direccion(0.173638508f, -0.000857474049f, -0.984809041f), Punto(-202.5f, 0.99999988f, 1146.5f));
+    // pto1 = -0.299987793, 0.00148141384, -0.298583984
+    // pto2 = -0.299743652, 0.00148016214, -0.300048828
+    vector<Punto> interseciones;
+    BSDFs coefsAux;
+    Punto dir = Punto(0.173638508f, -0.000857474049f, -0.984809041f) + rayo.o;
+    cout << std::defaultfloat << std::setprecision(9) << dir << endl;
+    
+    cubo.interseccion(rayo, interseciones, coefsAux);
+    cout << "Normal: " << cubo.getNormal(interseciones[0]) << endl;
+   /*
     cout << "Interseca?: " << interseca << endl;
     cout << "Rayo: " << rayo << endl;
     cout << "Coefs: " << prim->coeficientes << endl;
     cout << "PtoIntersec: " << pto << endl;
     cout << "Normal: " << normal << endl;
+    */
 }
 
 int main() {

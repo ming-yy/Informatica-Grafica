@@ -32,6 +32,12 @@ public:
     // Destructor virtual para asegurar que los destructores de las clases derivadas
     // se llamen correctamente.
     virtual ~Primitiva() = default;
+        
+    // Método que devuelve el coeficiente kd de la primitiva en el punto <p>.
+    RGB kd(const Punto& p) const;
+    
+    // Método que devuelve el coeficiente kd de la primitiva asumiendo que tiene textura.
+    RGB kd_Textura(const Punto& p) const;
     
     // Devuelve en <ptos> un vector con los puntos de intersección en UCS del rayo <rayo>
     // con el objeto. Si hay dos puntos de intersección, el primer elemento introducido
@@ -58,18 +64,15 @@ public:
     virtual Punto generarPuntoAleatorio(float& prob) const = 0;
     
     // Método virtual que obtiene la posición del punto <pto> de la primitiva en el
-    // eje U de la textura correspondiente.
+    // eje U de la textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     virtual float getEjeTexturaU(const Punto& pto) const = 0;
     
     // Método virtual que obtiene la posición del punto <pto> de la primitiva en el
-    // eje V de la textura correspondiente.
+    // eje V de la textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     virtual float getEjeTexturaV(const Punto& pto) const = 0;
     
     // Método que devuelve "true" si y solo si la primitiva tiene textura.
     bool tengoTextura() const;
-    
-    // Método que devuelve el coeficiente kd de la primitiva teniendo en cuenta la textura.
-    RGB kd_Textura(const Punto& p) const;
     
     // Debug
     virtual void diHola() const = 0;

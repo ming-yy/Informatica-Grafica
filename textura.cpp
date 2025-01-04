@@ -19,16 +19,15 @@ Textura::Textura(const string& ruta): ancho(0), alto(0) {
 void Textura::cargarPPM(const string& ruta) {
     std::ifstream file(ruta, std::ios::binary);     // Abrimos en modo BINARIO!
     if (!file) {
-        cerr << "Error: No se pudo abrir la textura " << ruta << endl;
+        throw runtime_error("Error: No se pudo abrir la textura " + ruta);
         return;
     }
 
     string formato;
     file >> formato; // Leemos "P6"
     if (formato != "P6") {
-        cerr << "Error: Formato PPM del fichero en \"" << ruta <<
-                "\" no soportado (se espera P6)" << endl;
-        std::exit(EXIT_FAILURE);
+        throw runtime_error("Error: Formato PPM del fichero en \"" + ruta +
+                "\" no soportado (se espera P6)");
         return;
     }
 

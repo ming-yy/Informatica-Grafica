@@ -59,7 +59,12 @@ void Plano::interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) co
 }
 
 bool Plano::pertenece(const Punto& p0) const {
-    return abs(dot(this->n, p0) + this->d) <= MARGEN_ERROR;
+    //cout << "Pertenece: " << abs(dot(this->n, p0) + this->d) << endl;
+    return abs(dot(this->n, p0) + this->d) <= MARGEN_ERROR_PERTENECE_PLANO;
+}
+
+float Plano::distancia(const Punto& p0) const {
+    return dot(this->n, p0) + this->d;
 }
 
 Direccion Plano::getNormal(const Punto& punto) const {
