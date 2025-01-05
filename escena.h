@@ -14,10 +14,16 @@
 
 class Escena {
 public:
-    vector<Primitiva*> primitivas;   // Array de los objetos de la escena
-    vector<LuzPuntual> luces;        // Array de luces puntuales de la escena
+    // Vector de los objetos de la escena
+    vector<Primitiva*> primitivas;
+
+    // Vector de luces puntuales de la escena
+    vector<LuzPuntual> luces;        
     
+    // Constructor base
     Escena();
+
+    // Constructor dado un vector de objetos y un vector de luces puntuales
     Escena(vector<Primitiva*> _primitivas, vector<LuzPuntual> _luces);
     
     // Método que devuelve "True" si y solo si hay intersección entre el rayo <rayo> y algún
