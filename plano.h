@@ -17,17 +17,36 @@
 
 class Plano : public Primitiva {
 public:
-    Punto centro;             // Centro del plano teniendo en cuenta la distancia <d>
-    Punto centroSinDistancia; // Centro del plano sin tener en cuenta la distancia <d>
-    Direccion n;    // Normal del plano respecto a su CENTRO SIN DISTANCIA! (todo en UCS)
-    Direccion u, v; // Forman una base ortonormal junto con la normal <n>
-    float d;        // Distancia respecto del centro
-    float minLimite, maxLimite;     // Límites para la luz de área
-    float escalaTexturaX;
-    float escalaTexturaY;
+    // Centro del plano teniendo en cuenta la distancia <d>
+    Punto centro;
+
+    // Centro del plano sin tener en cuenta la distancia <d>
+    Punto centroSinDistancia;
+
+    // Normal del plano respecto a su CENTRO SIN DISTANCIA! (todo en UCS)
+    Direccion n;    
+
+    // Direcciones U y V. Forman una base ortonormal junto con la normal <n>.
+    // Sirven para calcular texturas.
+    Direccion u, v;
     
+    // Distancia respecto del centro (0,0,0)
+    float d;
+
+    // Límites para la luz de área
+    float minLimite, maxLimite;
+
+    // Valores de escala de la textura (si la tiene)
+    float escalaTexturaX, escalaTexturaY;
+    
+    // Constructor base
     Plano();
 
+    // Constructor dado una direccion normal y una distancia al centro obligatorios,
+    // y como opcionales: un valor RGB que representa el color del plano, un material, una potencia
+    // (emision, sera luz de area), valores limite minimo y maximo para la luz de area, el punto
+    // central del plano, la ruta a la textura (si la tiene), la escala en el eje X y en el eje Y 
+    // de la textura (si la tiene)
     Plano(const Direccion& _n, const float _d, const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
           const string _material = "difuso", const RGB& _power = RGB(),
           const float _minLimite = -0.5, const float _maxLimite = 0.5,
