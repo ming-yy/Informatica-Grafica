@@ -19,13 +19,25 @@
 // Clase abstracta que todas las primitivas geométricas deben heredar
 class Primitiva {
 public:
+    // Coeficientes BSDF del objeto
     BSDFs coeficientes;
+
+    // Potencia (emision) en caso de que sea luz de area (sino 0,0,0)
     RGB power;
+
+    // Textura, en caso de que la tenga
     Textura textura;
 
+    // Constructor base
     Primitiva();
+
+    // Constructor dado un color, un material, una potencia (emision) y la ruta
+    // a una textura
     Primitiva(const RGB& color, const string material, const RGB& _power,
               const string& rutaTextura = "");
+
+    // Constructor dado un color, tres coeficientes (difuso, especular y transmision),
+    // una potencia (emision) y la ruta a una textura
     Primitiva(const RGB& color, const array<float, 3> kd, const array<float, 3> ks,
               const array<float, 3> kt, const RGB& _power, const string& rutaTextura = "");
     

@@ -14,13 +14,23 @@
 
 class Punto : public PuntoDireccion {
 public:
+    // Coordenadas del punto de origen
     array<float, 3> o;
 
+    // Constructor base
     Punto();
+
+    // Constructor dado otro punto
     Punto(const Punto& p);
+
+    // Constructor dadas 3 coordenadas del punto
     Punto(float x, float y, float z);
+
+    // Constructor dadas 3 coordenadas del punto en un array
     Punto(array<float, 3> _coord);
     
+    // Función que devuelve una Matriz 4x1 con las coordenadas
+    // homogeneas del punto
     Matriz<4,1> getCoordHomo() const override;
     
     // Operación de suma de un punto con una dirección
@@ -41,6 +51,9 @@ public:
     // Operador de asignación
     Punto& operator=(const Punto& p);
 
+    // Función que calcula el punto que hay a la misma distancia del
+    // punto y el otro punto pasado por parametro, en la linea virtual
+    // que los une (es decir, el punto que hay "a medio camino" entre ellos)
     Punto puntoMedio(const Punto& p) const;
 };
 
