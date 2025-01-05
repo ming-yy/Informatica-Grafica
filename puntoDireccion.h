@@ -14,10 +14,16 @@
 
 class PuntoDireccion {
 public:
+    // Coordenadas x, y, z
     array<float, 3> coord;
     
+    // Constructor base
     PuntoDireccion();
+
+    // Constructor dadas 3 coordenadas x, y, z
     PuntoDireccion(float x, float y, float z);
+
+    // Constructor dadas 3 coordenadas x, y, z en un array de floats
     PuntoDireccion(array<float, 3> _coord);
     
     // Método que devuelve las coordenadas homogéneas
