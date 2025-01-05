@@ -10,12 +10,12 @@
 
 
 std::map<string, array<float, 3>> materiales{
-    {"muy_difuso", {0.8f, 0.0f, 0.0f}},
+    {"muy_difuso", {0.9f, 0.0f, 0.0f}},
     {"difuso", {0.55f, 0.0f, 0.0f}},
     {"poco_difuso", {0.3f, 0.0f, 0.0f}},
     {"cristal", {0.0f, 0.1f, 0.8f}},
     {"refractante", {0.0f, 0.0f, 0.9f}},
-    {"espejo", {0.0f, 0.8f, 0.0f}},
+    {"espejo", {0.0f, 0.9f, 0.0f}},
     {"plastico", {0.7f, 0.2f, 0.0f}},
 };
 
