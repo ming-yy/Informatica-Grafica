@@ -13,11 +13,20 @@
 
 class Textura {
 public:
+    // Pixeles de ancho y alto que tiene la textura
     int ancho, alto;
-    float c;    // Valor máximo de las tripletas RGB del ppm
-    vector<unsigned char> imagen;   // 8 bits, más eficiente que float
+
+    // Valor máximo de las tripletas RGB del ppm de la textura
+    float c;
+
+    // Vector de chars que almacena los valores del ppm de la textura
+    // 8 bits, más eficiente que float
+    vector<unsigned char> imagen;
     
+    // Constuctor base
     Textura();
+
+    // Constructor dada la ruta al ppm de la textura
     Textura(const string& ruta);
     
     // Método que, dada la ruta de una imagen .ppm (en formato P6),
