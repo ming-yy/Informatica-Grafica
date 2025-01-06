@@ -30,8 +30,11 @@ public:
     // Sirven para calcular texturas.
     Direccion u, v;
     
-    // Distancia respecto del centro (0,0,0)
+    // Distancia en el sentido opuesto de la normal <n> y respecto del centro <centroSinDistancia>
     float d;
+    
+    // Flag que indica que el plano es una luz de área que ocupa todo el plano (infinita).
+    bool luzAreaInfinita;
 
     // Límites para la luz de área
     float minLimite, maxLimite;
@@ -44,14 +47,14 @@ public:
 
     // Constructor dado una direccion normal y una distancia al centro obligatorios,
     // y como opcionales: un valor RGB que representa el color del plano, un material, una potencia
-    // (emision, sera luz de area), valores limite minimo y maximo para la luz de area, el punto
-    // central del plano, la ruta a la textura (si la tiene), la escala en el eje X y en el eje Y 
-    // de la textura (si la tiene)
+    // (emision, sera luz de area), flag de luz de área infinita, valores limite minimo y maximo
+    // para la luz de area, el punto central del plano, la ruta a la textura (si la tiene), la
+    // escala en el eje X y en el eje Y de la textura (si la tiene).
     Plano(const Direccion& _n, const float _d, const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
           const string _material = "difuso", const RGB& _power = RGB(),
-          const float _minLimite = -0.5, const float _maxLimite = 0.5,
-          const Punto& _c = {0.0f,0.0f,0.0f}, const string rutaTextura = "",
-          const float _escalaX = 1.0f, const float _escalaY = -1.0f);
+          const bool _luzAreaInfinita = false, const float _minLimite = -0.5,
+          const float _maxLimite = 0.5, const Punto& _c = {0.0f,0.0f,0.0f},
+          const string rutaTextura = "", const float _escalaX = 1.0f, const float _escalaY = -1.0f);
 
     // Método para calcular la intersección entre un rayo y el plano
     //
@@ -77,6 +80,7 @@ public:
     
     // Método que devuelve un punto aleatorio de la superficie del plano en UCS.
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
+    // IMPORTANTE: no se debe ejecutar si el plano tiene en "true" el flag <luzAreaInfinita>
     Punto generarPuntoAleatorio(float& prob) const override;
     
     // Método que obtiene la posición del punto <pto> del plano en el eje U de la

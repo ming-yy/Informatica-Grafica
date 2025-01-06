@@ -208,6 +208,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     }
     
     int num_luces = 0;
+    
     /*
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
@@ -231,20 +232,21 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     }
      */
     
+    
     num_luces = max(num_luces, 1);
     return radianciaSaliente / num_luces;
 }
 
-RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, 
-                                   const Direccion& normal, const Escena& escena,
-                                   const unsigned rebotesRestantes, const Primitiva* objOrigen) {
+RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const Direccion& normal,
+                                   const Escena& escena, const unsigned rebotesRestantes,
+                                   const Primitiva* objOrigen, bool woEsDifuso) {
     if (rebotesRestantes == 0) {     // TERMINAL: alcanzado max rebotes
         return RGB({0.0f, 0.0f, 0.0f});
     }
     
     RGB powerLuzArea;
     if (escena.puntoPerteneceALuz(origen, powerLuzArea)) {   // TERMINAL: somos una fuente de luz
-        // if (woEsDifuso) return RGB({0.0f, 0.0f, 0.0f});  // con esto objetos cerca de luz sangran negro
+        //if (woEsDifuso) return RGB({0.0f, 0.0f, 0.0f});  // Usar cuando tengamos NEE para luces de área
         return powerLuzArea;
     }
     
@@ -256,7 +258,6 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo,
 
     float probDirRayo;     // Ojo! La probabilidad es para la siguiente llamada recursiva pq es wi, no wo
     Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo, normal, probDirRayo);
-    
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
     if (tipoRayo == DIFUSO) {
         radianciaSalienteDirecta = nextEventEstimation(origen, normal, escena, objOrigen);
@@ -273,7 +274,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo,
     
     RGB bsdf = calcBsdf(tipoRayo, objOrigen, origen);
     RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, wi.d, nuevaNormal, escena,
-                                                                    rebotesRestantes - 1, nuevoObjIntersecado);
+                                            rebotesRestantes - 1, nuevoObjIntersecado, tipoRayo == DIFUSO);
 
     radianciaSalienteIndirecta = radianciaSalienteIndirecta * bsdf;
     return (radianciaSalienteDirecta + radianciaSalienteIndirecta) / probTipoRayo;

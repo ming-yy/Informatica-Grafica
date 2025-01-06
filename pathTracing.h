@@ -109,10 +109,12 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
 
 // Función recursiva que calcula la radiancia del punto <origen> y las radiancias de los puntos
 // intersectados tras <rebotesRestantes> rebotes. <wo> es el vector que choca contra el objecto
-// <objOrigen> en el punto <origen> (que pertenece al objeto mencionado).
+// <objOrigen> en el punto <origen> (que pertenece al objeto mencionado). <woEsDifuso> es un flag
+// que indica si venimos de un evento difuso y se usa para que la luz de área no contribuya dos veces
+// (NEE + cuando rayo choca con luz de área).
 RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const Direccion& normal,
                                    const Escena& escena, const unsigned rebotesRestantes,
-                                   const Primitiva* objOrigen);
+                                   const Primitiva* objOrigen, bool woEsDifuso = false);
 
 // Función que, especificaciones contenidas por los parámetros pasados, devuelve la emisión indirecta
 // para el punto <ptoIntersec> que tiene la normal <normal> respecto al objeto con el que ha intersecado.

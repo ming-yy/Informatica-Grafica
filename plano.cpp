@@ -12,13 +12,13 @@
 
 Plano::Plano(): Primitiva(), n(0.0f, 0.0f, 0.0f), u(0.0f, 0.0f, 0.0f), v(0.0f, 0.0f, 0.0f),
                 d(0.0f), minLimite(), maxLimite(), centro(), centroSinDistancia(), escalaTexturaX(1),
-                escalaTexturaY(1) {}
+                escalaTexturaY(1), luzAreaInfinita(false) {}
 
 Plano::Plano(const Direccion& _n, const float _d, const RGB& _reflectancia, const string _material,
-             const RGB& _power, const float _minLimite, const float _maxLimite, const Punto& _c,
-             const string rutaTextura, const float _escalaX, const float _escalaY) :
+             const RGB& _power, const bool _luzAreaInfinita, const float _minLimite, const float _maxLimite,
+             const Punto& _c, const string rutaTextura, const float _escalaX, const float _escalaY) :
              Primitiva(_reflectancia, _material, _power, rutaTextura), n(normalizar(_n)),
-             d(_d), centroSinDistancia(_c), escalaTexturaX(_escalaX),
+             d(_d), centroSinDistancia(_c), luzAreaInfinita(_luzAreaInfinita), escalaTexturaX(_escalaX),
             escalaTexturaY(_escalaY == -1.0f ? _escalaX : _escalaY) {
     try {
         if (!valeCero(_power) && (_minLimite >= _maxLimite)) {
@@ -79,6 +79,10 @@ bool Plano::puntoEsFuenteDeLuz(const Punto& punto) const {
     
     if (!this->pertenece(punto)) {
         return false;
+    }
+    
+    if (this->luzAreaInfinita) {
+        return true;
     }
 
     // Proyectamos el punto en la base del plano
