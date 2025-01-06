@@ -14,12 +14,19 @@
 #include "bsdfs.h"
 #include "utilidades.h"
 
-
+// Clase que representa un objeto geometrico cuboide en el espacio.
+// Hereda de Primitiva
 class Cuboide : public Primitiva {
 public:
-    vector<Plano> planos; // Los 6 planos que definen el cuboide
+    // Vector de los 6 planos que definen el cuboide
+    // En orden: derecha, izquierda, techo, suelo, fondo, frente
+    vector<Plano> planos;
     
+    // Constructor de un cubo dado un tamaño de lado, un color y un material
     Cuboide(const float tamano, const RGB& color = RGB(), const string& material = "muy_difuso");
+
+    // Constructor de un cuboide dado un vector de 6 planos
+    // En orden: derecha, izquierda, techo, suelo, fondo, frente
     Cuboide(const vector<Plano>& p);
     
     // Método que devuelve el coeficiente kd de la primitiva en el punto <p>.

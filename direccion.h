@@ -12,13 +12,23 @@
 #include <cmath>
 #include <stdexcept>  // Para manejar excepciones
 
-
+// Clase que representa una direccion en el espacio. Hereda de PuntoDireccion
 class Direccion : public PuntoDireccion {
 public:
+    // Constructor base
     Direccion();
+
+    // Constructor dada otra direccion
     Direccion(const Direccion& d);
+
+    // Constructor dados 3 valores float
     Direccion(float x, float y, float z);
+
+    // Constructor dado un array de 3 valores float
     Direccion(array<float,3> _coord);
+
+    // Función que devuelve una Matriz 4x1 con las coordenadas
+    // homogeneas de la direccion
     Matriz<4,1> getCoordHomo() const override;
     
     // Operación de suma de dos direcciones

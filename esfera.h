@@ -11,13 +11,21 @@
 #include "rgb.h"
 #include "utilidades.h"
 
+// Clase que representa una esfera geometrica en el espacio. Hereda de Primitiva
 class Esfera: public Primitiva {
 public:
-    Punto centro;   // Generalmente en UCS
+    // Punto central de la esfera. Generalmente en UCS
+    Punto centro;
+
+    // Radio de la esfera
     float radio;
     
-    
+    // Constructor base
     Esfera();
+
+    // Constructor dado un centro y un radio, con opcionales de un RGB color, 
+    // un material, una potencia (emision, sera luz de area), y una ruta al archivo
+    // ppm en caso de que se le quiera poner textura
     Esfera(const Punto& _centro, const float& _radio,
            const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
            const string _material = "difuso", const RGB& _power = RGB(),

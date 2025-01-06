@@ -12,7 +12,8 @@
 #include "primitiva.h"
 #include "utilidades.h"
 
-
+// Clase que representa un objeto triangular (plano)
+// Hereda de la clase Primitiva
 class Triangulo : public Primitiva {
 public:
     Punto p0, p1, p2;
@@ -49,30 +50,33 @@ public:
     // IMPORTANTE: si el rayo tiene origen en un punto perteneciente a la primitiva, no cuenta.
     void interseccion(const Rayo& rayo, vector<Punto>& ptos, BSDFs& coefs) const override;
     
-
+    // Funcion que, dado un punto, devuelve valor true y las coordenadas baricentricas
+    // por los parametros por referencia <u> y <v>, o false si no se han podido calcular
     bool getCoordBaricentricas(const Punto& punto, float& u, float& v) const;
 
-    // Método que devuelve "True" si y solo si el punto <p0> pertecene al triángulo.
+    // Funcion que devuelve "True" si y solo si el punto <p0> pertecene al triángulo.
     bool pertenece(const Punto& punto) const override;
     
-    // Método que devuelve la normal de la primitiva en el punto <punto>
+    // Funcion que devuelve la normal de la primitiva en el punto <punto>
     Direccion getNormal(const Punto& punto) const override;
 
+    // Funcion que devuelve la normal interpolada por las normales de los 3 vertices
+    // de la primitiva en el punto <punto>
     Direccion getNormalInterpolada(const Punto& punto) const;
     
-    // Método que devuelve "True" si y solo si <punto> pertenece al triángulo
+    // Funcion que devuelve "True" si y solo si <punto> pertenece al triángulo
     // y además, es un punto lumínico del triángulo.
     bool puntoEsFuenteDeLuz(const Punto& punto) const override;
     
-    // Método que devuelve un punto aleatorio del triángulo en UCS.
+    // Funcion que devuelve un punto aleatorio del triángulo en UCS.
     // También devuelve en <prob> la probabilidad de muestrear dicho punto.
     Punto generarPuntoAleatorio(float& prob) const override;
     
-    // Método que obtiene la posición del punto <pto> del triángulo en el eje U de la
+    // Funcion que obtiene la posición del punto <pto> del triángulo en el eje U de la
     // textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     float getEjeTexturaU(const Punto& pto) const override;
     
-    // Método que obtiene la posición del punto <pto> del triángulo en el eje V de la
+    // Funcion que obtiene la posición del punto <pto> del triángulo en el eje V de la
     // textura correspondiente. Tenemos garantizado que <pto> pertenece al objeto.
     float getEjeTexturaV(const Punto& pto) const override;
     

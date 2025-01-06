@@ -12,12 +12,20 @@
 #include "luzpuntual.h"
 #include "utilidades.h"
 
+// Clase que representa una escena como un conjunto de objetos geometricos y una
+// serie de luces puntuales que iluminan los objetos
 class Escena {
 public:
-    vector<Primitiva*> primitivas;   // Array de los objetos de la escena
-    vector<LuzPuntual> luces;        // Array de luces puntuales de la escena
+    // Vector de los objetos de la escena
+    vector<Primitiva*> primitivas;
+
+    // Vector de luces puntuales de la escena
+    vector<LuzPuntual> luces;        
     
+    // Constructor base
     Escena();
+
+    // Constructor dado un vector de objetos y un vector de luces puntuales
     Escena(vector<Primitiva*> _primitivas, vector<LuzPuntual> _luces);
     
     // Método que devuelve "True" si y solo si hay intersección entre el rayo <rayo> y algún

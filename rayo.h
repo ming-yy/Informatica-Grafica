@@ -11,14 +11,19 @@
 #include "utilidades.h"
 #include <memory>
 
-
+// Clase que representa un rayo, es decir, una direccion que comienza en un punto
 class Rayo {
 public:
+    // Direccion del rayo
     Direccion d;
+
+    // Punto de origen del rayo
     Punto o;
 
-    
+    // Constructor base
     Rayo();
+
+    // Constructor dada una direccion y un punto de origen
     Rayo(const Direccion& dir, const Punto& origen);
 
     // Método para mostrar la información del rayo
