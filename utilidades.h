@@ -22,13 +22,14 @@
 
 // Constantes
 constexpr float MARGEN_ERROR = 1e-6f;          // Para calculos generales (intersecciones, etc.)
-constexpr float MARGEN_ERROR_PERTENECE_PLANO = 5e-5f;          // Para calculos generales (intersecciones, etc.)
-constexpr float MARGEN_ERROR_INTERSEC_PLANO = 1e-4f;          // Para calculos generales (intersecciones, etc.)
+constexpr float MARGEN_ERROR_INTERSEC_ESFERA = 8e-5f;          // Para calcular intersección de una esfera
+constexpr float MARGEN_ERROR_PERTENECE_PLANO = 5e-5f;          // Para calculos de pertenecia a un plano
+constexpr float MARGEN_ERROR_INTERSEC_PLANO = 1e-4f;          // Para calcular intersección de un plano
 constexpr float MARGEN_ERROR_PERTENECE_ESFERA = 5e-6f;  // r=0.3 -> 5e-6; r=0.1 -> 2e-5; r=0.8 -> 2e-6
 constexpr float LIMITE_DISTANCIA_RAYO = 0.5f;           // Para evitar valores explosivos en NEE luz área
 constexpr float GRAD_A_RAD = 3.1415926535898f / 180;
 //const double M_PI = 3.14159265358979323846;
-constexpr int NUM_MUESTRAS_LUZ_AREA = 50;
+constexpr int NUM_MUESTRAS_LUZ_AREA = 100;
 
 // Tipos o abreviaturas
 template<typename T>
