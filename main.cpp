@@ -84,22 +84,25 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
     objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 1.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso")); // plano derecho, verde
     objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
-    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
-    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, -0.5, 0.5, {0.0f, 0.0f, -0.75f})); // plano techo luz
+    //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
+    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, false, -1, 1, {0.0f, 0.0f, 0.0f})); // plano techo luz
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano techo textura
     //objetos.push_back(new Esfera({0.0f, 1.0f, 0.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({1.0f, 1.0f, 1.0f}))); // esfera luz techo
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, 0, 0, {0.0f, 0.0f, 0.0f}, "./texturas/apple.ppm")); // plano fondo, textura
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "plastico")); // esfera izquierda, rosa
-    objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "muy_difuso")); // esfera izquierda, azul
+    //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({0.89f, 0.45f, 0.82f}), "muy_difuso")); // esfera izquierda, azul
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "espejo")); // esfera izq, espejo
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1})); // esfera izq, luz
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", RGB({0.0f, 0.0f, 0.0f}), "./madera.ppm")); // esfera centro madera
-    objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
+    //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "cristal")); // esfera derecha, cristal
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera centro, rosa
     
-    
+    objetos.push_back(new Esfera({-0.6f, -0.5f, 0.25f}, 0.25f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // esfera izquierda, azul
+    objetos.push_back(new Esfera({0.0f, -0.5f, 0.25f}, 0.25f, RGB({1.0f, 1.0f, 1.0f}), "espejo")); // esfera izquierda, azul
+    objetos.push_back(new Esfera({0.6f, -0.5f, 0.25f}, 0.25f, RGB({1.0f, 1.0f, 1.0f}), "refractante")); // esfera izquierda, azul
+
     /*
     vector<Plano> planos;
     Plano caraIzq = Plano({1.0f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");     // izq
@@ -128,13 +131,13 @@ void cajaDeCornell(){
         //objetos.push_back(new Triangulo(t));
     //}
     
-    cout << "Total objetos: " << objetos.size() << endl;
+    //cout << "Total objetos: " << objetos.size() << endl;
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
-    luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
-    //luces.push_back(LuzPuntual({0.5f, 0.0f, -0.5f}, potencia));
+    //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     
+    //luces.push_back(LuzPuntual({0.5f, 0.0f, -0.5f}, potencia));
     //luces.push_back(LuzPuntual({0.2f, -0.5f, -0.8}, potencia));
     //luces.push_back(LuzPuntual({0.0f, -0.50f, 0.0}, potencia));
 
@@ -181,21 +184,21 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
 
     const string nombreEscena = "cornell";
-    const unsigned maxRebotes = 0;
-    const unsigned rpp = 1;
+    const unsigned maxRebotes = 5;
+    const unsigned rpp = 2048;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = false;
     const unsigned int pixelesAncho = 512;
     const unsigned int pixelesAlto = 512;
     Camara camUtilizada = cam;
 
-
+    cout << "RPP: " << rpp << endl;        
     comprobarNoHayDosTiposDeLuces(objetos, luces);
     comprobarRelacionAspecto(camUtilizada, static_cast<float>(pixelesAncho)/static_cast<float>(pixelesAlto));
 
     auto inicio = std::chrono::high_resolution_clock::now();
     //renderizarEscena(camUtilizada, pixelesAncho, pixelesAlto, cornell, "cornell", rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
-    renderizarEscena(camUtilizada, pixelesAncho, pixelesAlto, cornell, nombreEscena, rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
+    renderizarEscenaConThreads(camUtilizada, pixelesAncho, pixelesAlto, cornell, nombreEscena, rpp, maxRebotes, numRayosMontecarlo, printPixelesProcesados);
     auto fin = std::chrono::high_resolution_clock::now();
     printTiempo(inicio, fin);
 
