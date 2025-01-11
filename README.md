@@ -35,7 +35,7 @@ ESTRUCTURA DEL PROYECTO
 
 Archivos principales
     •    main.cpp
-Configura la escena, la cámara, los parámetros del renderizador y ejecuta el renderizador. Utiliza estructuras de if-else para seleccionar qué test (1-11) o escena (12-13) ejecutar.
+Configura la escena, la cámara, los parámetros del renderizador y ejecuta el renderizador. Utiliza estructuras de if-else para seleccionar qué test (1-11) o escena (12-13) ejecutar. Tiene funciones de comprobación de aspect-ratio y función que se asegura de que no se mezclan luces puntuales con luces de área.
     •    pathtracer.cpp
 Contiene la lógica central para la estimación de la ecuación de renderizado. Implementa características clave como recursividad, paralelización, Ruleta Rusa, entre otros.
     •    escena.cpp
