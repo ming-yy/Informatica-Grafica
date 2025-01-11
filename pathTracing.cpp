@@ -209,7 +209,7 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
     
     int num_luces = 0;
     
-    /*
+    // LUZ DE ÁREA CON NEE
     for (const Primitiva* objeto : escena.primitivas) {   // Iteramos por luces de área
         Punto origenLuz;
         float prob;
@@ -230,14 +230,13 @@ RGB nextEventEstimation(const Punto& p0, const Direccion& normal, const Escena& 
 
         radianciaSaliente += radianciaIncidente;
     }
-     */
     
     
     num_luces = max(num_luces, 1);
     return radianciaSaliente / num_luces;
 }
 
-RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, const Direccion& normal,
+RGB recursividadRadianciaIndirecta(const Punto& origen, const Rayo &wo, const Direccion& normal,
                                    const Escena& escena, const unsigned rebotesRestantes,
                                    const Primitiva* objOrigen, bool woEsDifuso) {
     if (rebotesRestantes == 0) {     // TERMINAL: alcanzado max rebotes
@@ -246,7 +245,11 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     
     RGB powerLuzArea;
     if (escena.puntoPerteneceALuz(origen, powerLuzArea)) {   // TERMINAL: somos una fuente de luz
-        //if (woEsDifuso) return RGB({0.0f, 0.0f, 0.0f});  // Usar cuando tengamos NEE para luces de área
+        // Pese a que <wo> no tiene la misma distancia cuadrática que la del NEE, intentamos compensar
+        // CUIDADO!!! EL SIGUIENTE IF ES SOLO PARA LUZ DE ÁREA CON NEE
+        if (woEsDifuso && (modulo(origen - wo.o) * modulo(origen - wo.o) >= LIMITE_DISTANCIA_RAYO/10.0f)) {
+            return RGB({0.0f, 0.0f, 0.0f});  // Usar cuando tengamos NEE para luces de área
+        }
         return powerLuzArea;
     }
     
@@ -257,7 +260,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
 
     float probDirRayo;     // Ojo! La probabilidad es para la siguiente llamada recursiva pq es wi, no wo
-    Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo, normal, probDirRayo);
+    Rayo wi = obtenerRayoRuletaRusa(tipoRayo, origen, wo.d, normal, probDirRayo);
     RGB radianciaSalienteDirecta(0.0f, 0.0f, 0.0f);
     if (tipoRayo == DIFUSO) {
         radianciaSalienteDirecta = nextEventEstimation(origen, normal, escena, objOrigen);
@@ -273,7 +276,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
     }
     
     RGB bsdf = calcBsdf(tipoRayo, objOrigen, origen);
-    RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, wi.d, nuevaNormal, escena,
+    RGB radianciaSalienteIndirecta = recursividadRadianciaIndirecta(ptoIntersec, wi, nuevaNormal, escena,
                                             rebotesRestantes - 1, nuevoObjIntersecado, tipoRayo == DIFUSO);
 
     radianciaSalienteIndirecta = radianciaSalienteIndirecta * bsdf;
@@ -282,7 +285,7 @@ RGB recursividadRadianciaIndirecta(const Punto& origen, const Direccion &wo, con
 
 RGB obtenerRadianciaSalienteIndirecta(const Escena& escena, const unsigned maxRebotes, 
                                       const unsigned numRayosMontecarlo, const Punto& ptoIntersec,
-                                      const Direccion& wo, const Direccion& normal,
+                                      const Rayo& wo, const Direccion& normal,
                                       const Primitiva* objOrigen) {
     RGB sumaRadianciasIndirectas(0.0f, 0.0f, 0.0f);
     for (unsigned i = 0; i < numRayosMontecarlo; ++i) {   // Emisión media de N rayos por Montecarlo
@@ -311,7 +314,7 @@ RGB obtenerRadianciaSalienteTotal(const Rayo &rayoIncidente, const Escena &escen
         } else {    // Luz directa e indirecta
             radianciaSalienteIndirecta = obtenerRadianciaSalienteIndirecta(escena, maxRebotes,
                                                                            numRayosMontecarlo, ptoIntersec,
-                                                                           rayoIncidente.d, normal, objIntersec);
+                                                                           rayoIncidente, normal, objIntersec);
         }
     }
     return radianciaSalienteDirecta + radianciaSalienteIndirecta;
