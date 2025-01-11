@@ -80,6 +80,8 @@ void liberarMemoriaDePrimitivas(vector<Primitiva*>& objetos) {
 // -z = cerca
 
 void cajaDeCornell(){
+    
+    // ------------------------------ Luces de área / Primitivas base con o sin texturas ------------------------------
     vector<Primitiva*> objetos;
     
     objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // plano izquierdo, rojo
@@ -102,7 +104,8 @@ void cajaDeCornell(){
     //objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({0.7f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
     objetos.push_back(new Esfera({0.5f, -0.7f, -0.25f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "refractante")); // esfera derecha, cristal
     //objetos.push_back(new Esfera({0.0f, 0.0f, 0.0f}, 0.3, RGB({0.79f, 0.35f, 0.72f}), "muy_difuso")); // esfera centro, rosa
-
+    
+    // ---------------------------------------------
 
     /*
     // ------------------- CUBOIDE -----------------
