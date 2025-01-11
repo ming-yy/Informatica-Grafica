@@ -6,11 +6,6 @@ Autores:
 Fecha: Enero 2025
 
 ---
-DESCRIPCIÓN
-
-Este proyecto implementa un Path Tracer, una técnica de renderizado basada en el cálculo de la ecuación de renderización utilizando trazado de rayos. Incluye características como recursividad, paralelización y Ruleta Rusa, y permite configurar escenas para realizar diversos tests y renders.
-
----
 COMPILACIÓN Y EJECUCIÓN
 
 En Windows:
