@@ -40,6 +40,9 @@ public:
       Camara(init_list<float> _o, init_list<float> _f, init_list<float> _u,
             init_list<float> _l);
 
+      Camara(init_list<float> _o, init_list<float> _f, init_list<float> _u,
+               init_list<float> _l, const float giro_x, const float giro_y, const float giro_z);
+
       // Método que calcula el ancho que debería tener un pixel teniendo en cuenta
       // el vector l y el numero de pixeles de ancho pasado por parametro
       float calcularAnchoPixel(unsigned numPixeles) const;

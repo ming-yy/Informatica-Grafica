@@ -9,7 +9,7 @@
 #include <iostream>
 #include <random>
 #include <cmath>
-
+#include "transformaciones.h"
 
 Camara::Camara() : o(Punto(0.0f, 0.0f, -3.5f)),
                    f(Direccion(0.0f, 0.0f, 3.0f)),
@@ -34,6 +34,45 @@ Camara::Camara(init_list<float> _o, init_list<float> _f, init_list<float> _u,
         auto it_l = _l.begin();
         l = Direccion(*(it_l), *(it_l + 1), *(it_l + 2));
         
+    } else {
+        throw invalid_argument("Inicializadores deben contener 3 elementos cada uno.");
+    }
+}
+
+Camara::Camara(init_list<float> _o, init_list<float> _f, init_list<float> _u,
+               init_list<float> _l, const float giro_x, const float giro_y, const float giro_z) {
+    // Lista contiene 3 elementos (x, y, z)
+    if (_o.size() == 3 && _l.size() == 3 && _u.size() == 3) {
+        auto it_o = _o.begin();
+        o = Punto(*(it_o), *(it_o + 1), *(it_o + 2));
+        
+        auto it_f = _f.begin();
+        f = Direccion(*(it_f), *(it_f + 1), *(it_f + 2));
+
+        auto it_u = _u.begin();
+        u = Direccion(*(it_u), *(it_u + 1), *(it_u + 2));
+
+        auto it_l = _l.begin();
+        l = Direccion(*(it_l), *(it_l + 1), *(it_l + 2));
+
+        if(giro_x != 0.0f){
+            f = rotateX(f, giro_x);
+            u = rotateX(u, giro_x);
+            l = rotateX(l, giro_x);
+        }
+        
+        if(giro_y != 0.0f){
+            f = rotateY(f, giro_y);
+            u = rotateY(u, giro_y);
+            l = rotateY(l, giro_y);
+        }
+
+        if(giro_z != 0.0f){
+            f = rotateZ(f, giro_z);
+            u = rotateZ(u, giro_z);
+            l = rotateZ(l, giro_z);
+        }
+
     } else {
         throw invalid_argument("Inicializadores deben contener 3 elementos cada uno.");
     }
