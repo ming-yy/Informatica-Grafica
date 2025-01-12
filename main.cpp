@@ -84,8 +84,8 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano izquierdo, rojo
     objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano derecho, verde
     objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
-    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
-    objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 4.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
+    objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 4.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
+    //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 9.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, 0.0f, 1.0f}, 6.0f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano espalda, blanco
     
     objetos.push_back(new Plano({0.0f, 0.0f, 1.0f}, 4.0f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano espalda, negro
@@ -119,24 +119,99 @@ void cajaDeCornell(){
     
     //objetos.push_back(new Mesh("./modelos/potatOS.ply","./texturas/potatOSgirada.ppm", 0.05f, Punto(0.45f, 0.0f, -3.0f), 55.0f, false, 180.0f, false, 165.0f, false));
 
-    vector<Plano> planos;
-    Plano caraIzq = Plano({1.0f, 0.0f, 0.0f}, 0.4f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");     // izq
+    
+    vector<Plano> tarta;
+    Plano caraIzq = Plano({1.0f, 0.0f, 0.0f}, 0.4f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");  // izq
     Plano caraDer = Plano({-1.0f, 0.0f, 0.0f}, 0.4f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");    // dcha
     Plano caraSuelo = Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");   // suelo
     Plano caraTecho = Plano({0.0f, -1.0f, 0.0f}, -0.55, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");  // techo
     Plano caraFondo = Plano({0.0f, 0.0f, -1.0f}, 1.1f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");  // fondo
     Plano caraFrente = Plano({0.0f, 0.0f, 1.0f}, -0.3f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");  // frente
     
-    planos.push_back(caraDer);
-    planos.push_back(caraIzq);
-    planos.push_back(caraTecho);
-    planos.push_back(caraSuelo);
-    planos.push_back(caraFondo);
-    planos.push_back(caraFrente);
+    tarta.push_back(caraDer);
+    tarta.push_back(caraIzq);
+    tarta.push_back(caraTecho);
+    tarta.push_back(caraSuelo);
+    tarta.push_back(caraFondo);
+    tarta.push_back(caraFrente);
+    objetos.push_back(new Cuboide(tarta));
     
-    objetos.push_back(new Cuboide(planos));
+    
+    // -------------------------------------------- Mesa madera (no hecha) ----------------------------------------------
+    /*
+    vector<Plano> mesa;
+    Plano mesacaraIzq = Plano({1.0f, 0.0f, 0.0f}, 0.4f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {0,0,0}, "./texturas/madera.ppm"); // izq
+    Plano mesacaraDer = Plano({-1.0f, 0.0f, 0.0f}, 0.4f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {0,0,0}, "./texturas/madera.ppm");    // dcha
+    Plano mesacaraSuelo = Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {0,0,0}, "./texturas/madera.ppm");   // suelo
+    Plano mesacaraTecho = Plano({0.0f, -1.0f, 0.0f}, -0.55, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {0,0,0}, "./texturas/madera.ppm");  // techo
+    Plano mesacaraFondo = Plano({0.0f, 0.0f, -1.0f}, 1.1f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {0,0,0}, "./texturas/madera.ppm");  // fondo
+    Plano mesacaraFrente = Plano({0.0f, 0.0f, 1.0f}, -0.3f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {0,0,0}, "./texturas/madera.ppm");  // frente
+    
+    mesa.push_back(mesacaraDer);
+    mesa.push_back(mesacaraIzq);
+    mesa.push_back(mesacaraTecho);
+    mesa.push_back(mesacaraSuelo);
+    mesa.push_back(mesacaraFondo);
+    mesa.push_back(mesacaraFrente);
+    objetos.push_back(new Cuboide(mesa));
+     */
+    
+    // ------------------------------------------------------------------------------------------
+    
 
-
+    // -------------------------------------------- Puerta fondo ----------------------------------------------
+    
+    vector<Plano> puertaIzq;
+    Plano puertaIzqIzq = Plano({1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.0f, 1.0f, 0.0f}), "muy_difuso");     // izq
+    Plano puertaIzqDer = Plano({-1.0f, 0.0f, 0.0f}, -1.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");    // dcha
+    Plano puertaIzqSuelo = Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");   // suelo
+    Plano puertaIzqTecho = Plano({0.0f, -1.0f, 0.0f}, -2.5f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");  // techo
+    Plano puertaIzqFrente = Plano({0.0f, 0.0f, 1.0f}, -9.0f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");  // fondo
+    Plano puertaIzqFondo = Plano({0.0f, 0.0f, -1.0f}, 9.5f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso");  // frente
+    
+    puertaIzq.push_back(puertaIzqIzq);
+    puertaIzq.push_back(puertaIzqDer);
+    puertaIzq.push_back(puertaIzqSuelo);
+    puertaIzq.push_back(puertaIzqTecho);
+    puertaIzq.push_back(puertaIzqFrente);
+    puertaIzq.push_back(puertaIzqFondo);
+    objetos.push_back(new Cuboide(puertaIzq));
+    
+    /*
+    vector<Plano> puertaArriba;
+    Plano puertaArribaDer = Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {1.0f, 0.0f, 9.5f});    // dcha
+    
+    puertaArriba.push_back(puertaIzqIzq);
+    puertaArriba.push_back(puertaIzqTecho);
+    puertaArriba.push_back(puertaIzqSuelo);
+    puertaArriba.push_back(puertaIzqFrente);
+    puertaArriba.push_back(puertaIzqFondo);
+    puertaArriba.push_back(puertaArribaFondo);
+    objetos.push_back(new Cuboide(puertaArribaDer));
+     */
+    
+    
+    /*
+    
+    vector<Plano> puertaDer;
+    Plano puertaDerIzq = Plano({1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");     // izq
+    Plano puertaDerDer = Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");    // dcha
+    
+    puertaDer.push_back(puertaIzqSuelo);
+    puertaDer.push_back(puertaIzqTecho);
+    puertaDer.push_back(puertaIzqFrente);
+    puertaDer.push_back(puertaIzqFondo);
+    puertaDer.push_back(puertaDerIzq);
+    puertaDer.push_back(puertaDerDer);
+    objetos.push_back(new Cuboide(puertaDer));
+     */
+    
+    // ------------------------------------------------------------------------------------------
+    
+    
+    
+    // -------------------------------------------- VENTANA ----------------------------------------------
+    
     vector<Plano> planosVentanaAbajo;
     Plano caraIzqV = Plano({1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");     // izq
     Plano caraDerV = Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");    // dcha
@@ -151,7 +226,6 @@ void cajaDeCornell(){
     planosVentanaAbajo.push_back(caraSueloVabajo);
     planosVentanaAbajo.push_back(caraFondoV);
     planosVentanaAbajo.push_back(caraFrenteV);
-    
     objetos.push_back(new Cuboide(planosVentanaAbajo));
 
     vector<Plano> planosVentanaArriba;
@@ -190,7 +264,7 @@ void cajaDeCornell(){
 
     objetos.push_back(new Cuboide(planosVentanaDerecha));
     
-
+    // ------------------------------------------------------------------------------------------
 
 
 
@@ -243,24 +317,25 @@ void cajaDeCornell(){
     //objetos.push_back(new Mesh("./modelos/potatOS.ply","./texturas/potatOSgirada.ppm", 0.05f, Punto(0.0f, 0.0f, -4.0f), 55.0f, false, 0.0f, false, 165.0f, true));
     //objetos.push_back(new Mesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -0.8f, 0.0f), -90.0f, false, 0.0f, false, 0.0f, false));
 
-    //QUITAR vvvvv solo lo he puesto para probarlo, antes de hacer lo de la esfera limite
-    //for (auto& t : tartaMesh.triangulos){
-    //    objetos.push_back(new Triangulo(t));
-    //}
     
     cout << "Total objetos: " << objetos.size() << endl;
     vector<LuzPuntual> luces;
 
     RGB potencia(1.0f, 1.0f, 1.0f);
-    luces.push_back(LuzPuntual({0.0f, 0.0f, 0.75f}, potencia));
-    luces.push_back(LuzPuntual({0.0f, 0.0f, -2.85f}, potencia));
-    luces.push_back(LuzPuntual({0.44f, 0.0f, -2.86f}, {0.1f, 0.1f, 0.1f}));
-
-    //luces.push_back(LuzPuntual({0.0f, 0.0f, -0.25f}, potencia));
+    // ------ Mis pruebas
+    luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
+    luces.push_back(LuzPuntual({0.0f, 0.5f, 4.0f}, potencia));
+    luces.push_back(LuzPuntual({0.0f, 0.75f, 9.25f}, potencia));      // Luz detrás de la puerta
     
+    // ------ Lo que había antes
+    //luces.push_back(LuzPuntual({0.0f, 0.0f, 0.75f}, potencia));
+    //luces.push_back(LuzPuntual({0.0f, 0.0f, -2.85f}, potencia));
+    //luces.push_back(LuzPuntual({0.44f, 0.0f, -2.86f}, {0.1f, 0.1f, 0.1f}));
+
+    // ------ No sé qué es esto
+    //luces.push_back(LuzPuntual({0.0f, 0.0f, -0.25f}, potencia));
     //luces.push_back(LuzPuntual({0.5f, 0.5f, 0.0f}, potencia));
     //luces.push_back(LuzPuntual({-0.5f, 0.5f, 0.0f}, potencia));
-
     //luces.push_back(LuzPuntual({0.5f, 0.0f, -0.5f}, potencia));
     //luces.push_back(LuzPuntual({0.0f, -0.25f, -0.8}, potencia));
     //luces.push_back(LuzPuntual({0.0f, -0.50f, 0.0}, potencia));
@@ -314,12 +389,14 @@ void cajaDeCornell(){
                         {-1.0f, 0.0f, 0.0f});
 
     const string nombreEscena = "cornell";
-    const unsigned maxRebotes = 5;
-    const unsigned rpp = 1;
+    const unsigned maxRebotes = 3;
+    const unsigned rpp = 3;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
-    const unsigned int pixelesAncho = 640;
-    const unsigned int pixelesAlto = 360;
+    //const unsigned int pixelesAncho = 640;
+    //const unsigned int pixelesAlto = 360;
+    const unsigned int pixelesAncho = 320;
+    const unsigned int pixelesAlto = 180;
     Camara camUtilizada = cam16_9_girada;
 
     cout << "RPP: " << rpp << endl;        
