@@ -88,21 +88,33 @@ void cajaDeCornell(){
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 4.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, 0.0f, 1.0f}, 6.0f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano espalda, blanco
     
-    objetos.push_back(new Plano({0.0f, 0.0f, 1.0f}, 4.0f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano espalda, blanco
+    objetos.push_back(new Plano({0.0f, 0.0f, 1.0f}, 4.0f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano espalda, negro
 
     //objetos.push_back(new Plano({1.0f, 0.0f, 0.1f}, 2.4f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({-1.0f, 0.0f, 0.1f}, 2.4f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.1f}, 2.4f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano fondo, blanco
     //objetos.push_back(new Plano({0.0f, 1.0f, 0.1f}, 2.4f, RGB({0.0f, 0.0f, 0.0f}), "muy_difuso")); // plano fondo, blanco
 
+
+    // Wheatley centrado tamaño correcto = 0.018f
+    //objetos.push_back(new Mesh("./modelos/wheatley.ply","./texturas/wheatley.ppm", 0.018f, Punto(0.0f, 0.0f, 0.0f), 0.0f, false, 0.0f, false, 0.0f, false));
+    //objetos.push_back(new Esfera({0.0f, 0.0f, -0.1f}, 0.15f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, "./texturas/ojo_mas_zoom.ppm", 0.0f, 0.25f)); // esfera derecha, azul
+
+    //objetos.push_back(new Esfera({0.6f, 0.0f, 0.0f}, 0.3f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso")); // esfera derecha, azul
+
+
+    
     objetos.push_back(new Plano({0.0f, 0.0f, 1.0f}, 2.5f, RGB({0.8, 1.0f, 1.0f}), "cristal_reflejo")); // plano cristal lejos
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, -2.515f, RGB({0.8, 1.0f, 1.0f}), "cristal_reflejo")); // plano cristal cerca
     
+    // Tarta
     //objetos.push_back(new Mesh("./modelos/cake_reference.ply","./texturas/cake.ppm", 0.015f, Punto(0.0f, -0.35f, 0.6f), -90.0f, false, 0.0f, false, 0.0f, false));
     
+    // Wheatley reflejado en primer plano
+    //objetos.push_back(new Mesh("./modelos/wheatley.ply","./texturas/wheatley.ppm", 0.018f, Punto(0.5f, 0.0f, -3.0f), 0.0f, false, 150.0f, false, 0.0f, false));
+    objetos.push_back(new Esfera({0.44f, 0.0f, -2.86f}, 0.15f, RGB({1.0f, 0.0f, 0.0f}), "muy_difuso", {0,0,0}, "./texturas/ojo_mas_zoom.ppm", 0.0f, -0.3f)); // esfera derecha, azul
 
-    
-    objetos.push_back(new Esfera({0.6f, 0.0f, -3.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
+    //objetos.push_back(new Esfera({0.6f, 0.0f, -3.0f}, 0.3f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // esfera derecha, azul
     //objetos.push_back(new Esfera({-0.5f, -0.7f, 0.25f}, 0.3f, RGB({1.0f, 0.8f, 0.7f}), "muy_difuso")); // esfera derecha, azul
     
     //objetos.push_back(new Mesh("./modelos/potatOS.ply","./texturas/potatOSgirada.ppm", 0.05f, Punto(0.45f, 0.0f, -3.0f), 55.0f, false, 180.0f, false, 165.0f, false));
@@ -177,6 +189,14 @@ void cajaDeCornell(){
     planosVentanaDerecha.push_back(caraIzqVder);
 
     objetos.push_back(new Cuboide(planosVentanaDerecha));
+    
+
+
+
+
+
+
+
 
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, false, -0.5, 3.0, {0.0f, 0.0f, 0.0f})); // plano techo luz NO infinito
     //objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {1,1,1}, true));                                   // plano techo luz SÍ infinito
@@ -234,8 +254,9 @@ void cajaDeCornell(){
     RGB potencia(1.0f, 1.0f, 1.0f);
     luces.push_back(LuzPuntual({0.0f, 0.0f, 0.75f}, potencia));
     luces.push_back(LuzPuntual({0.0f, 0.0f, -2.85f}, potencia));
+    luces.push_back(LuzPuntual({0.44f, 0.0f, -2.86f}, {0.1f, 0.1f, 0.1f}));
 
-    //luces.push_back(LuzPuntual({-1.0f, 0.5f, 1.0f}, potencia));
+    //luces.push_back(LuzPuntual({0.0f, 0.0f, -0.25f}, potencia));
     
     //luces.push_back(LuzPuntual({0.5f, 0.5f, 0.0f}, potencia));
     //luces.push_back(LuzPuntual({-0.5f, 0.5f, 0.0f}, potencia));
@@ -251,7 +272,7 @@ void cajaDeCornell(){
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 1.0f, 0.0f},
                         {-1.0f, 0.0f, 0.0f});
-    //-0.3, 0.0, -3.9
+    //-0.3, 0.0, -3.9, +15 grados eje Y 
     Camara cam16_9_girada = Camara({-0.3f, 0.0f, -3.9f},
                         {0.0f, 0.0f, 3.0f},
                         {0.0f, 0.9f, 0.0f},
@@ -294,7 +315,7 @@ void cajaDeCornell(){
 
     const string nombreEscena = "cornell";
     const unsigned maxRebotes = 5;
-    const unsigned rpp = 512;
+    const unsigned rpp = 1;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
     const unsigned int pixelesAncho = 640;

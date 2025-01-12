@@ -10,12 +10,13 @@
 #include "esfera.h"
 
 
-Esfera::Esfera(): Primitiva(), centro(Punto()), radio(0.0f) {}
+Esfera::Esfera(): Primitiva(), centro(Punto()), radio(0.0f), offset_u(0.0f), offset_v(0.0f){}
 
 Esfera::Esfera(const Punto& _centro, const float& _radio, const RGB& _reflectancia,
-               const string _material, const RGB& _power, const string rutaTextura) :
+               const string _material, const RGB& _power, const string rutaTextura,
+               const float _offset_u, const float _offset_v) :
                Primitiva(_reflectancia, _material, _power, rutaTextura), centro(_centro),
-               radio(_radio)  {}
+               radio(_radio), offset_u(_offset_u), offset_v(_offset_v) {}
 
 Esfera::Esfera(const Planeta& p) : Primitiva(), centro(p.centro), radio(p.radio) {}
 
@@ -112,12 +113,12 @@ Punto Esfera::generarPuntoAleatorio(float& prob) const {
 
 float Esfera::getEjeTexturaU(const Punto& pto) const {
     Direccion d = normalizar(pto - this->centro);
-    return 0.5 - asin(d.coord[1]) / M_PI;
+    return 0.5 - asin(d.coord[1]) / M_PI + offset_u;
 }
 
 float Esfera::getEjeTexturaV(const Punto& pto) const {
     Direccion d = normalizar(pto - this->centro);
-    return 0.5 + atan2(d.coord[2], d.coord[0]) / (2 * M_PI);
+    return 0.5 + atan2(d.coord[2], d.coord[0]) / (2 * M_PI) + offset_v;
 }
 
 void Esfera::diHola() const {

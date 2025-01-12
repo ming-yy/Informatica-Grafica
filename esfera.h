@@ -20,6 +20,9 @@ public:
     // Radio de la esfera
     float radio;
     
+    float offset_u;
+    float offset_v;
+    
     // Constructor base
     Esfera();
 
@@ -29,7 +32,7 @@ public:
     Esfera(const Punto& _centro, const float& _radio,
            const RGB& _reflectancia = RGB(1.0f, 1.0f, 1.0f),
            const string _material = "difuso", const RGB& _power = RGB(),
-           const string rutaTextura = "");
+           const string rutaTextura = "",  const float _offset_u = 0.0f, const float _offset_v = 0.0f);
     Esfera(const Planeta& p);
     
     // Método para calcular la intersección entre un rayo y la esfera
