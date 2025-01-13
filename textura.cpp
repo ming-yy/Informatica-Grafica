@@ -54,7 +54,8 @@ void Textura::cargarPPM(const string& ruta) {
     
     // Verificamos que la lectura fue exitosa
     if (!file) {
-        cerr << "Error: No se pudieron leer los datos de la imagen" << endl;
+        //cerr << "Error: No se pudieron leer los datos de la imagen" << endl;
+        throw runtime_error("Error: No se pudieron leer los datos de la imagen" + ruta);
         return;
     }
     // Asignar el vector data al atributo imagen de la clase Textura
