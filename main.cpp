@@ -81,9 +81,9 @@ void liberarMemoriaDePrimitivas(vector<Primitiva*>& objetos) {
 
 void cajaDeCornell(){
     vector<Primitiva*> objetos;
-    objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.0f, 0.0f, 0.0f}, "./texturas/tile.ppm", 1.5f, 1.5f)); // plano izquierdo
-    objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.0f, 0.0f, 0.0f}, "./texturas/pared_moho_reves.ppm", 3.0f, 3.0f)); // plano derecho
-    objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano suelo, blanco
+    objetos.push_back(new Plano({1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.0f, -0.97f, 2.0f}, "./texturas/cemento_pared.ppm", 4.5f, 5.4f)); // plano izquierdo
+    objetos.push_back(new Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.0f, -0.82f, 0.2f}, "./texturas/cemento_pared.ppm", 2.5f, 5.1f)); // plano derecho
+    objetos.push_back(new Plano({0.0f, 1.0f, 0.0f}, 1.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.0f, 0.0f, 0.0f}, "./texturas/suelo.ppm", 2.8f, 2.8f)); // plano suelo, blanco
     objetos.push_back(new Plano({0.0f, -1.0f, 0.0f}, 4.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano techo, blanco
     //objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 16.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso")); // plano fondo, blanco
     objetos.push_back(new Plano({0.0f, 0.0f, -1.0f}, 16.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.0f, 0.0f, 0.0f}, "./texturas/tile.ppm", 1.5f, 1.5f)); // plano fondo, blanco
@@ -119,7 +119,7 @@ void cajaDeCornell(){
 
     
     // Chell
-    objetos.push_back(new Mesh("./modelos/chell.ply","", 0.03f, Punto(0.0f, 0.3f, 9.25f), 0.0f, false, 0.0f, true, 0.0f, false));
+    //objetos.push_back(new Mesh("./modelos/chell.ply","", 0.03f, Punto(0.0f, 0.3f, 9.25f), 0.0f, false, 0.0f, true, 0.0f, false));
     
 
 
@@ -176,10 +176,10 @@ void cajaDeCornell(){
     
     vector<Plano> puertaIzq;
     Plano puertaIzqIzq = Plano({1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");     // izq
-    Plano puertaIzqDer = Plano({-1.0f, 0.0f, 0.0f}, -0.7f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");    // dcha
+    Plano puertaIzqDer = Plano({-1.0f, 0.0f, 0.0f}, -0.7f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.71f, -0.82f, 0.0f}, "./texturas/cemento.ppm", 2.8f, 5.1f);    // dcha
     Plano puertaIzqSuelo = Plano({0.0f, 1.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");   // suelo
     Plano puertaIzqTecho = Plano({0.0f, -1.0f, 0.0f}, 4.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");  // techo
-    Plano puertaIzqFrente = Plano({0.0f, 0.0f, 1.0f}, -9.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");  // fondo
+    Plano puertaIzqFrente = Plano({0.0f, 0.0f, 1.0f}, -9.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.71f, -0.82f, 0.0f}, "./texturas/cemento_pared.ppm", 2.8f, 5.1f);  // fondo
     Plano puertaIzqFondo = Plano({0.0f, 0.0f, -1.0f}, 9.5f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");  // frente
     
     puertaIzq.push_back(puertaIzqIzq);
@@ -193,7 +193,7 @@ void cajaDeCornell(){
     
     vector<Plano> puertaArriba;
     //Plano puertaArribaDer = Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0, 0, {1.0f, 0.0f, 9.5f});    // dcha
-    Plano puertaArribaSuelo = Plano({0.0f, 1.0f, 0.0f}, -1.75f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");   // suelo
+    Plano puertaArribaSuelo = Plano({0.0f, 1.0f, 0.0f}, -1.75f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.71f, -0.82f, 0.0f}, "./texturas/cemento.ppm", 2.8f, 5.1f);   // suelo
     Plano puertaArribaDer = Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({1.0f, 1.0f, 1.0f}), "muy_difuso");    // dcha
 
     puertaArriba.push_back(puertaIzqIzq);
@@ -207,7 +207,7 @@ void cajaDeCornell(){
     
     
     vector<Plano> puertaDer;
-    Plano puertaDerIzq = Plano({1.0f, 0.0f, 0.0f}, -0.7f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");     // izq
+    Plano puertaDerIzq = Plano({1.0f, 0.0f, 0.0f}, -0.7f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso", {0,0,0}, false, 0.0f, 0.0f, {0.71f, -0.82f, 0.0f}, "./texturas/cemento.ppm", 2.8f, 5.1f);     // izq
     Plano puertaDerDer = Plano({-1.0f, 0.0f, 0.0f}, 2.0f, RGB({0.25f, 0.25f, 0.25f}), "muy_difuso");    // dcha
     
     puertaDer.push_back(puertaIzqSuelo);
@@ -336,13 +336,13 @@ void cajaDeCornell(){
     RGB potencia(1.0f, 1.0f, 1.0f);
     // ------ Mis pruebas
     //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
-    //luces.push_back(LuzPuntual({0.0f, 0.5f, 4.0f}, potencia));
+    luces.push_back(LuzPuntual({0.0f, 0.5f, 4.0f}, potencia));
     luces.push_back(LuzPuntual({0.0f, 0.5f, 14.0f}, {15.0f, 15.0f, 15.0f}));      // Luz detrás de la puerta
     
     // ------ Lo que había antes
     //luces.push_back(LuzPuntual({0.0f, 0.0f, 0.75f}, potencia));
-    luces.push_back(LuzPuntual({0.0f, 0.0f, -2.85f}, potencia));
-    luces.push_back(LuzPuntual({0.44f, 0.0f, -2.86f}, {0.1f, 0.1f, 0.1f}));
+    //luces.push_back(LuzPuntual({0.0f, 0.0f, -2.85f}, potencia));
+    //luces.push_back(LuzPuntual({0.44f, 0.0f, -2.86f}, {0.1f, 0.1f, 0.1f}));
 
     // ------ No sé qué es esto
     //luces.push_back(LuzPuntual({0.0f, 0.0f, -0.25f}, potencia));
@@ -402,13 +402,13 @@ void cajaDeCornell(){
 
     const string nombreEscena = "cornell";
     const unsigned maxRebotes = 0;
-    const unsigned rpp = 1;
+    const unsigned rpp = 5;
     const unsigned numRayosMontecarlo = 1;
     const bool printPixelesProcesados = true;
-    //const unsigned int pixelesAncho = 640;
-    //const unsigned int pixelesAlto = 360;
-    const unsigned int pixelesAncho = 320;
-    const unsigned int pixelesAlto = 180;
+    const unsigned int pixelesAncho = 640;
+    const unsigned int pixelesAlto = 360;
+    //const unsigned int pixelesAncho = 320;
+    //const unsigned int pixelesAlto = 180;
     Camara camUtilizada = cam16_9_girada;
 
     cout << "RPP: " << rpp << endl;        
