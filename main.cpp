@@ -349,7 +349,7 @@ void cajaDeCornell(){
     //luces.push_back(LuzPuntual({0.0f, 0.5f, 0.0f}, potencia));
     luces.push_back(LuzPuntual({0.0f, 0.5f, 4.0f}, potencia));
     luces.push_back(LuzPuntual({0.0f, 0.5f, 14.0f}, {15.0f, 15.0f, 15.0f}));      // Luz detrás de la puerta
-    luces.push_back(LuzPuntual({1.5f, 0.5f, 0.0f}, {3, 3, 3}));      // Luz detrás de la puerta
+    luces.push_back(LuzPuntual({1.5f, 0.5f, 0.0f}, {3, 3, 3}));      // Luz para ver los cubos
 
     // ------ Lo que había antes
     //luces.push_back(LuzPuntual({0.0f, 0.0f, 0.75f}, potencia));
